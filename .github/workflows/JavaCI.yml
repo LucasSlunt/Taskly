@@ -1,0 +1,22 @@
+#This is a workflow to build a java project
+name: JavaCI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4.7.0
+      with:
+        java-version: 1.8
+        #Java version is temporary till I know whitch ones we will be using will also have to run npm install to get needed packages to run when we know versions 
