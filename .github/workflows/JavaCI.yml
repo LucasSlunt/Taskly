@@ -18,5 +18,7 @@ jobs:
     - name: Setup Java JDK
       uses: actions/setup-java@v4.7.0
       with:
-        java-version: 1.8
-        #Java version is temporary till I know whitch ones we will be using will also have to run npm install to get needed packages to run when we know versions 
+        java-version: 21
+        cache: 'maven'
+- name: Build with Maven
+  run: mvn -B package --file pom.xml
