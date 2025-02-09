@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 @Entity
 public class AuthInfo {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int accountId;
 
     @Column(nullable = false)

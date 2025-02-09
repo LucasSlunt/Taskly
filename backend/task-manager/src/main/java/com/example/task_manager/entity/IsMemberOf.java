@@ -13,7 +13,7 @@ public class IsMemberOf {
     private TeamMember teamMember;
 
     @ManyToOne
-    @JoinColumn(name = "teamId", nullable = false)
+    @JoinColumn(name = "teamId", nullable = true)
     private Team team;
 
     public IsMemberOf() {}

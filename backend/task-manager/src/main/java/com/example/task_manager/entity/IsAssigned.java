@@ -13,11 +13,11 @@ public class IsAssigned {
     private Task task;
 
     @ManyToOne
-    @JoinColumn(name = "accountId", nullable = false)
+    @JoinColumn(name = "accountId", nullable = true)
     private TeamMember teamMember;
 
     @ManyToOne
-    @JoinColumn(name = "teamId", nullable = false)
+    @JoinColumn(name = "teamId", nullable = true)
     private Team team;
 
     public IsAssigned() {}

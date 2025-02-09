@@ -1,6 +1,7 @@
 package com.example.task_manager.entity;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.*;
 
@@ -28,11 +29,11 @@ public class Task {
     private LocalDate dueDate;
 
     @ManyToOne
-    @JoinColumn(name = "teamId", nullable = false)
+    @JoinColumn(name = "teamId", nullable = true)
     private Team team;
 
-    @OneToMany(mappedBy = "task")
-    private Set<IsAssigned> assignedMembers;
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<IsAssigned> assignedMembers = new HashSet<>();
 
     public Task() {}
 

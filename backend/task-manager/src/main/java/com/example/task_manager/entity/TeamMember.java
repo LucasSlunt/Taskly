@@ -1,5 +1,6 @@
 package com.example.task_manager.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.*;
 
@@ -16,20 +17,22 @@ public class TeamMember {
     @Column(nullable = false, unique = true)
     private String userEmail;
 
-    @OneToOne(mappedBy = "teamMember", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "teamMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private AuthInfo authInfo;
 
-    @OneToMany(mappedBy = "teamMember")
-    private Set<IsMemberOf> teams;
+    @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<IsMemberOf> teams = new HashSet<>();
 
     @OneToMany(mappedBy = "teamMember")
-    private Set<IsAssigned> assignedTasks;
+    private Set<IsAssigned> assignedTasks = new HashSet<>();
 
     public TeamMember() {}
 
     public TeamMember(String userName, String userEmail) {
         this.userName = userName;
         this.userEmail = userEmail;
+        this.teams = new HashSet<>();
+        this.assignedTasks = new HashSet<>();
     }
 
     //getters and setters
