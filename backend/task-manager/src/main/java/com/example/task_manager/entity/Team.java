@@ -1,6 +1,8 @@
 package com.example.task_manager.entity;
 
 import jakarta.persistence.*;
+
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -17,10 +19,10 @@ public class Team {
     private TeamMember teamLead;
 
     @OneToMany(mappedBy = "team")
-    private Set<IsMemberOf> members;
+    private Set<IsMemberOf> members = new HashSet<>();
 
-    @OneToMany(mappedBy = "team")
-    private Set<IsAssigned> assignedTasks;
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true) //When Team is deleted, IsAssigned is also deleted
+    private Set<IsAssigned> assignedTasks = new HashSet<>();
 
     public Team() {}
 
