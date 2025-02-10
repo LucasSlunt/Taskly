@@ -68,7 +68,6 @@ public class IsMemberOfEntityTest {
 
         teamMember.getTeams().remove(isMember);
         entMan.remove(teamMember);
-        entMan.flush();
 
         IsMemberOf deletedIsMember = entMan.find(IsMemberOf.class, isMember.getId());
         assertNull(deletedIsMember);

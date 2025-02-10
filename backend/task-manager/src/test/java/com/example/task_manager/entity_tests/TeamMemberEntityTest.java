@@ -159,7 +159,7 @@ public class TeamMemberEntityTest {
 		entityManager.persist(assignedTask);
 		entityManager.flush();
 
-		teamMember.setAssignedTasks(Set.of(assignedTask));
+		teamMember.getAssignedTasks().add(assignedTask);
 
 		TeamMember savedMember = entityManager.persistFlushFind(teamMember);
 

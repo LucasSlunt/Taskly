@@ -2,6 +2,8 @@ package com.example.task_manager.entity;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -23,7 +25,7 @@ public class TeamMember {
     @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<IsMemberOf> teams = new HashSet<>();
 
-    @OneToMany(mappedBy = "teamMember")
+    @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<IsAssigned> assignedTasks = new HashSet<>();
 
     public TeamMember() {}
