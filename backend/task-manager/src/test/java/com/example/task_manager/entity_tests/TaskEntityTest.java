@@ -50,15 +50,15 @@ public class TaskEntityTest {
     @Test
     void testTaskWithAssignment() {
         Team team = new Team();
-        team.setTeamName("Test Team Name");
+        team.setTeamName("Test Team Name" + System.nanoTime());
         entMan.persist(team);
         entMan.flush();
 
-        Task task = new Task("Test Task Title", "", team, false, "Open", LocalDate.now());
+        Task task = new Task("Test Task Title" + System.nanoTime(), "", team, false, "Open", LocalDate.now());
         entMan.persist(task);
         entMan.flush();
 
-        TeamMember teamMember = new TeamMember("Team Member", "test@example.com");
+        TeamMember teamMember = new TeamMember("Team Member" + System.nanoTime(), System.nanoTime() + "test@example.com");
         entMan.persist(teamMember);
         entMan.flush();
 
@@ -85,26 +85,29 @@ public class TaskEntityTest {
     @Test
     void testCascadeDeleteWithTask() {
         Team team = new Team();
-        team.setTeamName("Test Team Name");
+        team.setTeamName("Test Team Name" + System.nanoTime());
         entMan.persist(team);
         entMan.flush();
 
-        Task task = new Task("Test Task Title", "", team, false, "Open", LocalDate.now());
+        Task task = new Task("Test Task Title" + System.nanoTime(), "", team, false, "Open", LocalDate.now());
         entMan.persist(task);
         entMan.flush();
     
-        TeamMember teamMember = new TeamMember("Team Member", "test@example.com");
+        TeamMember teamMember = new TeamMember("Team Member" + System.nanoTime(), System.nanoTime() + "test@example.com");
         entMan.persist(teamMember);
         entMan.flush();
 
         IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
+
+        task.getAssignedMembers().add(isAssigned);
+        
         entMan.persist(isAssigned);
         entMan.flush();
     
         entMan.remove(task);
         entMan.flush();
 
-        IsAssigned deletedIsAssigned = entMan.find(IsAssigned.class, isAssigned.getTaskId());
+        IsAssigned deletedIsAssigned = entMan.find(IsAssigned.class, isAssigned.getId());
         assertNull(deletedIsAssigned);
     }
 }

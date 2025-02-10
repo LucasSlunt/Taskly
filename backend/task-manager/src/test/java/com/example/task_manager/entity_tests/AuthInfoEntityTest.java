@@ -26,7 +26,10 @@ public class AuthInfoEntityTest {
     */
     @Test
     void testAuthInfoPersistence() {
-        TeamMember teamMember = new TeamMember("Team Member", "team_member@example.com");
+        TeamMember teamMember = new TeamMember(
+            "TeamMember" + System.nanoTime(), 
+            "team_member" + System.nanoTime() + "@example.com"
+        );
         entMan.persist(teamMember);
         entMan.flush();
 

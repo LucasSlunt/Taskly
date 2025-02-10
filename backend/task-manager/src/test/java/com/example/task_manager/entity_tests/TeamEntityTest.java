@@ -117,17 +117,16 @@ public class TeamEntityTest {
         entMan.flush();
 
         IsAssigned isAssigned = new IsAssigned(task, devMember, team);
+        team.getAssignedTasks().add(isAssigned);
         entMan.persist(isAssigned);
         entMan.flush();
 
-        assertNotNull(entMan.find(IsAssigned.class, isAssigned.getTaskId()));
+        assertNotNull(entMan.find(IsAssigned.class, isAssigned.getId()));
         assertNotNull(entMan.find(Task.class, task.getTaskId()));
 
         entMan.remove(team);
-        entMan.flush();
 
-
-        IsAssigned deletedAssignment = entMan.find(IsAssigned.class, isAssigned.getTaskId());
+        IsAssigned deletedAssignment = entMan.find(IsAssigned.class, isAssigned.getId());
         assertNull(deletedAssignment);
     }
 }
