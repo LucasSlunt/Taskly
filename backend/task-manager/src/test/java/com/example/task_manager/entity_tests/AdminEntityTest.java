@@ -2,6 +2,7 @@ package com.example.task_manager.entity_tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 
 import com.example.task_manager.entity.Admin;
+import com.example.task_manager.entity.AuthInfo;
+import com.example.task_manager.entity.Task;
+import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
 
 import jakarta.transaction.Transactional;
@@ -89,5 +93,54 @@ public class AdminEntityTest {
 
 		assertEquals(2, teamMembers.size());
 		assertTrue(teamMembers.stream().anyMatch(tm -> tm instanceof Admin));
+	}
+
+	/*
+	 * Ensuring that deleting an admin works just like deleting a teamMember
+	 */
+	@Test
+	void testAdminDeletion() {
+		Admin admin = new Admin("AdminToDelete", "deleteadmin@example.com");
+		entMan.persist(admin);
+		entMan.flush();
+
+		entMan.remove(admin);
+		entMan.flush();
+
+		Admin deletedAdmin = entMan.find(Admin.class, admin.getAccountId());
+		assertNull(deletedAdmin);
+	}
+
+	/*
+	 * test that admin can be found with id
+	 */
+	@Test
+	void testAdminQueryById() {
+		Admin admin = new Admin("AdminLookup", "lookupadmin@example.com");
+		entMan.persist(admin);
+		entMan.flush();
+
+		Admin foundAdmin = entMan.getEntityManager()
+			.createQuery("SELECT a FROM Admin a WHERE a.accountId = :id", Admin.class)
+			.setParameter("id", admin.getAccountId())
+			.getSingleResult();
+
+		assertNotNull(foundAdmin);
+		assertEquals(admin.getUserEmail(), foundAdmin.getUserEmail());
+	}
+
+	/*
+	 * Ensure Admin still functions as a teammmember (because it extends TeamMember)
+	 */
+	@Test
+	void testAdminInheritsTeamMemberBehavior() {
+		Admin admin = new Admin("InheritedAdmin", "inheritadmin@example.com");
+		entMan.persist(admin);
+		entMan.flush();
+
+		TeamMember foundMember = entMan.find(TeamMember.class, admin.getAccountId());
+
+		assertNotNull(foundMember);
+		assertTrue(foundMember instanceof Admin);
 	}
 }

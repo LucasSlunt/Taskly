@@ -4,8 +4,6 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Set;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -164,5 +162,92 @@ public class TeamMemberEntityTest {
 		TeamMember savedMember = entityManager.persistFlushFind(teamMember);
 
 		assertEquals(1, savedMember.getAssignedTasks().size());
+	}
+
+	/*
+	 * Deleting TeamMember removes associated AuthInfo but not Team or Tasks
+	 */
+	@Test
+	void testDeleteTeamMemberRemovesAuthInfoButNotTeamsOrTasks() {
+		Team team = new Team("Test Team", null);
+		entityManager.persist(team);
+		entityManager.flush();
+
+		Task task = new Task("Test Task", "Description", team, false, "Open", LocalDate.now());
+		entityManager.persist(task);
+		entityManager.flush();
+
+		TeamMember teamMember = new TeamMember("Removable Member", "removable@example.com");
+		AuthInfo authInfo = new AuthInfo("hashed_password", "random_salt", teamMember);
+		teamMember.setAuthInfo(authInfo);
+
+		entityManager.persist(teamMember);
+		entityManager.flush();
+
+		IsMemberOf isMember = new IsMemberOf(teamMember, team);
+		IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
+		
+		entityManager.persist(isMember);
+		entityManager.persist(isAssigned);
+		entityManager.flush();
+
+		entityManager.remove(teamMember);
+
+		assertNull(entityManager.find(AuthInfo.class, authInfo.getAccountId())); // AuthInfo should be removed
+		assertNotNull(entityManager.find(Task.class, task.getTaskId())); // Task should remain
+		assertNotNull(entityManager.find(Team.class, team.getTeamId())); // Team should remain
+	}
+
+	/*
+	 * TeamMember can be removed from Team without deleting Team
+	 */
+	@Test
+	void testTeamMemberLeavesTeamWithoutDeletion() {
+		Team team = new Team("Leave Test Team", null);
+		entityManager.persist(team);
+		entityManager.flush();
+
+		TeamMember teamMember = new TeamMember("Leaving Member", "leave@example.com");
+		entityManager.persist(teamMember);
+		entityManager.flush();
+
+		IsMemberOf isMember = new IsMemberOf(teamMember, team);
+		entityManager.persist(isMember);
+		entityManager.flush();
+
+		entityManager.remove(isMember);
+		entityManager.flush();
+
+		assertNull(entityManager.find(IsMemberOf.class, isMember.getId())); // Membership should be removed
+		assertNotNull(entityManager.find(TeamMember.class, teamMember.getAccountId())); // TeamMember should remain
+	}
+
+	/*
+	 * Deleting TeamMember removes all IsAssigned associations, but does not delete the tasks
+	 */
+	@Test
+	void testDeletingTeamMemberRemovesAssignedTasks() {
+		Team team = new Team("Assignment Test Team", null);
+		entityManager.persist(team);
+		entityManager.flush();
+
+		Task task = new Task("Test Task", "Description", team, false, "Open", LocalDate.now());
+		entityManager.persist(task);
+		entityManager.flush();
+
+		TeamMember teamMember = new TeamMember("Assigned Member", "assigned@example.com");
+		entityManager.persist(teamMember);
+		entityManager.flush();
+
+		IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
+
+		teamMember.getAssignedTasks().add(isAssigned);
+		entityManager.persist(isAssigned);
+		entityManager.flush();
+
+		entityManager.remove(teamMember);
+		entityManager.flush();
+
+		assertNull(entityManager.find(IsAssigned.class, isAssigned.getId()));
 	}
 }

@@ -82,4 +82,32 @@ public class AuthInfoEntityTest {
         AuthInfo deletedAuthInfo = entMan.find(AuthInfo.class, authInfo.getAccountId());
         assertNull(deletedAuthInfo);
     }
+
+    /*
+     * Tests that AuthInfo is connected to the correct TeamMember
+     */
+    @Test
+    void testAuthInfoBelongsToCorrectTeamMember() {
+        TeamMember member1 = new TeamMember("User1", "user1@example.com");
+        TeamMember member2 = new TeamMember("User2", "user2@example.com");
+
+        entMan.persist(member1);
+        entMan.persist(member2);
+        entMan.flush();
+
+        AuthInfo authInfo1 = new AuthInfo("password1", "salt1", member1);
+        AuthInfo authInfo2 = new AuthInfo("password2", "salt2", member2);
+
+        entMan.persist(authInfo1);
+        entMan.persist(authInfo2);
+        entMan.flush();
+
+        AuthInfo retrievedAuthInfo1 = entMan.find(AuthInfo.class, member1.getAccountId());
+        AuthInfo retrievedAuthInfo2 = entMan.find(AuthInfo.class, member2.getAccountId());
+
+        assertNotNull(retrievedAuthInfo1);
+        assertNotNull(retrievedAuthInfo2);
+        assertEquals(member1.getAccountId(), retrievedAuthInfo1.getAccountId());
+        assertEquals(member2.getAccountId(), retrievedAuthInfo2.getAccountId());
+    }
 }

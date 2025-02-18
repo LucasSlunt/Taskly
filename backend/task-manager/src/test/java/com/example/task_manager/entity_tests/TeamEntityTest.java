@@ -129,4 +129,91 @@ public class TeamEntityTest {
         IsAssigned deletedAssignment = entMan.find(IsAssigned.class, isAssigned.getId());
         assertNull(deletedAssignment);
     }
+
+    /*
+     * Changing teamLead updates reference correctly
+     */
+    @Test
+    void testUpdateTeamLead() {
+        TeamMember oldLead = new TeamMember("Old Lead", "oldlead@example.com");
+        TeamMember newLead = new TeamMember("New Lead", "newlead@example.com");
+        entMan.persist(oldLead);
+        entMan.persist(newLead);
+        entMan.flush();
+
+        Team team = new Team("Leadership Change Team", oldLead);
+        entMan.persist(team);
+        entMan.flush();
+
+        team.setTeamLead(newLead);
+        entMan.persist(team);
+        entMan.flush();
+
+        Team updatedTeam = entMan.find(Team.class, team.getTeamId());
+
+        assertNotNull(updatedTeam);
+        assertEquals(newLead.getAccountId(), updatedTeam.getTeamLead().getAccountId());
+    }
+
+    /*
+     * Test a team with a teamLead set to null
+     */
+    @Test
+    void testTeamWithoutTeamLead() {
+        Team team = new Team();
+        team.setTeamName("Team Without Lead");
+        entMan.persist(team);
+        entMan.flush();
+
+        Team savedTeam = entMan.find(Team.class, team.getTeamId());
+
+        assertNotNull(savedTeam);
+        assertNull(savedTeam.getTeamLead());
+    }
+
+    /*
+     * Deleting a team does NOT delete TeamMembers assigned to the team
+     */
+    @Test
+    void testDeleteTeamDoesNotDeleteMembers() {
+        TeamMember teamMember1 = new TeamMember("Member1", "member1@example.com");
+        TeamMember teamMember2 = new TeamMember("Member2", "member2@example.com");
+        entMan.persist(teamMember1);
+        entMan.persist(teamMember2);
+        entMan.flush();
+
+        Team team = new Team("Team with Members", null);
+        entMan.persist(team);
+        entMan.flush();
+
+        IsMemberOf isMember1 = new IsMemberOf(teamMember1, team);
+        IsMemberOf isMember2 = new IsMemberOf(teamMember2, team);
+        entMan.persist(isMember1);
+        entMan.persist(isMember2);
+        entMan.flush();
+
+        entMan.remove(team);
+
+        assertNotNull(entMan.find(TeamMember.class, teamMember1.getAccountId()));
+        assertNotNull(entMan.find(TeamMember.class, teamMember2.getAccountId()));
+    }
+
+    /*
+     * Ensure team name updates properly
+     */
+    @Test
+    void testUpdateTeamName() {
+        Team team = new Team("Old Team Name", null);
+        entMan.persist(team);
+        entMan.flush();
+
+        team.setTeamName("New Team Name");
+        entMan.persist(team);
+        entMan.flush();
+
+        Team updatedTeam = entMan.find(Team.class, team.getTeamId());
+
+        assertNotNull(updatedTeam);
+        assertEquals("New Team Name", updatedTeam.getTeamName());
+    }
 }
