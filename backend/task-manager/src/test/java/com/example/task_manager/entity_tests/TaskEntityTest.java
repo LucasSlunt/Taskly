@@ -110,4 +110,109 @@ public class TaskEntityTest {
         IsAssigned deletedIsAssigned = entMan.find(IsAssigned.class, isAssigned.getId());
         assertNull(deletedIsAssigned);
     }
+    /*
+     * Testing that changing the task status works properly
+     */
+    @Test
+    void testUpdateTaskStatus() {
+        Team team = new Team("Status Update Team", null);
+        entMan.persist(team);
+        entMan.flush();
+
+        Task task = new Task("Task to Update", "Description", team, false, "Open", LocalDate.now());
+        entMan.persist(task);
+        entMan.flush();
+
+        task.setStatus("Completed");
+        entMan.persist(task);
+        entMan.flush();
+
+        Task updatedTask = entMan.find(Task.class, task.getTaskId());
+
+        assertNotNull(updatedTask);
+        assertEquals("Completed", updatedTask.getStatus());
+    }
+
+    /*
+     * IsLocked should be able to be changed without affecting anything else
+     */
+    @Test
+    void testToggleTaskLock() {
+        Team team = new Team("Lock Test Team", null);
+        entMan.persist(team);
+        entMan.flush();
+
+        Task task = new Task("Task Lock Toggle", "Description", team, false, "Open", LocalDate.now());
+        entMan.persist(task);
+        entMan.flush();
+
+        task.setIsLocked(true);
+        entMan.persist(task);
+        entMan.flush();
+
+        Task lockedTask = entMan.find(Task.class, task.getTaskId());
+
+        assertNotNull(lockedTask);
+        assertTrue(lockedTask.isLocked());
+
+        lockedTask.setIsLocked(false);
+        entMan.persist(lockedTask);
+        entMan.flush();
+
+        Task unlockedTask = entMan.find(Task.class, task.getTaskId());
+
+        assertNotNull(unlockedTask);
+        assertFalse(unlockedTask.isLocked());
+    }
+
+    /*
+     * Changing task title works properly, and nothing else changes
+     */
+    @Test
+    void testUpdateTaskTitle() {
+        Team team = new Team("Title Update Team", null);
+        entMan.persist(team);
+        entMan.flush();
+
+        Task task = new Task("Old Title", "Description", team, false, "Open", LocalDate.now());
+        entMan.persist(task);
+        entMan.flush();
+
+        task.setTitle("New Task Title");
+        entMan.persist(task);
+        entMan.flush();
+
+        Task updatedTask = entMan.find(Task.class, task.getTaskId());
+
+        assertNotNull(updatedTask);
+        assertEquals("New Task Title", updatedTask.getTitle());
+    }
+
+    /*
+     * Deleting a Task does not delete a Team or TeamMember
+     */
+    @Test
+    void testDeleteTaskDoesNotDeleteTeamOrTeamMember() {
+        Team team = new Team("Independent Team", null);
+        entMan.persist(team);
+        entMan.flush();
+
+        TeamMember teamMember = new TeamMember("Task Member", "member@example.com");
+        entMan.persist(teamMember);
+        entMan.flush();
+
+        Task task = new Task("Standalone Task", "Task that should remain", team, false, "Open", LocalDate.now());
+        entMan.persist(task);
+        entMan.flush();
+
+        IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
+        entMan.persist(isAssigned);
+        entMan.flush();
+
+        entMan.remove(task);
+
+        assertNotNull(entMan.find(Team.class, team.getTeamId()));
+        assertNotNull(entMan.find(TeamMember.class, teamMember.getAccountId()));
+    }
+
 }

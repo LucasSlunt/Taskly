@@ -39,6 +39,14 @@ public class IsAssignedEntityTest {
     @Autowired
     private IsAssignedRepository isAssignedRepository;
 
+	/*
+	 * Testing IsAssigned constructor
+	 */
+	@Test
+	void testIsAssignedDefaultConstructor() {
+		IsAssigned isAssigned = new IsAssigned();
+		assertNotNull(isAssigned);
+	}
 
 	/**
 	 * Tests if an IsAssigned entity can be persisted and retrieved correctly.
@@ -84,16 +92,16 @@ public class IsAssignedEntityTest {
 		team.setTeamName("Test Team Name");
 		teamRepository.save(team);
 
-		Task task = new Task("Task Title" + System.nanoTime(), null, team, false, "Open", LocalDate.now());
+		Task task = new Task("Task Title" + System.nanoTime(), "Task Description", team, false, "Open", LocalDate.now());
+		
+		team.getTasks().add(task);
+		task.setTeam(team);
 		taskRepository.save(task);
 
 		TeamMember teamMember = new TeamMember("TeamMember Name" + System.nanoTime(), System.nanoTime() + "teamMember@example.com");
 		teamMemberRepository.save(teamMember);
 
-		IsAssigned isAssigned = new IsAssigned();
-		isAssigned.setTask(task);
-		isAssigned.setTeam(team);
-		isAssigned.setTeamMember(teamMember);
+		IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
 
 		team.getAssignedTasks().add(isAssigned);
 		task.getAssignedMembers().add(isAssigned);
@@ -107,5 +115,94 @@ public class IsAssignedEntityTest {
 
 		assertNull(entMan.find(Task.class, task.getTaskId()));
 		assertNull(entMan.find(IsAssigned.class, isAssigned.getId()));
+	}
+
+	/*
+	 * tests that if TeamMember is deleted so are their IsAssigned associations
+	 */
+	@Test
+	void testCascadeDeleteWithTeamMember() {
+		Team team = new Team();
+		team.setTeamName("Team with Member");
+		entMan.persist(team);
+		entMan.flush();
+
+		Task task = new Task("Task for Member", "Description", team, false, "Open", LocalDate.now());
+		entMan.persist(task);
+		entMan.flush();
+
+		TeamMember teamMember = new TeamMember("User To Remove", "remove@example.com");
+		entMan.persist(teamMember);
+		entMan.flush();
+
+		IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
+
+		teamMember.getAssignedTasks().add(isAssigned);
+		entMan.persist(isAssigned);
+		entMan.flush();
+
+		entMan.remove(teamMember);
+		entMan.flush();
+
+		assertNull(entMan.find(IsAssigned.class, isAssigned.getId()));
+	}
+
+	/*
+	 * Testing that when Team is deleted, all associated IsAssigned associations are also deleted
+	 */
+	@Test
+	void testCascadeDeleteWithTeam() {
+		Team team = new Team();
+		team.setTeamName("Delete Team");
+		entMan.persist(team);
+		entMan.flush();
+
+		Task task = new Task("Task in Deleted Team", "Description", team, false, "Open", LocalDate.now());
+		entMan.persist(task);
+		entMan.flush();
+
+		TeamMember teamMember = new TeamMember("Member of Deleted Team", "deletedmember@example.com");
+		entMan.persist(teamMember);
+		entMan.flush();
+
+		IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
+
+		team.getAssignedTasks().add(isAssigned);
+		entMan.persist(isAssigned);
+		entMan.flush();
+
+		entMan.remove(team);
+
+		assertNull(entMan.find(IsAssigned.class, isAssigned.getId()));
+	}
+
+	/*
+	 * When IsAssigned is deleted, no other entities are affected
+	 */
+	@Test
+	void testRemoveIsAssignedWithoutAffectingEntities() {
+		Team team = new Team();
+		team.setTeamName("Independent Team");
+		entMan.persist(team);
+		entMan.flush();
+
+		Task task = new Task("Standalone Task", "Task that should remain", team, false, "Open", LocalDate.now());
+		entMan.persist(task);
+		entMan.flush();
+
+		TeamMember teamMember = new TeamMember("Independent Member", "independent@example.com");
+		entMan.persist(teamMember);
+		entMan.flush();
+
+		IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
+		entMan.persist(isAssigned);
+		entMan.flush();
+
+		entMan.remove(isAssigned);
+		entMan.flush();
+
+		assertNotNull(entMan.find(Task.class, task.getTaskId()));
+		assertNotNull(entMan.find(Team.class, team.getTeamId()));
+		assertNotNull(entMan.find(TeamMember.class, teamMember.getAccountId()));
 	}
 }
