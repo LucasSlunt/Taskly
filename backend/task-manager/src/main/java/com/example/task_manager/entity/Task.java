@@ -3,6 +3,8 @@ package com.example.task_manager.entity;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -71,7 +73,7 @@ public class Task {
         this.description = description;
     }
 
-    public boolean isIsLocked() {
+    public boolean isLocked() {
         return isLocked;
     }
 

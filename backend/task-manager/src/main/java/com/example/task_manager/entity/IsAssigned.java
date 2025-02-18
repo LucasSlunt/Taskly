@@ -9,33 +9,32 @@ public class IsAssigned {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "taskId", nullable = false)
+    @JoinColumn(name = "taskId", nullable = true)
     private Task task;
 
     @ManyToOne
-    @JoinColumn(name = "accountId", nullable = true)
+    @JoinColumn(name = "accountId")
     private TeamMember teamMember;
 
     @ManyToOne
-    @JoinColumn(name = "teamId", nullable = true)
+    @JoinColumn(name = "teamId")
     private Team team;
 
     public IsAssigned() {}
-    
+
     public IsAssigned(Task task, TeamMember teamMember, Team team) {
         this.task = task;
         this.teamMember = teamMember;
         this.team = team;
     }
 
-
-    //getters and setters
-    public int getTaskId() {
+    // Getters & Setters
+    public int getId() {
         return id;
     }
 
-    public void setTaskId(int taskId) {
-        this.id = taskId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Task getTask() {
@@ -61,6 +60,4 @@ public class IsAssigned {
     public void setTeam(Team team) {
         this.team = team;
     }
-
 }
-
