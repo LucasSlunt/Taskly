@@ -15,13 +15,16 @@ public class Team {
     private String teamName;
 
     @ManyToOne
-    @JoinColumn(name = "teamLeadId", referencedColumnName = "accountId")
+    @JoinColumn(name = "teamLeadId", referencedColumnName = "accountId", nullable = true)
     private TeamMember teamLead;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true) //deleting a team removes all IsMemberOf records
     private Set<IsMemberOf> members = new HashSet<>();
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true) //When Team is deleted, IsAssigned is also deleted
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true) //deleting a team removes all its tasks
+    private Set<Task> tasks = new HashSet<>();
+
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true) //deleting a team removes all IsAssigned records
     private Set<IsAssigned> assignedTasks = new HashSet<>();
 
     public Team() {}
@@ -71,5 +74,13 @@ public class Team {
 
     public void setAssignedTasks(Set<IsAssigned> assignedTasks) {
         this.assignedTasks = assignedTasks;
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void getTasks(Set<Task> tasks) {
+        this.tasks = tasks;
     }
 }
