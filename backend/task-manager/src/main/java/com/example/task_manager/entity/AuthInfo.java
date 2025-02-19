@@ -34,6 +34,9 @@ public class AuthInfo {
     }
 
     public void setHashedPassword(String hashedPassword) {
+        if (hashedPassword == null || hashedPassword.trim().isEmpty()) {
+            throw new IllegalArgumentException("Hashed password cannot be null or empty.");
+        }
         this.hashedPassword = hashedPassword;
     }
 
@@ -42,6 +45,9 @@ public class AuthInfo {
     }
 
     public void setTeamMember(TeamMember teamMember) {
+        if (teamMember == null) {
+            throw new IllegalArgumentException("TeamMember cannot be null.");
+        }
         this.teamMember = teamMember;
     }
 
@@ -50,6 +56,9 @@ public class AuthInfo {
     }
 
     public void setSalt(String salt) {
+        if (salt == null || salt.trim().isEmpty()) {
+            throw new IllegalArgumentException("Salt cannot be null or empty.");
+        }
         this.salt = salt;
     }
 
@@ -58,6 +67,9 @@ public class AuthInfo {
     }
 
     public void setAccountId(int accountId) {
+        if (accountId < 0) {
+            throw new IllegalArgumentException("Account ID cannot be negative.");
+        }
         this.accountId = accountId;
     }
 

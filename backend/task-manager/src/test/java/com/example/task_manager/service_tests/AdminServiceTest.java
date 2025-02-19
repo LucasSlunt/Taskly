@@ -13,17 +13,15 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import jakarta.transaction.Transactional;
 
+import com.example.task_manager.DTO.AdminDTO;
+import com.example.task_manager.DTO.TaskDTO;
+import com.example.task_manager.DTO.TeamDTO;
+import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
-import com.example.task_manager.repository.AdminRepository;
-import com.example.task_manager.repository.AuthInfoRepository;
-import com.example.task_manager.repository.TaskRepository;
-import com.example.task_manager.repository.TeamMemberRepository;
-import com.example.task_manager.repository.TeamRepository;
-import com.example.task_manager.repository.IsAssignedRepository;
-import com.example.task_manager.repository.IsMemberOfRepository;
+import com.example.task_manager.repository.*;
 import com.example.task_manager.service.AdminService;
 import com.example.task_manager.service.TeamService;
 
@@ -60,10 +58,10 @@ public class AdminServiceTest {
 	@Autowired
 	private AuthInfoRepository authInfoRepository;
 
-	private Admin admin;
-	private TeamMember teamMember;
-	private Task unlockedTask;
-	private Task lockedTask;
+	private AdminDTO admin;
+	private TeamMemberDTO teamMember;
+	private TaskDTO unlockedTask;
+	private TaskDTO lockedTask;
 	private Team team;
 
 	/*
@@ -94,32 +92,32 @@ public class AdminServiceTest {
 	// Try to create admin account
 	@Test
 	void testCreateAdmin() {
-		Admin admin = adminService.createAdmin("Admin Name Testing", "admin" + System.nanoTime() + "@example.com");
+		AdminDTO adminDTO = adminService.createAdmin("Admin Name Testing", "admin" + System.nanoTime() + "@example.com");
 
-		assertNotNull(admin);
-		assertEquals("Admin Name Testing", admin.getUserName());
-	}
+		assertNotNull(adminDTO);
+		assertEquals("Admin Name Testing", adminDTO.getUserName());
+	}	
 
 	// try to create admin with the same name
 	@Test
 	void testCreateAdminExistingName() {
-		Admin admin = adminService.createAdmin("John Doe", "admin" + System.nanoTime() + "@example.com");
+		AdminDTO adminDTO = adminService.createAdmin("John Doe", "admin" + System.nanoTime() + "@example.com");
 
 		Exception exception = assertThrows(RuntimeException.class,
 				() -> adminService.createAdmin("John Doe", "admin" + System.nanoTime() + "@example.com"));
 
-		assertNotNull(admin);
+		assertNotNull(adminDTO);
 	}
 	
 	// try to create admin with the same email
 	@Test
 	void testCreateAdminExistingEmail() {
-		Admin admin = adminService.createAdmin("John Doe", "admin_email@example.com");
+		AdminDTO adminDTO = adminService.createAdmin("John Doe", "admin_email@example.com");
 
 		Exception exception = assertThrows(RuntimeException.class,
 				() -> adminService.createAdmin("Alice Wonder", "admin_email@example.com"));
 
-		assertNotNull(admin);
+		assertNotNull(adminDTO);
 	}
 	
 	@Test
@@ -131,22 +129,30 @@ public class AdminServiceTest {
 
 	@Test
 	void testModifyAdminName() {
-		Admin updatedAdmin = adminService.modifyAdminName(admin.getAccountId(), "New Name");
-		assertEquals("New Name", updatedAdmin.getUserName());
+		AdminDTO updatedAdminDTO = adminService.modifyAdminName(admin.getAccountId(), "New Name");
+		assertEquals("New Name", updatedAdminDTO.getUserName());
 	}
 
 	@Test
 	void testModifyAdminEmail() {
-		Admin updatedAdmin = adminService.modifyAdminEmail(admin.getAccountId(), "newEmail" + System.nanoTime() + "@example.com");
+		AdminDTO updatedAdmin = adminService.modifyAdminEmail(admin.getAccountId(), "newEmail" + System.nanoTime() + "@example.com");
 		assertTrue(updatedAdmin.getUserEmail().startsWith("newEmail"));
 	}
 
 	@Test
-	void testCreateTeamMember() {
-		TeamMember teamMember = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com");
+	void testModifyNonExistentAdmin() {
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> adminService.modifyAdminName(9999, "New Name"));
 
-		assertNotNull(teamMember);
-		assertEquals("Team Member", teamMember.getUserName());
+		assertNotNull(exception);
+	}
+
+	@Test
+	void testCreateTeamMember() {
+		TeamMemberDTO teamMemberDTO = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com");
+
+		assertNotNull(teamMemberDTO);
+		assertEquals("Team Member", teamMemberDTO.getUserName());
 	}
 
 	@Test
@@ -158,24 +164,32 @@ public class AdminServiceTest {
 
 	@Test
 	void testModifyTeamMemberName() {
-		TeamMember updatedTeamMember = adminService.modifyTeamMemberName(teamMember.getAccountId(), "New Name");
+		TeamMemberDTO updatedTeamMember = adminService.modifyTeamMemberName(teamMember.getAccountId(), "New Name");
 		assertEquals("New Name", updatedTeamMember.getUserName());
 	}
 
 	@Test
 	void testModifyTeamMemberEmail() {
-		TeamMember newTeamMember = adminService.createTeamMember("Team Member Email Test", "teamMemberEmailTest@example.com");
+		TeamMemberDTO newTeamMember = adminService.createTeamMember("Team Member Email Test", "teamMemberEmailTest@example.com");
 
 		String newEmail = "newEmail@example.com";
-		TeamMember updatedTeamMember = adminService.modifyTeamMemberEmail(newTeamMember.getAccountId(), newEmail);
+		TeamMemberDTO updatedTeamMember = adminService.modifyTeamMemberEmail(newTeamMember.getAccountId(), newEmail);
 
 		assertEquals(newEmail, updatedTeamMember.getUserEmail());
+	}
+
+	@Test
+	void testModifyTeamMemberNonexistent() {
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> adminService.modifyTeamMemberName(9999, "New Name"));
+
+		assertNotNull(exception);
 	}
 	
 	@Test
 	void testPromoteToAdmin() {
-		TeamMember teamMember = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com");
-		Admin updatedAdmin = adminService.promoteToAdmin(teamMember.getAccountId());
+		TeamMemberDTO teamMember = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com");
+		AdminDTO updatedAdmin = adminService.promoteToAdmin(teamMember.getAccountId());
 
 		assertTrue(adminRepository.existsById(updatedAdmin.getAccountId()));
 		assertFalse(teamMemberRepository.findById(teamMember.getAccountId()).isPresent());
@@ -183,10 +197,10 @@ public class AdminServiceTest {
 
 	@Test
 	void testAssignToTeam() {
-		TeamMember teamMember = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com");
-		TeamMember teamLead = adminService.createTeamMember("Team Lead", "lead" + System.nanoTime() + "@example.com");
+		TeamMemberDTO teamMember = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com");
+		TeamMemberDTO teamLead = adminService.createTeamMember("Team Lead", "lead" + System.nanoTime() + "@example.com");
 
-		Team team = teamService.createTeam("Team Name " + System.nanoTime(), teamLead.getAccountId());
+		TeamDTO team = teamService.createTeam("Team Name " + System.nanoTime(), teamLead.getAccountId());
 
 		adminService.assignToTeam(teamMember.getAccountId(), team.getTeamId());
 		
@@ -198,16 +212,34 @@ public class AdminServiceTest {
 	}
 
 	@Test
+	void testAssignToNonexistentTeam() {
+		TeamMemberDTO teamMember = adminService.createTeamMember("Team Member", "test@example.com");
+
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> adminService.assignToTeam(teamMember.getAccountId(), 9999));
+
+		assertNotNull(exception);
+	}
+
+	@Test
 	void testLockTask() {
 		adminService.lockTask(unlockedTask.getTaskId());
 		Task updatedTask = taskRepository.findById(unlockedTask.getTaskId()).orElseThrow();
-		assertTrue(updatedTask.isIsLocked());
+		assertTrue(updatedTask.isLocked());
 	}
 
 	@Test
 	void testUnlockTask() {
 		adminService.unlockTask(lockedTask.getTaskId());
 		Task updatedTask = taskRepository.findById(lockedTask.getTaskId()).orElseThrow();
-		assertFalse(updatedTask.isIsLocked());
+		assertFalse(updatedTask.isLocked());
+	}
+
+	@Test
+	void testLockNonexistentTask() {
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> adminService.lockTask(9999));
+
+		assertNotNull(exception);
 	}
 }

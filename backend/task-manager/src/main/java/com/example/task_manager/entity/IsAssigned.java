@@ -34,6 +34,9 @@ public class IsAssigned {
     }
 
     public void setId(int id) {
+        if (id < 0) {
+            throw new IllegalArgumentException("ID cannot be less than 0.");
+        }
         this.id = id;
     }
 
@@ -42,6 +45,9 @@ public class IsAssigned {
     }
 
     public void setTask(Task task) {
+        if (task == null) {
+            throw new IllegalArgumentException("Task cannot be null.");
+        }
         this.task = task;
     }
 
@@ -50,6 +56,9 @@ public class IsAssigned {
     }
 
     public void setTeamMember(TeamMember teamMember) {
+        if (teamMember == null) {
+            throw new IllegalArgumentException("TeamMember cannot be null.");
+        }
         this.teamMember = teamMember;
     }
 
@@ -58,6 +67,9 @@ public class IsAssigned {
     }
 
     public void setTeam(Team team) {
+        if (team == null) {
+            throw new IllegalArgumentException("Team cannot be null.");
+        }
         this.team = team;
     }
 }

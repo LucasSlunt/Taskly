@@ -9,8 +9,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
-import com.example.task_manager.entity.Team;
-import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.DTO.TeamDTO;
+import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
@@ -44,65 +44,108 @@ public class IsMemberOfServiceTest {
     @Autowired
     private TeamMemberRepository teamMemberRepository;
 
-    private Team team;
-    private TeamMember teamLead;
-    private TeamMember teamMember;
+    private TeamDTO team;
+    private TeamMemberDTO teamLead;
+    private TeamMemberDTO teamMember;
 
     @BeforeEach
     void setUp() {
+        // Clear DB to avoid conflicts
         taskRepository.deleteAllInBatch();
         teamRepository.deleteAllInBatch();
         teamMemberRepository.deleteAllInBatch();
+
+        teamLead = adminService.createTeamMember("Team Lead", "team_lead" + System.nanoTime() + "@example.com");
+        team = teamService.createTeam("Development Team " + System.nanoTime(), teamLead.getAccountId());
+        teamMember = adminService.createTeamMember("Team Member", "team_member" + System.nanoTime() + "@example.com");
     }
+
 
     @Test
     void testAddMemberToTeam() {
-        teamLead = adminService.createTeamMember("Team Lead", "team_lead@example.com");
-        team = teamService.createTeam("Team Title", teamLead.getAccountId());
-        teamMember = adminService.createTeamMember("Team Member", "team_member@example.com");
-
         isMemberOfService.addMemberToTeam(teamMember.getAccountId(), team.getTeamId());
 
-        teamRepository.flush();
+        assertTrue(isMemberOfService.isMemberOfTeam(teamMember.getAccountId(), team.getTeamId()));
+    }
 
-        team = teamRepository.findById(team.getTeamId()).orElseThrow();
+    @Test
+    void testAddMemberToNonExistentTeam() {
+        Exception exception = assertThrows(RuntimeException.class, 
+            () -> isMemberOfService.addMemberToTeam(teamMember.getAccountId(), 9999));
 
-        assertTrue(team.getMembers().stream()
-            .anyMatch(isMemberOf -> isMemberOf.getTeamMember().getAccountId() == teamMember.getAccountId()));
+        assertTrue(exception.getMessage().contains("Team not found"));
+    }
+
+    @Test
+    void testAddNonExistentMemberToTeam() {
+        Exception exception = assertThrows(RuntimeException.class, 
+            () -> isMemberOfService.addMemberToTeam(9999, team.getTeamId()));
+
+        assertTrue(exception.getMessage().contains("Team Member not found"));
+    }
+
+    @Test
+    void testAddMemberToSameTeamTwice() {
+        isMemberOfService.addMemberToTeam(teamMember.getAccountId(), team.getTeamId());
+
+        Exception exception = assertThrows(RuntimeException.class, 
+            () -> isMemberOfService.addMemberToTeam(teamMember.getAccountId(), team.getTeamId()));
+
+        assertTrue(exception.getMessage().contains("Team Member is already in this team"));
     }
 
     @Test
     void testRemoveMemberFromTeam() {
-        teamLead = adminService.createTeamMember("Team Lead", "team_lead@example.com");
-        team = teamService.createTeam("Team Title", teamLead.getAccountId());
-        teamMember = adminService.createTeamMember("Team Member", "team_member@example.com");
-
         isMemberOfService.addMemberToTeam(teamMember.getAccountId(), team.getTeamId());
         isMemberOfService.removeMemberFromTeam(teamMember.getAccountId(), team.getTeamId());
 
-        Team updatedTeam = teamRepository.findById(team.getTeamId()).orElseThrow();
-        updatedTeam.getMembers().size();
+        assertFalse(isMemberOfService.isMemberOfTeam(teamMember.getAccountId(), team.getTeamId()));
+    }
 
-        assertFalse(updatedTeam.getMembers().stream()
-            .anyMatch(member -> member.getId() == teamMember.getAccountId()));
+    @Test
+    void testRemoveNonExistentMemberFromTeam() {
+        Exception exception = assertThrows(RuntimeException.class, 
+            () -> isMemberOfService.removeMemberFromTeam(9999, team.getTeamId()));
+
+        assertTrue(exception.getMessage().contains("Team Member not found"));
+    }
+
+    @Test
+    void testRemoveMemberFromNonExistentTeam() {
+        Exception exception = assertThrows(RuntimeException.class, 
+            () -> isMemberOfService.removeMemberFromTeam(teamMember.getAccountId(), 9999));
+
+        assertTrue(exception.getMessage().contains("Team not found"));
+    }
+
+    @Test
+    void testRemoveMemberNotInTeam() {
+        Exception exception = assertThrows(RuntimeException.class, 
+            () -> isMemberOfService.removeMemberFromTeam(teamMember.getAccountId(), team.getTeamId()));
+
+        assertTrue(exception.getMessage().contains("Membership not found"));
     }
 
     @Test
     void testIsMemberOfTeam() {
-        teamLead = adminService.createTeamMember("Team Lead", "team_lead@example.com");
-        team = teamService.createTeam("Team Title", teamLead.getAccountId());
-        teamMember = adminService.createTeamMember("Team Member", "team_member@example.com");
-
         isMemberOfService.addMemberToTeam(teamMember.getAccountId(), team.getTeamId());
 
-        boolean isMember = isMemberOfService.isMemberOfTeam(teamMember.getAccountId(), team.getTeamId());
-        assertTrue(isMember);
+        assertTrue(isMemberOfService.isMemberOfTeam(teamMember.getAccountId(), team.getTeamId()));
 
         isMemberOfService.removeMemberFromTeam(teamMember.getAccountId(), team.getTeamId());
 
-        teamRepository.flush();
+        assertFalse(isMemberOfService.isMemberOfTeam(teamMember.getAccountId(), team.getTeamId()));
+    }
 
-        boolean isStillMember = isMemberOfService.isMemberOfTeam(teamMember.getAccountId(), team.getTeamId());
-        assertFalse(isStillMember);
+    @Test
+    void testIsMemberOfNonExistentTeam() {
+        boolean isMember = isMemberOfService.isMemberOfTeam(teamMember.getAccountId(), 9999);
+        assertFalse(isMember);
+    }
+
+    @Test
+    void testIsMemberOfNonExistentMember() {
+        boolean isMember = isMemberOfService.isMemberOfTeam(9999, team.getTeamId());
+        assertFalse(isMember);
     }
 }

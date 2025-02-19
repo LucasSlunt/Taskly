@@ -41,6 +41,9 @@ public class Team {
     }
 
     public void setTeamId(int teamId) {
+        if (teamId < 0) {
+            throw new IllegalArgumentException("Team ID cannot be less than 0.");
+        }
         this.teamId = teamId;
     }
 
@@ -49,6 +52,9 @@ public class Team {
     }
 
     public void setTeamName(String teamName) {
+        if (teamName == null || teamName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Team name cannot be null or empty.");
+        }
         this.teamName = teamName;
     }
 
@@ -56,6 +62,7 @@ public class Team {
         return teamLead;
     }
 
+    //Team lead CAN be empty
     public void setTeamLead(TeamMember teamLead) {
         this.teamLead = teamLead;
     }
@@ -64,23 +71,29 @@ public class Team {
         return members;
     }
 
+    //members can be empty but not null
+    //if members is null, an empty set is initialized
     public void setMembers(Set<IsMemberOf> members) {
-        this.members = members;
-    }
+        this.members = (members != null) ? members : new HashSet<>();
+    }    
 
     public Set<IsAssigned> getAssignedTasks() {
         return assignedTasks;
     }
 
+    //assignedTasks can be empty but not null
+    //if assignedTasks is null, an empty set is initialized
     public void setAssignedTasks(Set<IsAssigned> assignedTasks) {
-        this.assignedTasks = assignedTasks;
+        this.assignedTasks = (assignedTasks != null) ? assignedTasks : new HashSet<>();
     }
 
     public Set<Task> getTasks() {
         return tasks;
     }
 
-    public void getTasks(Set<Task> tasks) {
-        this.tasks = tasks;
+    //tasks can be empty but not null
+    //if tasks is null, an empty set is initialized
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = (tasks != null) ? tasks : new HashSet<>();
     }
 }

@@ -1,9 +1,8 @@
 package com.example.task_manager.service;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
+import com.example.task_manager.DTO.IsMemberOfDTO;
 import com.example.task_manager.entity.IsMemberOf;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
@@ -11,7 +10,10 @@ import com.example.task_manager.repository.IsMemberOfRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service // Marks this class as a Spring service, making it eligible for dependency injection
+@Transactional
 public class IsMemberOfService {
 	
 	private final IsMemberOfRepository isMemberOfRepository;
@@ -33,32 +35,40 @@ public class IsMemberOfService {
 	 *
 	 * @param teamMemberId The ID of the team member to be added.
 	 * @param teamId The ID of the team to which the member should be added.
+	 * @return 
 	 */
-	public void addMemberToTeam(int teamMemberId, int teamId) {
+	public IsMemberOfDTO addMemberToTeam(int teamMemberId, int teamId) {
+		System.out.println("BELLO it is running yay");
+
 		Team team = teamRepository.findById(teamId)
 			.orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
 	
 		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
 			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+
+		System.out.println("MINIONS");
 	
 		// Check if the member is already in the team
-		if (team.getMembers().stream()
-			.anyMatch(isMemberOf -> isMemberOf.getTeamMember().getAccountId() == teamMemberId)) {
+		boolean alreadyMember = isMemberOfRepository.existsByTeamMemberAccountIdAndTeamTeamId(teamMemberId, teamId);
+		if (alreadyMember) {
 			throw new RuntimeException("Team Member is already in this team. No action needed.");
 		}
 
-		// Create and save the membership record
-		IsMemberOf isMemberOf = new IsMemberOf();
-		isMemberOf.setTeam(team);
-		isMemberOf.setTeamMember(teamMember);
-		isMemberOfRepository.save(isMemberOf);
+		System.out.println("TONIGHT!!! WE! ARE GOING! TO STEAL! THE MOON!!");
 		
-		// Maintain bidirectional relationship
-		team.getMembers().add(isMemberOf);
-		teamRepository.save(team);
 
-		// Ensure changes are persisted immediately
-		teamRepository.flush();
+		// Create membership
+		IsMemberOf isMemberOf = new IsMemberOf(teamMember, team);
+		isMemberOf = isMemberOfRepository.save(isMemberOf);
+		isMemberOfRepository.flush();
+
+		System.out.println("DOCTOR NEFARIO");
+
+		team = teamRepository.findById(teamId).orElseThrow(() -> new RuntimeException("RAHHHH can't find it"));
+		System.out.println("bruh");
+
+		// Return DTO
+		return convertToDTO(isMemberOf);
 	}
 
 	/**
@@ -67,8 +77,9 @@ public class IsMemberOfService {
 	 *
 	 * @param teamMemberId The ID of the team member to be removed.
 	 * @param teamId The ID of the team from which the member should be removed.
+	 * @return 
 	 */
-	public void removeMemberFromTeam(int teamMemberId, int teamId) {
+	public IsMemberOfDTO removeMemberFromTeam(int teamMemberId, int teamId) {
 		Team team = teamRepository.findById(teamId)
 			.orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
 
@@ -76,17 +87,13 @@ public class IsMemberOfService {
 			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
 		// Find the membership record
-		Optional<IsMemberOf> isMemberOf = team.getMembers().stream()
-			.filter(member -> member.getTeamMember().getAccountId() == teamMemberId)
-			.findFirst();
+		IsMemberOf isMemberOf = isMemberOfRepository.findByTeamMemberAndTeam(teamMember, team)
+			.orElseThrow(() -> new RuntimeException("Membership not found."));
 
-		if (isMemberOf.isPresent()) {
-			// Remove from team and delete the membership record
-			team.getMembers().remove(isMemberOf.get());
-			isMemberOfRepository.delete(isMemberOf.get());
-		} else {
-			System.out.println("Team Member is not in this team. No action needed.");
-		}
+		isMemberOfRepository.delete(isMemberOf);
+
+		// Return removed membership as DTO
+		return convertToDTO(isMemberOf);
 	}
 
 	/**
@@ -97,10 +104,17 @@ public class IsMemberOfService {
 	 * @return true if the team member is part of the team, false otherwise.
 	 */
 	public boolean isMemberOfTeam(int teamMemberId, int teamId) {
-		Team team = teamRepository.findById(teamId)
-			.orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
+		return isMemberOfRepository.existsByTeamMemberAccountIdAndTeamTeamId(teamMemberId, teamId);
+	}
 
-		return team.getMembers().stream()
-			.anyMatch(isMemberOf -> isMemberOf.getTeamMember().getAccountId() == teamMemberId);
+	/**
+	 * Converts IsMemberOf entity to IsMemberOfDTO.
+	 */
+	private IsMemberOfDTO convertToDTO(IsMemberOf isMemberOf) {
+		return new IsMemberOfDTO(
+			isMemberOf.getId(),
+			isMemberOf.getTeam().getTeamId(),
+			isMemberOf.getTeamMember().getAccountId()
+		);
 	}
 }

@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import jakarta.transaction.Transactional;
 
+import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
@@ -58,30 +59,65 @@ public class IsAssignedServiceTest {
 
 	@Test
 	void testAssignToTask() {
-		isAssignedService.assignToTask(teamMember.getAccountId(), task.getTaskId());
+		IsAssignedDTO isAssignedDTO = isAssignedService.assignToTask(teamMember.getAccountId(), task.getTaskId());
 
-		teamMemberRepository.flush();
-		teamMember = teamMemberRepository.findById(teamMember.getAccountId()).orElseThrow();
-
-		System.out.println("Assigned Tasks (AFTER assignment): " + teamMember.getAssignedTasks());
-
-		assertTrue(teamMember.getAssignedTasks()
-			.stream()
-			.anyMatch(isAssigned -> isAssigned.getTask().getTaskId() == task.getTaskId())); 
+		assertNotNull(isAssignedDTO);
+		assertEquals(teamMember.getAccountId(), isAssignedDTO.getTeamMemberId());
+		assertEquals(task.getTaskId(), isAssignedDTO.getTaskId());
 	}
 
 
 	@Test
 	void testUnassignFromTask() {
 		isAssignedService.assignToTask(teamMember.getAccountId(), task.getTaskId());
-		isAssignedService.unassignFromTask(teamMember.getAccountId(), task.getTaskId());
+        isAssignedService.unassignFromTask(teamMember.getAccountId(), task.getTaskId());
 
-		TeamMember updatedTeamMember = teamMemberRepository.findById(teamMember.getAccountId()).orElseThrow();
-		updatedTeamMember.getAssignedTasks().size();
+        boolean isAssigned = isAssignedService.isAssignedToTask(teamMember.getAccountId(), task.getTaskId());
+        assertFalse(isAssigned);
+	}
 
-		assertFalse(updatedTeamMember.getAssignedTasks()
-			.stream()
-			.anyMatch(t -> t.getId() == task.getTaskId()));
+	@Test
+	void testAssignToNonExistentTask() {
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> isAssignedService.assignToTask(teamMember.getAccountId(), 9999));
+
+		assertTrue(exception.getMessage().contains("Task not found"));
+	}
+
+	@Test
+	void testAssignNonExistentTeamMemberToTask() {
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> isAssignedService.assignToTask(9999, task.getTaskId()));
+
+		assertTrue(exception.getMessage().contains("Team Member not found"));
+	}
+
+	@Test
+	void testAssignTeamMemberToSameTaskTwice() {
+		isAssignedService.assignToTask(teamMember.getAccountId(), task.getTaskId());
+
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> isAssignedService.assignToTask(teamMember.getAccountId(), task.getTaskId()));
+
+		assertTrue(exception.getMessage().contains("Team Member is already assigned"));
+	}
+
+	@Test
+	void testUnassignTeamMemberNotAssignedToTask() {
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> isAssignedService.unassignFromTask(teamMember.getAccountId(), task.getTaskId()));
+
+		assertTrue(exception.getMessage().contains("Assignment not found"));
+	}
+
+	@Test
+	void testUnassignFromNonExistentTask() {
+		isAssignedService.assignToTask(teamMember.getAccountId(), task.getTaskId());
+
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> isAssignedService.unassignFromTask(teamMember.getAccountId(), 9999));
+
+		assertTrue(exception.getMessage().contains("Task not found"));
 	}
 
 	@Test
@@ -95,6 +131,18 @@ public class IsAssignedServiceTest {
 	@Test
 	void testIsNotAssignedToTask() {
 		boolean isAssigned = isAssignedService.isAssignedToTask(teamMember.getAccountId(), task.getTaskId());
+		assertFalse(isAssigned);
+	}
+
+	@Test
+	void testIsAssignedForNonExistentTask() {
+		boolean isAssigned = isAssignedService.isAssignedToTask(teamMember.getAccountId(), 9999);
+		assertFalse(isAssigned);
+	}
+
+	@Test
+	void testIsAssignedForNonExistentTeamMember() {
+		boolean isAssigned = isAssignedService.isAssignedToTask(9999, task.getTaskId());
 		assertFalse(isAssigned);
 	}
 }
