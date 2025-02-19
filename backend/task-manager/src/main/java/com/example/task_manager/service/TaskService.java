@@ -4,12 +4,16 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
+import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.repository.TaskRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service // Marks this class as a Spring service, allowing it to be injected where needed
+@Transactional
 public class TaskService {
 
 	private final TaskRepository taskRepository;
@@ -42,7 +46,16 @@ public class TaskService {
 
 			// Notification system is not yet implemented
 			// sendNotification(member, message);
+
+			//should use the DTO's to avoid sharing database info with the frontend
 		}
+	}
+
+	/**
+	 * Converts TeamMember entity to TeamMemberDTO.
+	 */
+	private TeamMemberDTO convertToDTO(TeamMember teamMember) {
+		return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail());
 	}
 }
 

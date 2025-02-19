@@ -29,6 +29,9 @@ public class IsMemberOf {
     }
 
     public void setId(int id) {
+        if (id < 0) {
+            throw new IllegalArgumentException("ID cannot be less than 0.");
+        }
         this.id = id;
     }
 
@@ -37,6 +40,9 @@ public class IsMemberOf {
     }
 
     public void setTeam(Team team) {
+        if (team == null) {
+            throw new IllegalArgumentException("Team cannot be null.");
+        }
         this.team = team;
     }
 
@@ -45,6 +51,9 @@ public class IsMemberOf {
     }
 
     public void setTeamMember(TeamMember teamMember) {
+        if (teamMember == null) {
+            throw new IllegalArgumentException("TeamMember cannot be null.");
+        }
         this.teamMember = teamMember;
     }
 }

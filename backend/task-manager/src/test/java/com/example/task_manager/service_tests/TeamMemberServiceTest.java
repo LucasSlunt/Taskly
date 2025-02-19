@@ -12,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import jakarta.transaction.Transactional;
 
+import com.example.task_manager.DTO.TaskDTO;
+import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
@@ -64,12 +66,39 @@ public class TeamMemberServiceTest {
 
 	@Test
 	void testCreateTask() {
-		Task newTask = teamMemberService.createTask("New Task", "Task Description", false, "Open", LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), team, null);
+		TaskDTO newTaskDTO = teamMemberService.createTask("New Task", "Task Description", false, "Open", LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), team, null);
 
-		assertNotNull(newTask);
-		assertEquals("New Task", newTask.getTitle());
-		assertEquals("Task Description", newTask.getDescription());
-		assertEquals(team.getTeamId(), newTask.getTeam().getTeamId());
+		assertNotNull(newTaskDTO);
+		assertEquals("New Task", newTaskDTO.getTitle());
+		assertEquals("Task Description", newTaskDTO.getDescription());
+		assertEquals(team.getTeamId(), newTaskDTO.getTeamId());
+	}
+
+	@Test
+	void testCreateTaskWithNullTitle() {
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> teamMemberService.createTask(null, "Task Description", false, "Open", 
+				LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), team, null));
+
+		assertTrue(exception.getMessage().contains("Task title cannot be null"));
+	}
+
+	@Test
+	void testCreateTaskWithEmptyTitle() {
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> teamMemberService.createTask("", "Task Description", false, "Open", 
+				LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), team, null));
+
+		assertTrue(exception.getMessage().contains("Task title cannot be null or empty"));
+	}
+
+	@Test
+	void testCreateTaskWithNullTeam() {
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> teamMemberService.createTask("New Task", "Task Description", false, "Open", 
+				LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), null, null));
+
+		assertTrue(exception.getMessage().contains("Task must be assigned to a team"));
 	}
 
 	@Test
@@ -81,25 +110,72 @@ public class TeamMemberServiceTest {
 	}
 
 	@Test
+	void testDeleteNonExistentTask() {
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> teamMemberService.deleteTask(9999));
+
+		assertTrue(exception.getMessage().contains("Task not found"));
+	}
+
+	@Test
 	void testEditTask() {
-		Task updatedTask = teamMemberService.editTask(task.getTaskId(), "Updated Task Title", "Updated Description", true, "In Progress", LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
+		TaskDTO updatedTask = teamMemberService.editTask(task.getTaskId(), "Updated Task Title", "Updated Description", true, "In Progress", LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
 
 		assertEquals("Updated Task Title", updatedTask.getTitle());
 		assertEquals("Updated Description", updatedTask.getDescription());
 		assertEquals("In Progress", updatedTask.getStatus());
-		assertTrue(updatedTask.isIsLocked());
+		assertTrue(updatedTask.isLocked());
+	}
+
+	@Test
+	void testEditNonExistentTask() {
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> teamMemberService.editTask(9999, "Updated Title", "Updated Description", true, 
+				"In Progress", LocalDate.now().plusDays(7), LocalDate.now().plusDays(10)));
+
+		assertTrue(exception.getMessage().contains("Task not found"));
 	}
 
 	@Test
 	void testAssignToTask() {
 		teamMemberService.assignToTask(task.getTaskId(), teamMember.getAccountId());
 
-		TeamMember updatedTeamMember = teamMemberRepository.findById(teamMember.getAccountId()).orElseThrow();
-		updatedTeamMember.getAssignedTasks().size();
+		TeamMemberDTO updatedTeamMember = teamMemberService.getTeamMember(teamMember.getAccountId());
 
-		assertTrue(updatedTeamMember.getAssignedTasks()
+		assertTrue(teamMemberService.getAssignedTasks(teamMember.getAccountId())
 			.stream()
-			.anyMatch(t -> t.getTask().getTaskId() == task.getTaskId()));
+			.anyMatch(t -> t.getTaskId() == task.getTaskId()));
+	}
+
+	@Test
+	void testAssignNonExistentMemberToTask() {
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> teamMemberService.assignToTask(task.getTaskId(), 9999));
+
+		assertTrue(exception.getMessage().contains("Team Member not found"));
+	}
+
+	@Test
+	void testAssignToNonExistentTask() {
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> teamMemberService.assignToTask(9999, teamMember.getAccountId()));
+
+		assertTrue(exception.getMessage().contains("Task not found"));
+	}
+
+	@Test
+	void testAssignMemberToSameTaskTwice() {
+		teamMemberService.assignToTask(task.getTaskId(), teamMember.getAccountId());
+
+		Exception exception = assertThrows(RuntimeException.class, 
+			() -> teamMemberService.assignToTask(task.getTaskId(), teamMember.getAccountId()));
+
+		assertTrue(exception.getMessage().contains("Team Member is already assigned"));
+	}
+
+	@Test
+	void testGetAssignedTasksForNonExistentMember() {
+		assertTrue(teamMemberService.getAssignedTasks(9999).isEmpty());
 	}
 
 	@Test

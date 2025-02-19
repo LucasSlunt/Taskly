@@ -1,6 +1,8 @@
 package com.example.task_manager.service;
 
 import org.springframework.stereotype.Service;
+
+import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.TeamMember;
@@ -8,7 +10,10 @@ import com.example.task_manager.repository.IsAssignedRepository;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service // Marks this class as a Spring service, allowing it to be injected where needed
+@Transactional
 public class IsAssignedService {
 	
 	private final TaskRepository taskRepository;
@@ -31,7 +36,7 @@ public class IsAssignedService {
 	 * @param teamMemberId The ID of the team member to be assigned.
 	 * @param taskId The ID of the task to assign the member to.
 	 */
-	public void assignToTask(int teamMemberId, int taskId) {
+	public IsAssignedDTO assignToTask(int teamMemberId, int taskId) {
 		Task task = taskRepository.findById(taskId)
 			.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
 
@@ -39,23 +44,17 @@ public class IsAssignedService {
 			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
 		// Check if the member is already assigned to this task
-		if (teamMember.getAssignedTasks().stream()
-			.anyMatch(t -> t.getId() == taskId)) {
+		boolean alreadyAssigned = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMemberId, taskId);
+		if (alreadyAssigned) {
 			throw new RuntimeException("Team Member is already assigned to this task. No action needed.");
 		}
 
-		// Create a new assignment entry
-		IsAssigned isAssigned = new IsAssigned();
-		isAssigned.setTask(task);
-		isAssigned.setTeamMember(teamMember);
-		isAssignedRepository.save(isAssigned);
+		// Create assignment entry
+		IsAssigned isAssigned = new IsAssigned(task, teamMember, task.getTeam());
+		isAssigned = isAssignedRepository.save(isAssigned);
 
-		// Update bidirectional relationship
-		teamMember.getAssignedTasks().add(isAssigned);
-		teamMemberRepository.save(teamMember);
-
-		// Flush changes to ensure consistency in the database
-		teamMemberRepository.flush();
+		// Return assignment details as DTO
+		return convertToDTO(isAssigned);
 	}
 
 	/**
@@ -65,7 +64,7 @@ public class IsAssignedService {
 	 * @param teamMemberId The ID of the team member to be unassigned.
 	 * @param taskId The ID of the task from which the member should be unassigned.
 	 */
-	public void unassignFromTask(int teamMemberId, int taskId) {
+	public IsAssignedDTO unassignFromTask(int teamMemberId, int taskId) {
 		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
 			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 	
@@ -73,19 +72,12 @@ public class IsAssignedService {
 			.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
 
 		// Find the existing assignment
-		IsAssigned toRemove = task.getAssignedMembers().stream()
-			.filter(isAssigned -> isAssigned.getTeamMember().getAccountId() == teamMemberId)
-			.findFirst()
-			.orElse(null);
+		IsAssigned toRemove = isAssignedRepository.findByTeamMemberAndTask(teamMember, task)
+			.orElseThrow(() -> new RuntimeException("Assignment not found."));
 	
-		if (toRemove != null) {
-			// Remove the assignment from both sides of the relationship
-			task.getAssignedMembers().remove(toRemove);
-			teamMember.getAssignedTasks().remove(toRemove);
-			isAssignedRepository.delete(toRemove);
-		} else {
-			System.out.println("Team Member is not assigned to this task. No action needed.");
-		}
+		isAssignedRepository.delete(toRemove);
+
+		return convertToDTO(toRemove);
 	}
 
 	/**
@@ -96,10 +88,15 @@ public class IsAssignedService {
 	 * @return true if the team member is assigned to the task, false otherwise.
 	 */
 	public boolean isAssignedToTask(int teamMemberId, int taskId) {
-		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
-			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+		return isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMemberId, taskId);
+	}	
 
-		return teamMember.getAssignedTasks().stream()
-			.anyMatch(isAssigned -> isAssigned.getTask().getTaskId() == taskId);
+	private IsAssignedDTO convertToDTO(IsAssigned isAssigned) {
+		return new IsAssignedDTO(
+			isAssigned.getId(),
+			isAssigned.getTask().getTaskId(),
+			isAssigned.getTeamMember().getAccountId(),
+			isAssigned.getTeam().getTeamId()
+		);
 	}
 }

@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.task_manager.DTO.TeamDTO;
+import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.IsMemberOf;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
@@ -12,7 +14,10 @@ import com.example.task_manager.repository.IsMemberOfRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service // Marks this class as a Spring service, allowing it to be injected where needed
+@Transactional
 public class TeamService {
 	
 	private final TeamMemberRepository teamMemberRepository;
@@ -35,7 +40,11 @@ public class TeamService {
 	 * @param teamLeadId The ID of the team lead.
 	 * @return The created Team entity.
 	 */
-	public Team createTeam(String teamName, int teamLeadId) {
+	public TeamDTO createTeam(String teamName, int teamLeadId) {
+		if (teamName == null || teamName.trim().isEmpty()) {
+			throw new RuntimeException("Team name cannot be empty");
+		}	
+
 		TeamMember teamLead = teamMemberRepository.findById(teamLeadId)
 				.orElseThrow(() -> new RuntimeException("Team Lead not found with ID: " + teamLeadId));
 
@@ -43,7 +52,8 @@ public class TeamService {
 		team.setTeamName(teamName);
 		team.setTeamLead(teamLead);
 
-		return teamRepository.save(team);
+		team = teamRepository.save(team);
+		return convertToDTO(team);
 	}
 
 	/**
@@ -81,13 +91,32 @@ public class TeamService {
 	 * @param teamId The ID of the team.
 	 * @return A list of TeamMembers belonging to the team.
 	 */
-	public List<TeamMember> getTeamMembers(int teamId) {
+	public List<TeamMemberDTO> getTeamMembers(int teamId) {
 		Team team = teamRepository.findById(teamId)
 			.orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
 	
 		return isMemberOfRepository.findMembersByTeamId(teamId).stream()
 			.map(IsMemberOf::getTeamMember)
+			.map(this::convertToDTO)
 			.collect(Collectors.toList());
 	}
+
+	/**
+	 * Converts a Team entity to a TeamDTO.
+	 */
+	private TeamDTO convertToDTO(Team team) {
+		return new TeamDTO(
+			team.getTeamId(),
+			team.getTeamName(),
+			team.getTeamLead() != null ? team.getTeamLead().getAccountId() : null
+		);
+	}
+
+	/**
+	 * Converts a TeamMember entity to a TeamMemberDTO.
+	 */
+	private TeamMemberDTO convertToDTO(TeamMember teamMember) {
+        return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail());
+    }
 }
 

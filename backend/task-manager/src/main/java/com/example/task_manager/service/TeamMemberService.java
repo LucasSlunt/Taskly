@@ -1,10 +1,15 @@
 package com.example.task_manager.service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.task_manager.DTO.IsAssignedDTO;
+import com.example.task_manager.DTO.TaskDTO;
+import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
@@ -27,7 +32,7 @@ public class TeamMemberService {
 	protected final TaskRepository taskRepository;
 	protected final IsAssignedRepository isAssignedRepository;
 
-	// Constructor injection for required repositories
+	// Constructor for required repositories
 	public TeamMemberService(TeamMemberRepository teamMemberRepository, 
 							 TeamRepository teamRepository, 
 							 TaskRepository taskRepository, 
@@ -54,9 +59,18 @@ public class TeamMemberService {
 	 * @param assignedMembers       The set of assigned members (nullable).
 	 * @return The created Task entity.
 	 */
-	public Task createTask(String title, String description, Boolean isLocked, String status, 
+	public TaskDTO createTask(String title, String description, Boolean isLocked, String status, 
 						   LocalDate expectedCompletionDate, LocalDate dueDate, Team team, 
 						   Set<IsAssigned> assignedMembers) {
+
+		if (title == null || title.trim().isEmpty()) {
+			throw new RuntimeException("Task title cannot be null or empty");
+		}
+	
+		if (team == null) {
+			throw new RuntimeException("Task must be assigned to a team");
+		}
+
 		Task task = new Task();
 		task.setTitle(title);
 		task.setIsLocked(isLocked);
@@ -74,7 +88,8 @@ public class TeamMemberService {
 			task.setDueDate(dueDate);
 		}
 
-		return taskRepository.save(task);
+		task = taskRepository.save(task);
+		return convertToDTO(task);
 	}
 
 	/**
@@ -83,7 +98,6 @@ public class TeamMemberService {
 	 *
 	 * @param taskId The ID of the task to be deleted.
 	 */
-	@Transactional
 	public void deleteTask(int taskId) {
 		Task task = taskRepository.findById(taskId)
 				.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
@@ -107,7 +121,7 @@ public class TeamMemberService {
 	 * @param newDueDate            The new due date (nullable).
 	 * @return The updated Task entity.
 	 */
-	public Task editTask(int taskId, String newTitle, String newDescription, Boolean isLocked, 
+	public TaskDTO editTask(int taskId, String newTitle, String newDescription, Boolean isLocked, 
 						 String newStatus, LocalDate newExpectedCompletionDate, LocalDate newDueDate) {
 		Task task = taskRepository.findById(taskId)
 			.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
@@ -131,7 +145,8 @@ public class TeamMemberService {
 			task.setDueDate(newDueDate);
 		}
 
-		return taskRepository.save(task);
+		task = taskRepository.save(task);
+		return convertToDTO(task);
 	}
 
 	/**
@@ -141,7 +156,7 @@ public class TeamMemberService {
 	 * @param taskId       The ID of the task.
 	 * @param teamMemberId The ID of the team member to be assigned.
 	 */
-	public void assignToTask(int taskId, int teamMemberId) {
+	public IsAssignedDTO assignToTask(int taskId, int teamMemberId) {
 		Task task = taskRepository.findById(taskId)
 			.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
 
@@ -149,17 +164,15 @@ public class TeamMemberService {
 			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
 		// Ensure that the member is not already assigned to this task
-		if (teamMember.getAssignedTasks().stream()
-			.anyMatch(isAssigned -> isAssigned.getTask().getTaskId() == taskId)) {
+		boolean alreadyAssigned = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMemberId, taskId);
+		if (alreadyAssigned) {
 			throw new RuntimeException("Team Member is already assigned to this task.");
 		}
 
-		// Create and save assignment
-		IsAssigned isAssigned = new IsAssigned();
-		isAssigned.setTask(task);
-		isAssigned.setTeamMember(teamMember);
-		teamMember.getAssignedTasks().add(isAssigned); // Ensures memory consistency
-		teamMemberRepository.save(teamMember);
+		IsAssigned isAssigned = new IsAssigned(task, teamMember, task.getTeam());
+		isAssigned = isAssignedRepository.save(isAssigned);
+
+		return convertToDTO(isAssigned);	
 	}
 
 	/**
@@ -175,5 +188,56 @@ public class TeamMemberService {
 			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
 		// Password change logic to be implemented in the future
+	}
+
+	public TeamMemberDTO getTeamMember(int accountId) {
+		TeamMember teamMember = teamMemberRepository.findById(accountId)
+			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + accountId));
+		
+		return convertToDTO(teamMember);
+	}
+
+	public List<TaskDTO> getAssignedTasks(int teamMemberId) {
+		return isAssignedRepository.findByTeamMember_AccountId(teamMemberId).stream()
+			.map(isAssigned -> convertToDTO(isAssigned.getTask()))
+						.collect(Collectors.toList());
+	}
+			
+				/*
+	 * Converts TeamMember entity to a TeamMemberDTO
+	 */
+	private TeamMemberDTO convertToDTO(TeamMember teamMember) {
+		return new TeamMemberDTO(
+			teamMember.getAccountId(), 
+			teamMember.getUserName(), 
+			teamMember.getUserEmail()
+		);
+	}
+
+	/**
+	 * Converts a Task entity to a TaskDTO.
+	 */
+	private TaskDTO convertToDTO(Task task) {
+		return new TaskDTO(
+			task.getTaskId(),
+			task.getTitle(),
+			task.getDescription(),
+			task.isLocked(),
+			task.getStatus(),
+			task.getDateCreated(),
+			task.getTeam() != null ? task.getTeam().getTeamId() : null
+		);
+	}
+
+	/**
+	 * Converts an IsAssigned entity to an IsAssignedDTO.
+	 */
+	private IsAssignedDTO convertToDTO(IsAssigned isAssigned) {
+		return new IsAssignedDTO(
+			isAssigned.getId(),
+			isAssigned.getTask().getTaskId(),
+			isAssigned.getTeamMember().getAccountId(),
+			isAssigned.getTeam().getTeamId()
+		);
 	}
 }

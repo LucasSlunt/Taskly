@@ -2,7 +2,6 @@ package com.example.task_manager.entity_tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 
 import com.example.task_manager.entity.Admin;
-import com.example.task_manager.entity.AuthInfo;
-import com.example.task_manager.entity.Task;
-import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
 
 import jakarta.transaction.Transactional;

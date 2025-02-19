@@ -3,7 +3,6 @@ package com.example.task_manager.entity;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 
 import jakarta.persistence.*;
 
@@ -54,6 +53,9 @@ public class Task {
     }
 
     public void setTaskId(int taskId) {
+        if (taskId < 0) {
+            throw new IllegalArgumentException("Task ID cannot be less than 0.");
+        }
         this.taskId = taskId;
     }
 
@@ -62,6 +64,9 @@ public class Task {
     }
 
     public void setTitle(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be empty or null.");
+        }
         this.title = title;
     }
 
@@ -70,6 +75,9 @@ public class Task {
     }
 
     public void setDescription(String description) {
+        if (description == null || description.trim().isEmpty()) {
+            throw new IllegalArgumentException("Description cannot be empty or null.");
+        }
         this.description = description;
     }
 
@@ -78,6 +86,7 @@ public class Task {
     }
 
     public void setIsLocked(boolean isLocked) {
+
         this.isLocked = isLocked;
     }
 
@@ -86,6 +95,9 @@ public class Task {
     }
 
     public void setStatus(String status) {
+        if (status == null || status.trim().isEmpty()) {
+            throw new IllegalArgumentException("Status cannot be empty or null.");
+        }
         this.status = status;
     }
 
@@ -94,6 +106,12 @@ public class Task {
     }
 
     public void setDateCreated(LocalDate dateCreated) {
+        if (dateCreated == null) {
+            throw new IllegalArgumentException("Date created cannot be null.");
+        }
+        if (dateCreated.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Date created cannot be in the future");
+        }
         this.dateCreated = dateCreated;
     }
 
@@ -118,6 +136,9 @@ public class Task {
     }
 
     public void setTeam(Team team) {
+        if (team == null) {
+            throw new IllegalArgumentException("Team cannot be null.");
+        }
         this.team = team;
     }
 
@@ -125,7 +146,11 @@ public class Task {
         return assignedMembers;
     }
 
+    /*
+     * If assignedMembers is null it initializes an empty set
+     * There can be no members assigned, so an empty set, but it cannot be null
+     */
     public void setAssignedMembers(Set<IsAssigned> assignedMembers) {
-        this.assignedMembers = assignedMembers;
-    }
+        this.assignedMembers = (assignedMembers != null) ? assignedMembers : new HashSet<>();
+    }    
 }

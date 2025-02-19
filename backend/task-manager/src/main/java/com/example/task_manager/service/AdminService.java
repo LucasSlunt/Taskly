@@ -4,19 +4,15 @@ import java.util.HashSet;
 
 import org.springframework.stereotype.Service;
 
-import com.example.task_manager.entity.Admin;
-import com.example.task_manager.entity.IsMemberOf;
-import com.example.task_manager.entity.Task;
-import com.example.task_manager.entity.Team;
-import com.example.task_manager.entity.TeamMember;
-import com.example.task_manager.repository.AdminRepository;
-import com.example.task_manager.repository.IsAssignedRepository;
-import com.example.task_manager.repository.IsMemberOfRepository;
-import com.example.task_manager.repository.TaskRepository;
-import com.example.task_manager.repository.TeamMemberRepository;
-import com.example.task_manager.repository.TeamRepository;
+import com.example.task_manager.DTO.AdminDTO;
+import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.entity.*;
+import com.example.task_manager.repository.*;
+
+import jakarta.transaction.Transactional;
 
 @Service // Marks this class as a Spring service, allowing it to be managed as a Spring bean
+@Transactional
 public class AdminService extends TeamMemberService {
 
 	private final AdminRepository adminRepository;
@@ -33,38 +29,45 @@ public class AdminService extends TeamMemberService {
 	}
 
 	// Creates and saves a new Admin entity
-	public Admin createAdmin(String adminName, String adminEmail) {
+	public AdminDTO createAdmin(String adminName, String adminEmail) {
 		Admin admin = new Admin(adminName, adminEmail);
-		return adminRepository.save(admin);
+		admin = adminRepository.save(admin);
+		return convertToDTO(admin);
 	}
 
 	// Deletes an Admin by ID
 	public void deleteAdmin(int adminId) {
+		if (!adminRepository.existsById(adminId)) {
+			throw new RuntimeException("Admin not found with ID: " + adminId);
+		}
 		adminRepository.deleteById(adminId);
 	}
 
 	// Updates an Admin's username
-	public Admin modifyAdminName(int adminId, String newAdminName) {
+	public AdminDTO modifyAdminName(int adminId, String newAdminName) {
 		Admin admin = adminRepository.findById(adminId)
 			.orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
 
 		admin.setUserName(newAdminName);
-		return adminRepository.save(admin);
+		admin = adminRepository.save(admin);
+		return convertToDTO(admin);
 	}
 
 	// Updates an Admin's email
-	public Admin modifyAdminEmail(int adminId, String newAdminEmail) {
+	public AdminDTO modifyAdminEmail(int adminId, String newAdminEmail) {
 		Admin admin = adminRepository.findById(adminId)
 			.orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
 	
 		admin.setUserEmail(newAdminEmail);
-		return adminRepository.save(admin);
+		admin = adminRepository.save(admin);
+		return convertToDTO(admin);
 	}
 
 	// Creates and saves a new TeamMember entity
-	public TeamMember createTeamMember(String userName, String userEmail) {
+	public TeamMemberDTO createTeamMember(String userName, String userEmail) {
 		TeamMember teamMember = new TeamMember(userName, userEmail);
-		return teamMemberRepository.save(teamMember);
+		teamMember = teamMemberRepository.save(teamMember);
+		return convertToDTO(teamMember);
 	}
 
 	// Deletes a TeamMember by ID
@@ -73,25 +76,27 @@ public class AdminService extends TeamMemberService {
 	}
 
 	// Updates a TeamMember's username
-	public TeamMember modifyTeamMemberName(int userId, String newUserName) {
+	public TeamMemberDTO modifyTeamMemberName(int userId, String newUserName) {
 		TeamMember teamMember = teamMemberRepository.findById(userId)
 			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + userId));
 	
 		teamMember.setUserName(newUserName);
-		return teamMemberRepository.save(teamMember);
+		teamMember = teamMemberRepository.save(teamMember);
+		return convertToDTO(teamMember);
 	}
 
 	// Updates a TeamMember's email
-	public TeamMember modifyTeamMemberEmail(int userId, String newUserEmail) {
+	public TeamMemberDTO modifyTeamMemberEmail(int userId, String newUserEmail) {
 		TeamMember teamMember = teamMemberRepository.findById(userId)
 			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + userId));
 
 		teamMember.setUserEmail(newUserEmail);
-		return teamMemberRepository.save(teamMember);
+		teamMember = teamMemberRepository.save(teamMember);
+		return convertToDTO(teamMember);
 	}
 
 	// Promotes a TeamMember to Admin by removing them from the TeamMember table and adding them to the Admin table
-	public Admin promoteToAdmin(int teamMemberId) {
+	public AdminDTO promoteToAdmin(int teamMemberId) {
 		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
 			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
@@ -105,11 +110,13 @@ public class AdminService extends TeamMemberService {
 		admin.setAuthInfo(teamMember.getAuthInfo());
 		admin.setTeams(new HashSet<>(teamMember.getTeams()));
 
-		return adminRepository.save(admin);
-	}
+		admin = adminRepository.save(admin);
+
+		return convertToDTO(admin);
+	}	
 
 	// Assigns a TeamMember to a Team by creating an IsMemberOf entry
-	public void assignToTeam(int teamMemberId, int teamId) {
+	public TeamMemberDTO assignToTeam(int teamMemberId, int teamId) {
 		Team team = teamRepository.findById(teamId)
 			.orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
 		
@@ -124,7 +131,7 @@ public class AdminService extends TeamMemberService {
 		
 		// Ensures the association is also reflected in the TeamMember entity
 		teamMember.getTeams().add(isMemberOf);
-		teamMemberRepository.save(teamMember);
+		return convertToDTO(teamMemberRepository.save(teamMember));
 	}
 
 	// Locks a Task by setting its isLocked property to true
@@ -144,4 +151,12 @@ public class AdminService extends TeamMemberService {
 		task.setIsLocked(false);
 		taskRepository.save(task);
 	}
+
+	private AdminDTO convertToDTO(Admin admin) {
+    	return new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail());
+    }
+
+	private TeamMemberDTO convertToDTO(TeamMember teamMember) {
+        return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail());
+    }
 }
