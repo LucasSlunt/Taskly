@@ -1,0 +1,34 @@
+.profile-page {
+    padding: 2rem  6rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .profile-header {
+    display: flex; /*stack children in row*/
+    align-items: left;
+    gap: 2rem;
+    margin-bottom: 2rem; /*adds space below*/
+
+  }
+  
+  .profile-picture {
+    width: 10rem;
+    height: 10rem;
+    border-radius: 50%;
+  }
+
+  .profile-name {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+  
+  .profile-username{
+    margin: 0;
+    margin-bottom: 5px ;
+  }
+  .profile-email {
+    margin: 0;
+  }
+  
