@@ -17,7 +17,7 @@ jobs:
 
     steps:
 
-      - name: Label any new issue as "To-to"
+      - name: Label any new issue as "To-Do"
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
