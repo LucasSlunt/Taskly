@@ -2,6 +2,7 @@ import "../css/Profile.css"
 import logo from '../logo.svg';
 
 function UserInfo(){
+    //mock data
     const user  = {
         name: "Bobby Joe",
         username: "bobbyjoe",
