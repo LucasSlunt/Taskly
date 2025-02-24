@@ -186,7 +186,7 @@ public class AdminServiceTest {
 		assertNotNull(exception);
 	}
 	
-    //to be implemented with hashedPassword and login functionality
+    //to be re-implemented with hashedPassword and login functionality
 	// @Test
 	// void testPromoteToAdmin() {
 	// 	TeamMemberDTO teamMember = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com");
