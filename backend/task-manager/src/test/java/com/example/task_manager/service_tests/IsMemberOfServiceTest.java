@@ -55,9 +55,9 @@ public class IsMemberOfServiceTest {
         teamRepository.deleteAllInBatch();
         teamMemberRepository.deleteAllInBatch();
 
-        teamLead = adminService.createTeamMember("Team Lead", "team_lead" + System.nanoTime() + "@example.com");
+        teamLead = adminService.createTeamMember("Team Lead", "team_lead" + System.nanoTime() + "@example.com","defaultpw");
         team = teamService.createTeam("Development Team " + System.nanoTime(), teamLead.getAccountId());
-        teamMember = adminService.createTeamMember("Team Member", "team_member" + System.nanoTime() + "@example.com");
+        teamMember = adminService.createTeamMember("Team Member", "team_member" + System.nanoTime() + "@example.com","defaultpw");
     }
 
 

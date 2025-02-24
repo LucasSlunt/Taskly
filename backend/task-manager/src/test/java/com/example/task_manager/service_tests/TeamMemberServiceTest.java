@@ -54,7 +54,7 @@ public class TeamMemberServiceTest {
 		teamRepository.deleteAllInBatch();
 		teamMemberRepository.deleteAllInBatch();
 
-		teamMember = new TeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com");
+		teamMember = new TeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com","defaultpw");
 		teamMember = teamMemberRepository.save(teamMember);
 
 		team = new Team("Team Name " + System.nanoTime(), teamMember);

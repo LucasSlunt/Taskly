@@ -51,7 +51,7 @@ public class IsMemberOfRepositoryTest {
         testTeam = teamRepository.save(testTeam);
 
         // Create and save a test TeamMember
-        testMember = new TeamMember("TestUser" + System.nanoTime(), "test" + System.nanoTime() + "@example.com");
+        testMember = new TeamMember("TestUser" + System.nanoTime(), "test" + System.nanoTime() + "@example.com","defaultpw");
         testMember = teamMemberRepository.save(testMember);
 
         // Create and save an IsMemberOf entry to associate the team member with the team
