@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+
 import './App.css';
 
 import React from 'react';
@@ -8,16 +8,19 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 //Login page
 import Login from'./Login';
+import Home from './Home';
 
 const App = () => {
   return (
     <Router>
       <nav>
-        <a href="/login">Login</a>
+        <a href="/login">Login</a> 
+        <a href="/home">Home</a>
       </nav>
 
       <Routes>
         <Route path="/Login" element={<Login/>}></Route>
+        <Route path="/Home" element={<Home/>}></Route>
       </Routes>
     </Router>
   );
