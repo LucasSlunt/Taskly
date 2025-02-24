@@ -1,0 +1,24 @@
+#This is a workflow to build a java project
+name: JavaCI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4.7.0
+      with:
+        java-version: 21
+        cache: 'maven'
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
