@@ -15,9 +15,9 @@ function UserInfo(){
                     <img src={user.profilePictureUrl} alt="Profile Picture" />
                 </div>
                 <div className="profile-info">
-                    <h2 className="profile-name">{user.name}</h2>
+                    <h1 className="profile-name">{user.name}</h1>
                     <p className="profile-username">{user.username}</p>
-                    <p className="profile-email">{user.email}</p>
+                    <h3 className="profile-email">{user.email}</h3>
             </div>
         </div>
     );
