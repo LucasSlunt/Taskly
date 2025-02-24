@@ -1,7 +1,9 @@
 import "../css/Profile.css"
 import logo from '../logo.svg';
 
+//user information used in the profile page
 function UserInfo(){
+
     //mock data
     const user  = {
         name: "Bobby Joe",
@@ -9,6 +11,7 @@ function UserInfo(){
         email: "bobbyjoe@example.com",
         profilePictureUrl: "https://i.pravatar.cc/150?img=12" 
     }
+    
     return (
         <div className="user-info">
             <div className="profile-picture">

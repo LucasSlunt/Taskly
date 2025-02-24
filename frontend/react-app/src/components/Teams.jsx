@@ -1,5 +1,6 @@
 import "../css/Teams.css"
 
+//team buttons (don't have onclick functionality yet)
 function Teams({team}){
     return(
         <div className="teams">
