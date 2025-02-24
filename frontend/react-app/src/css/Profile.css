@@ -4,7 +4,7 @@
     box-sizing: border-box;
   }
   
-  .profile-header {
+  .user-info {
     display: flex; /*stack children in row*/
     align-items: left;
     gap: 2rem;
@@ -12,10 +12,12 @@
 
   }
   
-  .profile-picture {
+  .profile-picture img {
     width: 10rem;
     height: 10rem;
+    object-fit: cover;
     border-radius: 50%;
+    
   }
 
   .profile-name {
