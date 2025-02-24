@@ -28,7 +28,8 @@ public class AuthInfoEntityTest {
     void testAuthInfoPersistence() {
         TeamMember teamMember = new TeamMember(
             "TeamMember" + System.nanoTime(), 
-            "team_member" + System.nanoTime() + "@example.com"
+            "team_member" + System.nanoTime() + "@example.com",
+            "defaultpw"
         );
         entMan.persist(teamMember);
         entMan.flush();
@@ -67,7 +68,7 @@ public class AuthInfoEntityTest {
      */
     @Test
     void testAuthInfoIsDeletedWithTeamMember() {
-        TeamMember teamMember = new TeamMember("Auth User", "auth@example.com");
+        TeamMember teamMember = new TeamMember("Auth User", "auth@example.com","defaultpw");
         entMan.persist(teamMember);
         entMan.flush();
 
@@ -88,8 +89,8 @@ public class AuthInfoEntityTest {
      */
     @Test
     void testAuthInfoBelongsToCorrectTeamMember() {
-        TeamMember member1 = new TeamMember("User1", "user1@example.com");
-        TeamMember member2 = new TeamMember("User2", "user2@example.com");
+        TeamMember member1 = new TeamMember("User1", "user1@example.com","user1pw");
+        TeamMember member2 = new TeamMember("User2", "user2@example.com","user2pw");
 
         entMan.persist(member1);
         entMan.persist(member2);

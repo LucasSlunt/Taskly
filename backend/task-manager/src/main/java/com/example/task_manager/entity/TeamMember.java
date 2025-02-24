@@ -3,11 +3,14 @@ package com.example.task_manager.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.example.task_manager.service.AuthInfoService;
+
 import jakarta.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TeamMember {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int accountId;
@@ -29,9 +32,11 @@ public class TeamMember {
 
     public TeamMember() {}
 
-    public TeamMember(String userName, String userEmail) {
+    public TeamMember(String userName, String userEmail, String rawPassword) {
         this.userName = userName;
         this.userEmail = userEmail;
+        String userSalt = AuthInfoService.generateSalt();
+        this.authInfo = new AuthInfo(AuthInfoService.hashPassword(rawPassword,userSalt), userSalt, this);
         this.teams = new HashSet<>();
         this.assignedTasks = new HashSet<>();
     }

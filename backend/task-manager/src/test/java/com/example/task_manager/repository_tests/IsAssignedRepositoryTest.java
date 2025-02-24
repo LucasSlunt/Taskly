@@ -58,7 +58,7 @@ public class IsAssignedRepositoryTest {
         team = teamRepository.save(team);
 
         // Create and save a Team Member
-        teamMember = new TeamMember("John Doe", "john" + System.nanoTime() + "@example.com");
+        teamMember = new TeamMember("John Doe", "john" + System.nanoTime() + "@example.com","defaultpw");
         teamMember = teamMemberRepository.save(teamMember);
 
         // Create and save a Task

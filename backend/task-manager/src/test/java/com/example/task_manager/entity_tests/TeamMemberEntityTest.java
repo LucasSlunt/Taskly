@@ -32,7 +32,7 @@ public class TeamMemberEntityTest {
      */
 	@Test
 	void testTeamMemberPersistence() {
-		TeamMember teamMember = new TeamMember("John Doe", "john.doe@example.com"); //creating team member object which will be saved to the database
+		TeamMember teamMember = new TeamMember("John Doe", "john.doe@example.com","defaultpw"); //creating team member object which will be saved to the database
 
 		TeamMember savedMember = entityManager.persistFlushFind(teamMember); //saves teamMember entity to the database, flushes changes, then checks if it was saved to database properly
 
@@ -47,11 +47,11 @@ public class TeamMemberEntityTest {
      */
 	@Test
 	void testUniqueNameConstraint() {
-		TeamMember teamMember_1 = new TeamMember("Unique Name", "unique_1@example.com");
+		TeamMember teamMember_1 = new TeamMember("Unique Name", "unique_1@example.com","defaultpw");
 		entityManager.persist(teamMember_1);
 		entityManager.flush();
 
-		TeamMember teamMember_2 = new TeamMember("Unique Name", "unique_2@example.com");
+		TeamMember teamMember_2 = new TeamMember("Unique Name", "unique_2@example.com","defaultpw");
 
 		Exception e = assertThrows(PersistenceException.class, () -> {
 			entityManager.persist(teamMember_2);
@@ -67,11 +67,11 @@ public class TeamMemberEntityTest {
      */
 	@Test
 	void testUniqueEmailConstraint() {
-		TeamMember member_1 = new TeamMember("Unique One", "unique@example.com");
+		TeamMember member_1 = new TeamMember("Unique One", "unique@example.com","defaultpw");
 		entityManager.persist(member_1);
 		entityManager.flush();
 
-		TeamMember member_2 = new TeamMember("Unique Two", "unique@example.com");
+		TeamMember member_2 = new TeamMember("Unique Two", "unique@example.com","defaultpw");
 
 		Exception e = assertThrows(PersistenceException.class, () -> {
 			entityManager.persist(member_2);
@@ -87,7 +87,7 @@ public class TeamMemberEntityTest {
      */
 	@Test
 	void testAuthInfoRelation() {
-		TeamMember teamMember = new TeamMember("Auth User", "auth@example.com");
+		TeamMember teamMember = new TeamMember("Auth User", "auth@example.com","defaultpw");
 		AuthInfo authInfo = new AuthInfo();
 
 		authInfo.setHashedPassword("secure_password");
@@ -113,7 +113,7 @@ public class TeamMemberEntityTest {
 		entityManager.persist(team);
 		entityManager.flush();
 
-		TeamMember teamMember = new TeamMember("John Doe", "john@example.com");
+		TeamMember teamMember = new TeamMember("John Doe", "john@example.com","defaultpw");
 		entityManager.persist(teamMember);
 		entityManager.flush();
 
@@ -136,7 +136,7 @@ public class TeamMemberEntityTest {
      */
 	@Test
 	void testIsAssignedTasksRelation() {
-		TeamMember teamMember = new TeamMember("User Task", "user@example.com");
+		TeamMember teamMember = new TeamMember("User Task", "user@example.com","defaultpw");
 		entityManager.persist(teamMember);
 		entityManager.flush();
 
@@ -177,7 +177,7 @@ public class TeamMemberEntityTest {
 		entityManager.persist(task);
 		entityManager.flush();
 
-		TeamMember teamMember = new TeamMember("Removable Member", "removable@example.com");
+		TeamMember teamMember = new TeamMember("Removable Member", "removable@example.com","defaultpw");
 		AuthInfo authInfo = new AuthInfo("hashed_password", "random_salt", teamMember);
 		teamMember.setAuthInfo(authInfo);
 
@@ -207,7 +207,7 @@ public class TeamMemberEntityTest {
 		entityManager.persist(team);
 		entityManager.flush();
 
-		TeamMember teamMember = new TeamMember("Leaving Member", "leave@example.com");
+		TeamMember teamMember = new TeamMember("Leaving Member", "leave@example.com","defaultpw");
 		entityManager.persist(teamMember);
 		entityManager.flush();
 
@@ -235,7 +235,7 @@ public class TeamMemberEntityTest {
 		entityManager.persist(task);
 		entityManager.flush();
 
-		TeamMember teamMember = new TeamMember("Assigned Member", "assigned@example.com");
+		TeamMember teamMember = new TeamMember("Assigned Member", "assigned@example.com","defaultpw");
 		entityManager.persist(teamMember);
 		entityManager.flush();
 

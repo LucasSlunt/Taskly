@@ -31,18 +31,21 @@ public class TeamMemberService {
 	protected final IsMemberOfRepository isMemberOfRepository;
 	protected final TaskRepository taskRepository;
 	protected final IsAssignedRepository isAssignedRepository;
+	protected final AuthInfoService authInfoService;
 
 	// Constructor for required repositories
 	public TeamMemberService(TeamMemberRepository teamMemberRepository, 
 							 TeamRepository teamRepository, 
 							 TaskRepository taskRepository, 
 							 IsMemberOfRepository isMemberOfRepository, 
-							 IsAssignedRepository isAssignedRepository) {
+							 IsAssignedRepository isAssignedRepository,
+							 AuthInfoService authInfoService) {
 		this.teamMemberRepository = teamMemberRepository;
 		this.teamRepository = teamRepository;
 		this.isMemberOfRepository = isMemberOfRepository;
 		this.taskRepository = taskRepository;
 		this.isAssignedRepository = isAssignedRepository;
+		this.authInfoService = authInfoService;
 	}
 	
 	/**
@@ -186,6 +189,14 @@ public class TeamMemberService {
 	public void changePassword(int teamMemberId, String oldPassword, String newPassword) {
 		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
 			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+			
+			boolean isOldPasswordVerified = authInfoService.approveLogin(teamMember.getAccountId(),oldPassword);
+			if (isOldPasswordVerified){
+				String salt = teamMember.getAuthInfo().getSalt();
+				String newHashedPassword = AuthInfoService.hashPassword(newPassword, salt);
+				teamMember.getAuthInfo().setHashedPassword(newHashedPassword);
+			}
+
 
 		// Password change logic to be implemented in the future
 	}
