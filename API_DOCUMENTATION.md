@@ -226,13 +226,13 @@ Follow these practices to ensure efficiency and accuracy with all API requests.
 ---
 
 ## Error Codes
-Code    | Description
-_______________________________________________________
-200     | OK - Request succeeded
-204     | No Content - Resource deleted
-400     | Bad Request - Invalid input
-404     | Not Found - Resource not found
-500     | Internal Server Error - Unexpected error
+| Code    | Description                                 |
+|---------|---------------------------------------------|
+| 200     | OK - Request succeeded                      |
+| 204     | No Content - Resource deleted               |
+| 400     | Bad Request - Invalid input                 |
+| 404     | Not Found - Resource not found              |
+| 500     | Internal Server Error - Unexpected error    |
 
 ---
 
