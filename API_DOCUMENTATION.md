@@ -1,5 +1,3 @@
-api_documentation_content = """# API Documentation
-
 # API Documentation
 
 This document provides an overview of the API endpoints available in the system. Each section corresponds to a controller and details the available routes, methods, parameters, and expected responses.
@@ -23,10 +21,14 @@ All API requests should be made to the following base URL (Spring Boot's default
 7. [TeamMemberController](#teammembercontroller)
 8. [Path Variables](#path-variables)
 9. [DTO References](#dto-references)
+10. [Request and Response Examples](#request-and-response-examples)
+11. [Best Practices](#best-practices)
+12. [Error Codes](#error-codes)
+13. [Example Error Response](#example-error-response)
 
 ---
 
-## 1. AdminController
+## **AdminController**
 
 **Base URL:** `/api/admin`
 
@@ -52,7 +54,7 @@ All API requests should be made to the following base URL (Spring Boot's default
 
 ---
 
-## 2. AuthInfoController
+## **AuthInfoController**
 
 **Base URL:** `/api/auth-info`
 
@@ -61,7 +63,7 @@ All API requests should be made to the following base URL (Spring Boot's default
 
 ---
 
-## 3. IsAssignedController
+## **IsAssignedController**
 
 **Base URL:** `/api/assignments`
 
@@ -72,7 +74,7 @@ All API requests should be made to the following base URL (Spring Boot's default
 
 ---
 
-## 4. IsMemberOfController
+## **IsMemberOfController**
 
 **Base URL:** `/api/memberships`
 
@@ -83,7 +85,7 @@ All API requests should be made to the following base URL (Spring Boot's default
 
 ---
 
-## 5. TaskController
+## **TaskController**
 
 **Base URL:** `/api/tasks`
 
@@ -93,7 +95,7 @@ All API requests should be made to the following base URL (Spring Boot's default
 
 ---
 
-## 6. TeamController
+## **TeamController**
 
 **Base URL:** `/api/teams`
 
@@ -107,7 +109,7 @@ All API requests should be made to the following base URL (Spring Boot's default
 
 ---
 
-## 7. TeamMemberController
+## **TeamMemberController**
 
 **Base URL:** `api/tasks`
 
@@ -186,11 +188,55 @@ Below are examples of some API requests and responses.
 
 ---
 
+- **AdminController**
+    - **CreateAdmin**
+    ```javascript
+    cy.request({
+        method: 'POST',
+        url: 'http://localhost:8080/api/admin',
+        body: {
+            name: 'John Doe',
+            email: 'john@example.com'
+        },
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body.name).to.eq('John Doe');
+    });
+    ```
+    - **DeleteAdmin**
+    ```javascript
+    cy.request({
+        method: 'DELETE',
+        url: 'http://localhost:8080/api/{adminId}'
+    }).then((response) => {
+        expect(response.status).to.eq(204);
+    });
+    ```
+
+- **TeamMemberController**
+    - **Assign Member To Task**
+    ```javascript
+    cy.request({
+        method: 'POST',
+        url: 'http://localhost:8080/api/tasks/{taskId}/assign/{teamMemberId}'
+    }).then((response) => {
+        expect(response.status).to.eq(200);
+    });
 
 ---
 
-### **Best Practies**
+## **Best Practices**
 
+Follow these practices to ensure efficiency and accuracy with all API requests.
+
+### **Correct HTTP Methods**
+- **GET**: Used to retrieve resources
+- **POST**: Used to create resources
+- **PUT**: Used to update existing resources
+- **DELETE**: Used to delete resources
 
 ---
 
