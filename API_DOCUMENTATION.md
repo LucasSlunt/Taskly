@@ -167,9 +167,19 @@ All API requests should be made to the following base URL (Spring Boot's default
 
 ---
 
-## **Request and Response Examples**
+## **Request and Response Exmaples**
 
-Below are examples of some API requests and responses.
+Below are some examples of API requests and response.
+
+---
+
+
+
+---
+
+## **Request and Response Testing Examples**
+
+Below are examples of some API requests and responses using Cypress.
 
 ---
 
