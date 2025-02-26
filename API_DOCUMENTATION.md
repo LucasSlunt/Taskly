@@ -165,21 +165,6 @@ All API requests should be made to the following base URL (Spring Boot's default
     - `status` (string, required): The status of the task (e.g. "To-Do", "In Progress", "Done")
     - `dueDate` (string, optional): The due date of the task in YYYY-MM-DD format
 
-- **TeamDTO**
-    - `id` (integer, required): The unique ID of the team  
-    - `name` (string, required): The name of the team  
-    - `teamLeadId` (integer, required): The ID of the team leader  
-
-- **TeamMemberDTO**
-    - `id` (integer, required): The unique ID of the team member  
-    - `name` (string, required): The name of the team member  
-    - `email` (string, required): The email of the team member  
-
-- **IsAssignedDTO**
-    - `taskId` (integer, required): The ID of the task  
-    - `teamMemberId` (integer, required): The ID of the team member  
-    - `isAssigned` (boolean, required): Indicates whether the team member is assigned to the task
-
 ---
 
 ## **Request and Response Examples**
