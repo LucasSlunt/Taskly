@@ -262,41 +262,30 @@ Below are some examples of API requests and responses.
 
 #### **CreateAdmin**
 ```http
-POST /api/admin
-Content-Type: application/json
+POST /api/admin?name=John Doe&email=john.doe@example.com
 ```
 
-- **Request Body:**
-```json
-{
-    "name": "John Doe",
-    "email": "john.doe@example.com"
-}
-```
+- **Request Parameters**
+    - `name` (string, required): The name of the new admin.
+    - `email` (string, required): The email of the new admin.
 
-- **Response Body:**
-```json
+- **Request Response**
+```json 
 {
     "id": 1,
     "name": "John Doe",
     "email": "john.doe@example.com",
-    "createdAt": "2025-02-26T10:00:00Z"
 }
 ```
-
 
 #### **ModifyAdminName**
 ```http
-PUT /api/admin/1/update-name
-Content-Type: application/json
+PUT /api/admin/1/update-name?newName=Jane Doe
 ```
 
-- **Request Body**
-```json
-{
-    "newName": "Jane Doe"
-}
-```
+- **Request Parameters**
+    - `adminId` (integer, required): The ID of the admin changing the members name.
+    - `newName` (string, required): The new name of the member.
 
 - **Response Body**
 ```json
@@ -307,7 +296,6 @@ Content-Type: application/json
 }
 ```
 
-
 #### **DeleteAdmin**
 ```http
 DELETE /api/admin/1
@@ -317,33 +305,28 @@ DELETE /api/admin/1
     - No request body required. 
     - No response body returned.
 
+
 #### **CreateTask**
 ```http
-POST /api/tasks
-Content-Type: application/json
+POST /api/tasks?title=The Task Title&description=This is the description, it could get long.&isLocked=false&status=To-Do&teamId=3
 ```
 
-- **Request Body**
-```json
-{
-    "title": "Design Database Schema",
-    "description": "Create the database structure.",
-    "isLocked": false,
-    "status": "To-Do",
-    "teamId": 101
-}
-```
+- **Request Parameters**
+    - `title` (string, required): The title of the new task.
+    - `description` (string, required): The description of the new task.
+    - `isLocked` (boolean, required): A boolean of whether the new task is locked or not.
+    - `status` (string, required): A string of the current status of the task.
+    - `teamId` (integer, required): The ID of the team being assigned to the task.
 
 - **Response Body**
 ```json
 {
-    "taskId": 5001,
+    "taskId": 4,
     "title": "Design Database Schema",
     "description": "Create the database structure.",
     "isLocked": false,
     "status": "To-Do",
-    "teamId": 101,
-    "dateCreated": "2025-02-26T12:00:00Z"
+    "teamId": 3
 }
 ```
 
@@ -361,23 +344,24 @@ Below are examples of some API requests and responses using Cypress.
     cy.request({
         method: 'POST',
         url: 'http://localhost:8080/api/admin',
-        body: {
+        qs: {
             name: 'John Doe',
             email: 'john@example.com'
-        },
-        headers: {
-            'Content-Type': 'application/json'
         }
     }).then((response) => {
         expect(response.status).to.eq(200);
         expect(response.body.name).to.eq('John Doe');
     });
     ```
+
     - **DeleteAdmin**
     ```javascript
     cy.request({
         method: 'DELETE',
-        url: 'http://localhost:8080/api/{adminId}'
+        url: 'http://localhost:8080/api',
+        qs: {
+            adminId: 1
+        }
     }).then((response) => {
         expect(response.status).to.eq(204);
     });
@@ -386,12 +370,18 @@ Below are examples of some API requests and responses using Cypress.
 - **TeamMemberController**
     - **Assign Member To Task**
     ```javascript
+    const taskId = 5;
+    const teamMemberId = 7;
+
     cy.request({
         method: 'POST',
-        url: 'http://localhost:8080/api/tasks/{taskId}/assign/{teamMemberId}'
+        url: 'http://localhost:8080/api/tasks/${taskId}/assign/${teamMemberId}'
     }).then((response) => {
         expect(response.status).to.eq(200);
+        expect(response.body).to.have.property('taskId', taskId);
+        expect(response.body).to.have.property('teamMemberId', teamMemberId);
     });
+    ```
 
 ---
 
@@ -406,7 +396,6 @@ Follow these practices to ensure efficiency and accuracy with all API requests.
 - **DELETE**: Used to delete resources.
 
 ### **Request Formatting**
-- Always set `Content-Type: application/json` in the headers for POST and PUT requests.
 - Ensure that required parameters are included in the request body or URL path.
 - Avoid sending unnecessary fields in API requests.
 
