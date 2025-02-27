@@ -1,11 +1,14 @@
 import React from 'react';
 
-const Task = () => {
+
+const Task = ({taskName, taskTeam, dueDate}) => {
     return (
         <tr>
-            <td className="taskName">Create wireframe</td>
-            <td><button className="miniButton">Team 1</button></td>
-            <td>11 04 25</td>
+            <td className="taskName">{taskName}</td>
+            <td><button className="miniButton">{taskTeam}</button></td>
+            <td>{dueDate}</td>
         </tr>
     )
 }
+
+export default Task;
