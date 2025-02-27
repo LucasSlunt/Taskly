@@ -1,0 +1,27 @@
+name: ReactCI
+
+#I want to run test on our main front end branch
+on:
+  push:
+    branches: [main, real-react]
+  pull_request: 
+    branches: [main, real-react]
+    
+jobs:
+  build test:
+    runs-on: ubuntu-latest
+    strategy:
+    matrix:
+      node-version: [10.x, 12.x, 14.x, 15.x]
+  steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: npm ci, build and test
+      working-directory: ./frontend/react-app
+      run: |
+        npm ci
+        npm run build --if-present
+        npm test      
