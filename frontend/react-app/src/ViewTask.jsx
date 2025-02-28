@@ -26,7 +26,7 @@ function ViewTask(){
                     </div>
                 </div>
                 <div class="discription">
-                
+                    {task.discription}
                 </div>
                 <div class="pic">
                     <ul>
