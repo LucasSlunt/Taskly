@@ -196,9 +196,6 @@ public class TeamMemberService {
 				String newHashedPassword = AuthInfoService.hashPassword(newPassword, salt);
 				teamMember.getAuthInfo().setHashedPassword(newHashedPassword);
 			}
-
-
-		// Password change logic to be implemented in the future
 	}
 
 	public TeamMemberDTO getTeamMember(int accountId) {
