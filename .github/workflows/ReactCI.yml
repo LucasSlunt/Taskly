@@ -8,13 +8,13 @@ on:
     branches: [main, real-react]
     
 jobs:
-  build test:
+  build-test:
     runs-on: ubuntu-latest
     strategy:
     matrix:
-      node-version: [10.x, 12.x, 14.x, 15.x]
+      node-version: [20.x, 21.x, 22.x, 23.x]
   steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
