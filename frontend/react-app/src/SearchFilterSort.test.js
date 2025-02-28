@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import SearchFilterSort from "../components/SearchFilterSort";
+import SearchFilterSort from "./components/SearchFilterSort";
 
 test('updates searchQuery state when typing in the input', () => {
     const setSearchQuery = jest.fn(); //mock the setSearchQuery function
