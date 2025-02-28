@@ -1,0 +1,98 @@
+*{
+    text-decoration: none;
+}
+div.viewTask{
+    color: #bfcde0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    margin: 0 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #5d5d81;
+}
+div.page-body{
+    margin-left: 5%;
+    margin-right: 5%;
+    font-family: Calibri;
+}
+div.flexbox{
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    justify-content:space-between;
+    display: flex;
+}
+div.header{
+    height: auto;
+}
+strong.nameOfTask{
+    color: #fefcfd;
+    font-size: 30px;
+}
+div.priority{
+    background-color: #3b3355;
+    height: fit-content;
+    padding: 10px 10px;
+    border-radius: 20px;
+    text-align: right;
+    border: 2px solid black;
+}
+div.pic{
+    display: flex;
+    justify-content: center;
+}
+li.imgSpacing{
+    margin-right: 10px;
+}
+input.comment{
+    background-color: #5d5d81;
+    border: none;
+    padding: 10px;
+    padding-left: 0%;
+    outline: none;
+    border-bottom: 2px solid black;
+    margin-bottom: 10px;
+    width: 70%
+
+}
+input.comment::placeholder {
+    color: black;
+    opacity: 1; /* Firefox */
+  }
+input.submit-comment{
+    padding: 10px;
+    background-color: black;
+    color: #fefcfd;
+    border: none;
+    outline: none;
+    font-family: Calibri;
+    font-weight: bolder;
+    font-size: 15px;
+    border-radius: 3px;
+}
+.update-class{
+    display: flex;
+    justify-content: space-between;
+}
+.updateSelector{
+    padding: 10px;
+    border-bottom: 2px solid black;
+    border-radius: 20px;
+    background-color: #bfcde0;
+}
+.fotterbutton{
+    margin-left: 10px;
+    border: none;
+    outline: none;
+    color: #bfcde0;
+    font-weight: bolder;
+    font-size: 15px;
+    padding: 10px;
+    border-bottom: 2px solid black;
+    border-radius: 10px;
+    background-color: #1d1e22;
+}
+
