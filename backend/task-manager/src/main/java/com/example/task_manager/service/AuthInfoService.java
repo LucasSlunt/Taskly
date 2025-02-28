@@ -38,6 +38,9 @@ public class AuthInfoService {
         /*This method takes a user and the password that the user enters to log into their 
           account, and returns the password hash associated with that user and password. 
         */
+    if (saltString.length() != 16 || saltString == null){
+        throw new RuntimeException("Invalid salt entered");
+    }
     byte[] salt = saltString.getBytes(java.nio.charset.StandardCharsets.ISO_8859_1);
     int hashLength = 32;
  

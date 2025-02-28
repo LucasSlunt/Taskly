@@ -187,6 +187,9 @@ public class TeamMemberService {
 	 * @param newPassword  The new password to set (not yet implemented).
 	 */
 	public void changePassword(int teamMemberId, String oldPassword, String newPassword) {
+		if (newPassword == null || newPassword.isEmpty()){
+			throw new RuntimeException("Cannot change password to null or empty string");
+		}
 		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
 			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 			
