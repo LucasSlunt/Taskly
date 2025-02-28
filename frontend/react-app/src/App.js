@@ -17,12 +17,14 @@ const App = () => {
         <a href="/login">Login</a> 
         <a href="/home">Home</a>
       </nav>
+      <p>Test</p>
 
       <Routes>
         <Route path="/Login" element={<Login/>}></Route>
         <Route path="/Home" element={<Home/>}></Route>
       </Routes>
     </Router>
+
   );
 }
 

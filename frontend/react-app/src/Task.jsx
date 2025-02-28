@@ -9,3 +9,5 @@ const Task = () => {
         </tr>
     )
 }
+
+export default Task;
