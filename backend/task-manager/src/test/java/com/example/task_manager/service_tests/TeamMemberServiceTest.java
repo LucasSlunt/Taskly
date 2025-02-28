@@ -21,12 +21,16 @@ import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
 import com.example.task_manager.repository.IsAssignedRepository;
+import com.example.task_manager.service.AuthInfoService;
 import com.example.task_manager.service.TeamMemberService;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 public class TeamMemberServiceTest {
+
+	@Autowired
+    private AuthInfoService authInfoService;
 
 	@Autowired
 	private TeamMemberService teamMemberService;
@@ -54,7 +58,7 @@ public class TeamMemberServiceTest {
 		teamRepository.deleteAllInBatch();
 		teamMemberRepository.deleteAllInBatch();
 
-		teamMember = new TeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com");
+		teamMember = new TeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com","defaultpw");
 		teamMember = teamMemberRepository.save(teamMember);
 
 		team = new Team("Team Name " + System.nanoTime(), teamMember);
@@ -180,6 +184,16 @@ public class TeamMemberServiceTest {
 
 	@Test
 	void testChangePassword() {
-		//to be implemented with password methods
+		int teamMemberId = teamMember.getAccountId();
+		teamMemberService.changePassword(teamMemberId, "defaultpw", "coolnewpassword");
+		assertTrue(authInfoService.approveLogin(teamMemberId,"coolnewpassword"));
 	}
+
+	@Test
+	void testChangePasswordButSupplyWrongPassword() {
+		int teamMemberId = teamMember.getAccountId();
+		teamMemberService.changePassword(teamMemberId, "wrongpw", "coolnewpassword");
+		assertFalse(authInfoService.approveLogin(teamMemberId,"coolnewpassword"));
+	}
+
 }

@@ -54,13 +54,13 @@ public class TeamServiceTest {
 		teamRepository.deleteAllInBatch();
 		teamMemberRepository.deleteAllInBatch();
 
-		teamLead = new TeamMember("Team Lead", "team_lead" + System.nanoTime() + "@example.com");
+		teamLead = new TeamMember("Team Lead", "team_lead" + System.nanoTime() + "@example.com","defaultpw");
 		teamLead = teamMemberRepository.save(teamLead);
 
-		newTeamLead = new TeamMember("New Team Lead", "new_team_lead" + System.nanoTime() + "@example.com");
+		newTeamLead = new TeamMember("New Team Lead", "new_team_lead" + System.nanoTime() + "@example.com","defaultpw");
 		newTeamLead = teamMemberRepository.save(newTeamLead);
 
-		teamMember = new TeamMember("Team Member", "team_member" + System.nanoTime() + "@example.com");
+		teamMember = new TeamMember("Team Member", "team_member" + System.nanoTime() + "@example.com","defaultpw");
 		teamMember = teamMemberRepository.save(teamMember);
 
 		team = teamService.createTeam("Development Team " + System.nanoTime(), teamLead.getAccountId());
