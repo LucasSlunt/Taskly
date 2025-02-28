@@ -1,6 +1,6 @@
 [
     {
-        "name": "Task",
+        "name": "make frontend",
         "team": "Team 1",
         "assignees": "James Jordan Jack Ella",
         "status": "In progress",
@@ -9,7 +9,7 @@
         "": ""
     },
     {
-        "name": "Task 2",
+        "name": "make backend",
         "team": "Team 2",
         "assignees": "James Jordan Jack Ella",
         "status": "In progress",
