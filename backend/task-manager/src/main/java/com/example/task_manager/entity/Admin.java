@@ -7,8 +7,8 @@ public class Admin extends TeamMember {
 
     public Admin() {}
 
-    public Admin(String userName, String userEmail) {
-        super(userName, userEmail);
+    public Admin(String userName, String userEmail, String userPassword) {
+        super(userName, userEmail, userPassword);
     }
     //inherits all attributes from TeamMember
 }

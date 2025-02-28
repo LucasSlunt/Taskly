@@ -58,7 +58,7 @@ public class TaskEntityTest {
         entMan.persist(task);
         entMan.flush();
 
-        TeamMember teamMember = new TeamMember("Team Member" + System.nanoTime(), System.nanoTime() + "test@example.com");
+        TeamMember teamMember = new TeamMember("Team Member" + System.nanoTime(), System.nanoTime() + "test@example.com","defaultpw");
         entMan.persist(teamMember);
         entMan.flush();
 
@@ -93,7 +93,7 @@ public class TaskEntityTest {
         entMan.persist(task);
         entMan.flush();
     
-        TeamMember teamMember = new TeamMember("Team Member" + System.nanoTime(), System.nanoTime() + "test@example.com");
+        TeamMember teamMember = new TeamMember("Team Member" + System.nanoTime(), System.nanoTime() + "test@example.com","defaultpw");
         entMan.persist(teamMember);
         entMan.flush();
 
@@ -197,7 +197,7 @@ public class TaskEntityTest {
         entMan.persist(team);
         entMan.flush();
 
-        TeamMember teamMember = new TeamMember("Task Member", "member@example.com");
+        TeamMember teamMember = new TeamMember("Task Member", "member@example.com","defaultpw");
         entMan.persist(teamMember);
         entMan.flush();
 

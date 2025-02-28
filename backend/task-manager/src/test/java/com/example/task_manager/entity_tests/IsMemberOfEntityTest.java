@@ -26,7 +26,7 @@ public class IsMemberOfEntityTest {
      */
     @Test
     void testIsMemberOfPersistence() {
-        TeamMember teamMember = new TeamMember("Test Member", "test@example.com");
+        TeamMember teamMember = new TeamMember("Test Member", "test@example.com","defaultpw");
         entMan.persist(teamMember);
         entMan.flush();
 
@@ -70,7 +70,7 @@ public class IsMemberOfEntityTest {
      */
     @Test
     void testCascadeDeleteIsMember() {
-        TeamMember teamMember = new TeamMember("Test Member", "test@example.com");
+        TeamMember teamMember = new TeamMember("Test Member", "test@example.com","defaultpw");
         entMan.persist(teamMember);
         entMan.flush();
 
@@ -97,7 +97,7 @@ public class IsMemberOfEntityTest {
      */
     @Test
     void testCascadeDeleteIsMemberWithTeam() {
-        TeamMember teamMember = new TeamMember("Test Member", "test@example.com");
+        TeamMember teamMember = new TeamMember("Test Member", "test@example.com","defaultpw");
         entMan.persist(teamMember);
         entMan.flush();
 
@@ -122,7 +122,7 @@ public class IsMemberOfEntityTest {
      */
     @Test
     void testRemoveIsMemberOfWithoutAffectingEntities() {
-        TeamMember teamMember = new TeamMember("Independent Member", "independent@example.com");
+        TeamMember teamMember = new TeamMember("Independent Member", "independent@example.com","defaultpw");
         entMan.persist(teamMember);
         entMan.flush();
 

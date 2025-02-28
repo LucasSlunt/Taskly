@@ -7,4 +7,6 @@ import com.example.task_manager.entity.TeamMember;
 
 @Repository
 public interface TeamMemberRepository extends JpaRepository<TeamMember, Integer> {
+
+
 }

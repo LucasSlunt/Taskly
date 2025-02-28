@@ -31,18 +31,21 @@ public class TeamMemberService {
 	protected final IsMemberOfRepository isMemberOfRepository;
 	protected final TaskRepository taskRepository;
 	protected final IsAssignedRepository isAssignedRepository;
+	protected final AuthInfoService authInfoService;
 
 	// Constructor for required repositories
 	public TeamMemberService(TeamMemberRepository teamMemberRepository, 
 							 TeamRepository teamRepository, 
 							 TaskRepository taskRepository, 
 							 IsMemberOfRepository isMemberOfRepository, 
-							 IsAssignedRepository isAssignedRepository) {
+							 IsAssignedRepository isAssignedRepository,
+							 AuthInfoService authInfoService) {
 		this.teamMemberRepository = teamMemberRepository;
 		this.teamRepository = teamRepository;
 		this.isMemberOfRepository = isMemberOfRepository;
 		this.taskRepository = taskRepository;
 		this.isAssignedRepository = isAssignedRepository;
+		this.authInfoService = authInfoService;
 	}
 	
 	/**
@@ -184,10 +187,18 @@ public class TeamMemberService {
 	 * @param newPassword  The new password to set (not yet implemented).
 	 */
 	public void changePassword(int teamMemberId, String oldPassword, String newPassword) {
+		if (newPassword == null || newPassword.isEmpty()){
+			throw new RuntimeException("Cannot change password to null or empty string");
+		}
 		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
 			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
-
-		// Password change logic to be implemented in the future
+			
+			boolean isOldPasswordVerified = authInfoService.approveLogin(teamMember.getAccountId(),oldPassword);
+			if (isOldPasswordVerified){
+				String salt = teamMember.getAuthInfo().getSalt();
+				String newHashedPassword = AuthInfoService.hashPassword(newPassword, salt);
+				teamMember.getAuthInfo().setHashedPassword(newHashedPassword);
+			}
 	}
 
 	public TeamMemberDTO getTeamMember(int accountId) {

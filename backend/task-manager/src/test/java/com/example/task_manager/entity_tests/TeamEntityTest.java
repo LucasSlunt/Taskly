@@ -29,7 +29,7 @@ public class TeamEntityTest {
      */
     @Test
     void testTeamPersistence() {
-        TeamMember teamMember = new TeamMember("Test User", "test@example.com");
+        TeamMember teamMember = new TeamMember("Test User", "test@example.com","defaultpw");
         entMan.persist(teamMember);
         entMan.flush();
 
@@ -51,7 +51,7 @@ public class TeamEntityTest {
      */
     @Test
     void testTeamWithMembers() {
-        TeamMember teamMember = new TeamMember("Test User", "test@example.com");
+        TeamMember teamMember = new TeamMember("Test User", "test@example.com","defaultpw");
         entMan.persist(teamMember);
         entMan.flush();
 
@@ -61,8 +61,8 @@ public class TeamEntityTest {
         entMan.persist(team);
         entMan.flush();
 
-        TeamMember member_1 = new TeamMember("John Doe", "john@example.com");
-        TeamMember member_2 = new TeamMember("Alice Wonder", "alice@example.com");
+        TeamMember member_1 = new TeamMember("John Doe", "john@example.com","defaultpw");
+        TeamMember member_2 = new TeamMember("Alice Wonder", "alice@example.com","defaultpw");
         entMan.persist(member_1);
         entMan.persist(member_2);
         entMan.flush();
@@ -96,7 +96,7 @@ public class TeamEntityTest {
      */
     @Test
     void testCascadeDeleteWithTeam() {
-        TeamMember teamMember = new TeamMember("Test User", "test@example.com");
+        TeamMember teamMember = new TeamMember("Test User", "test@example.com","defaultpw");
         entMan.persist(teamMember);
         entMan.flush();
 
@@ -112,7 +112,7 @@ public class TeamEntityTest {
         entMan.persist(task);
         entMan.flush();
 
-        TeamMember devMember = new TeamMember("Backend Member", "backend@example.com");
+        TeamMember devMember = new TeamMember("Backend Member", "backend@example.com","defaultpw");
         entMan.persist(devMember);
         entMan.flush();
 
@@ -135,8 +135,8 @@ public class TeamEntityTest {
      */
     @Test
     void testUpdateTeamLead() {
-        TeamMember oldLead = new TeamMember("Old Lead", "oldlead@example.com");
-        TeamMember newLead = new TeamMember("New Lead", "newlead@example.com");
+        TeamMember oldLead = new TeamMember("Old Lead", "oldlead@example.com","defaultpw");
+        TeamMember newLead = new TeamMember("New Lead", "newlead@example.com","defaultpw");
         entMan.persist(oldLead);
         entMan.persist(newLead);
         entMan.flush();
@@ -176,8 +176,8 @@ public class TeamEntityTest {
      */
     @Test
     void testDeleteTeamDoesNotDeleteMembers() {
-        TeamMember teamMember1 = new TeamMember("Member1", "member1@example.com");
-        TeamMember teamMember2 = new TeamMember("Member2", "member2@example.com");
+        TeamMember teamMember1 = new TeamMember("Member1", "member1@example.com","defaultpw");
+        TeamMember teamMember2 = new TeamMember("Member2", "member2@example.com","defaultpw");
         entMan.persist(teamMember1);
         entMan.persist(teamMember2);
         entMan.flush();

@@ -23,14 +23,15 @@ public class AdminService extends TeamMemberService {
 						TeamRepository teamRepository, 
 						IsMemberOfRepository isMemberOfRepository, 
 						TaskRepository taskRepository,
-						IsAssignedRepository isAssignedRepository) {
-		super(teamMemberRepository, teamRepository, taskRepository, isMemberOfRepository, isAssignedRepository);
+						IsAssignedRepository isAssignedRepository,
+						AuthInfoService authInfoService) {
+		super(teamMemberRepository, teamRepository, taskRepository, isMemberOfRepository, isAssignedRepository, authInfoService);
 		this.adminRepository = adminRepository;
 	}
 
 	// Creates and saves a new Admin entity
-	public AdminDTO createAdmin(String adminName, String adminEmail) {
-		Admin admin = new Admin(adminName, adminEmail);
+	public AdminDTO createAdmin(String adminName, String adminEmail, String adminPassword) {
+		Admin admin = new Admin(adminName, adminEmail, adminPassword);
 		admin = adminRepository.save(admin);
 		return convertToDTO(admin);
 	}
@@ -64,8 +65,8 @@ public class AdminService extends TeamMemberService {
 	}
 
 	// Creates and saves a new TeamMember entity
-	public TeamMemberDTO createTeamMember(String userName, String userEmail) {
-		TeamMember teamMember = new TeamMember(userName, userEmail);
+	public TeamMemberDTO createTeamMember(String userName, String userEmail, String userPassword) {
+		TeamMember teamMember = new TeamMember(userName, userEmail, userPassword);
 		teamMember = teamMemberRepository.save(teamMember);
 		return convertToDTO(teamMember);
 	}

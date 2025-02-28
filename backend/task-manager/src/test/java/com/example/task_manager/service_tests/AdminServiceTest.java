@@ -78,8 +78,8 @@ public class AdminServiceTest {
 		adminRepository.deleteAllInBatch();
 		authInfoRepository.deleteAllInBatch();
 
-		admin = adminService.createAdmin("Admin Name", "admin" + System.nanoTime() + "@example.com");
-		teamMember = adminService.createTeamMember("TM Name", "teamMember" + System.nanoTime() + "@example.com");
+		admin = adminService.createAdmin("Admin Name", "admin" + System.nanoTime() + "@example.com","defaultpw");
+		teamMember = adminService.createTeamMember("TM Name", "teamMember" + System.nanoTime() + "@example.com","defaultpw");
 
 		team = new Team();
 		team.setTeamName("Team Name " + System.nanoTime());
@@ -92,7 +92,7 @@ public class AdminServiceTest {
 	// Try to create admin account
 	@Test
 	void testCreateAdmin() {
-		AdminDTO adminDTO = adminService.createAdmin("Admin Name Testing", "admin" + System.nanoTime() + "@example.com");
+		AdminDTO adminDTO = adminService.createAdmin("Admin Name Testing", "admin" + System.nanoTime() + "@example.com","defaultpw");
 
 		assertNotNull(adminDTO);
 		assertEquals("Admin Name Testing", adminDTO.getUserName());
@@ -101,21 +101,21 @@ public class AdminServiceTest {
 	// try to create admin with the same name
 	@Test
 	void testCreateAdminExistingName() {
-		AdminDTO adminDTO = adminService.createAdmin("John Doe", "admin" + System.nanoTime() + "@example.com");
+		AdminDTO adminDTO = adminService.createAdmin("John Doe", "admin" + System.nanoTime() + "@example.com","defaultpw");
 
 		Exception exception = assertThrows(RuntimeException.class,
-				() -> adminService.createAdmin("John Doe", "admin" + System.nanoTime() + "@example.com"));
+				() -> adminService.createAdmin("John Doe", "admin" + System.nanoTime() + "@example.com","defaultpw"));
 
 		assertNotNull(adminDTO);
 	}
 	
 	// try to create admin with the same email
 	@Test
-	void testCreateAdminExistingEmail() {
-		AdminDTO adminDTO = adminService.createAdmin("John Doe", "admin_email@example.com");
+	void testCreateAdminExistingEmail() { 
+		AdminDTO adminDTO = adminService.createAdmin("John Doe", "admin_email@example.com","defaultpw");
 
 		Exception exception = assertThrows(RuntimeException.class,
-				() -> adminService.createAdmin("Alice Wonder", "admin_email@example.com"));
+				() -> adminService.createAdmin("Alice Wonder", "admin_email@example.com","defaultpw"));
 
 		assertNotNull(adminDTO);
 	}
@@ -149,7 +149,7 @@ public class AdminServiceTest {
 
 	@Test
 	void testCreateTeamMember() {
-		TeamMemberDTO teamMemberDTO = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com");
+		TeamMemberDTO teamMemberDTO = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com","defaultpw");
 
 		assertNotNull(teamMemberDTO);
 		assertEquals("Team Member", teamMemberDTO.getUserName());
@@ -170,7 +170,7 @@ public class AdminServiceTest {
 
 	@Test
 	void testModifyTeamMemberEmail() {
-		TeamMemberDTO newTeamMember = adminService.createTeamMember("Team Member Email Test", "teamMemberEmailTest@example.com");
+		TeamMemberDTO newTeamMember = adminService.createTeamMember("Team Member Email Test", "teamMemberEmailTest@example.com","defaultpw");
 
 		String newEmail = "newEmail@example.com";
 		TeamMemberDTO updatedTeamMember = adminService.modifyTeamMemberEmail(newTeamMember.getAccountId(), newEmail);
@@ -198,8 +198,8 @@ public class AdminServiceTest {
 
 	@Test
 	void testAssignToTeam() {
-		TeamMemberDTO teamMember = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com");
-		TeamMemberDTO teamLead = adminService.createTeamMember("Team Lead", "lead" + System.nanoTime() + "@example.com");
+		TeamMemberDTO teamMember = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com","defaultpw");
+		TeamMemberDTO teamLead = adminService.createTeamMember("Team Lead", "lead" + System.nanoTime() + "@example.com","defaultpw");
 
 		TeamDTO team = teamService.createTeam("Team Name " + System.nanoTime(), teamLead.getAccountId());
 
@@ -214,7 +214,7 @@ public class AdminServiceTest {
 
 	@Test
 	void testAssignToNonexistentTeam() {
-		TeamMemberDTO teamMember = adminService.createTeamMember("Team Member", "test@example.com");
+		TeamMemberDTO teamMember = adminService.createTeamMember("Team Member", "test@example.com","defaultpw");
 
 		Exception exception = assertThrows(RuntimeException.class, 
 			() -> adminService.assignToTeam(teamMember.getAccountId(), 9999));

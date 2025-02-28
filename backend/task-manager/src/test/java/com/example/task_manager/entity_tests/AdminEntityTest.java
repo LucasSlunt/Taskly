@@ -42,7 +42,7 @@ public class AdminEntityTest {
 	@Test
 	void testAdminPersistence() {
 		// Admin admin = new Admin("Admin User TESTING", "adminTESTING@example.com");
-		Admin admin = new Admin("Admin Testing", "adminTesting@example.com");
+		Admin admin = new Admin("Admin Testing", "adminTesting@example.com","defaultpw");
 		entMan.persist(admin);
 		entMan.flush();
 
@@ -59,7 +59,7 @@ public class AdminEntityTest {
      */
 	@Test
 	void testAdminStoredAsTeamMember() {
-		Admin admin = new Admin("Admin" + System.nanoTime(), "admin" + System.nanoTime() + "@example.com");
+		Admin admin = new Admin("Admin" + System.nanoTime(), "admin" + System.nanoTime() + "@example.com","defaultpw");
 		entMan.persist(admin);
 		entMan.flush();
 
@@ -77,8 +77,8 @@ public class AdminEntityTest {
 	@Transactional
 	@Rollback
 	void testAdminQueryFromTeamMember() {
-		Admin admin = new Admin("Admin" + System.nanoTime(), "admin" + System.nanoTime() + "@example.com");
-		TeamMember teamMember = new TeamMember("TeamUser" + System.nanoTime(), "team_user" + System.nanoTime() + "@example.com");
+		Admin admin = new Admin("Admin" + System.nanoTime(), "admin" + System.nanoTime() + "@example.com","defaultpw");
+		TeamMember teamMember = new TeamMember("TeamUser" + System.nanoTime(), "team_user" + System.nanoTime() + "@example.com","defaultpw");
 		entMan.persist(admin);
 		entMan.persist(teamMember);
 		entMan.flush();
@@ -96,7 +96,7 @@ public class AdminEntityTest {
 	 */
 	@Test
 	void testAdminDeletion() {
-		Admin admin = new Admin("AdminToDelete", "deleteadmin@example.com");
+		Admin admin = new Admin("AdminToDelete", "deleteadmin@example.com","defaultpw");
 		entMan.persist(admin);
 		entMan.flush();
 
@@ -112,7 +112,7 @@ public class AdminEntityTest {
 	 */
 	@Test
 	void testAdminQueryById() {
-		Admin admin = new Admin("AdminLookup", "lookupadmin@example.com");
+		Admin admin = new Admin("AdminLookup", "lookupadmin@example.com","defaultpw");
 		entMan.persist(admin);
 		entMan.flush();
 
@@ -130,7 +130,7 @@ public class AdminEntityTest {
 	 */
 	@Test
 	void testAdminInheritsTeamMemberBehavior() {
-		Admin admin = new Admin("InheritedAdmin", "inheritadmin@example.com");
+		Admin admin = new Admin("InheritedAdmin", "inheritadmin@example.com","defaultpw");
 		entMan.persist(admin);
 		entMan.flush();
 

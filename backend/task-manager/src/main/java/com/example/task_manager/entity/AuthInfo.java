@@ -21,8 +21,12 @@ public class AuthInfo {
     private TeamMember teamMember;
 
     public AuthInfo() {}
-    
+
     public AuthInfo(String hashedPassword, String salt, TeamMember teamMember) {
+        /*
+         * To be used when creating a new instance of authinfo, for a team member 
+         * or admin whose authinfo already exists
+         */
         this.hashedPassword = hashedPassword;
         this.salt = salt;
         this.teamMember = teamMember;

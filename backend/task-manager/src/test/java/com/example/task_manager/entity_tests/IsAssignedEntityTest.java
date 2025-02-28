@@ -63,7 +63,7 @@ public class IsAssignedEntityTest {
 		entMan.persist(task);
 		entMan.flush();
 
-		TeamMember teamMember = new TeamMember("Test User", "test@example.com");
+		TeamMember teamMember = new TeamMember("Test User", "test@example.com","defaultpw");
 		entMan.persist(teamMember);
 		entMan.flush();
 
@@ -98,7 +98,7 @@ public class IsAssignedEntityTest {
 		task.setTeam(team);
 		taskRepository.save(task);
 
-		TeamMember teamMember = new TeamMember("TeamMember Name" + System.nanoTime(), System.nanoTime() + "teamMember@example.com");
+		TeamMember teamMember = new TeamMember("TeamMember Name" + System.nanoTime(), System.nanoTime() + "teamMember@example.com","defaultpw");
 		teamMemberRepository.save(teamMember);
 
 		IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
@@ -131,7 +131,7 @@ public class IsAssignedEntityTest {
 		entMan.persist(task);
 		entMan.flush();
 
-		TeamMember teamMember = new TeamMember("User To Remove", "remove@example.com");
+		TeamMember teamMember = new TeamMember("User To Remove", "remove@example.com","defaultpw");
 		entMan.persist(teamMember);
 		entMan.flush();
 
@@ -161,7 +161,7 @@ public class IsAssignedEntityTest {
 		entMan.persist(task);
 		entMan.flush();
 
-		TeamMember teamMember = new TeamMember("Member of Deleted Team", "deletedmember@example.com");
+		TeamMember teamMember = new TeamMember("Member of Deleted Team", "deletedmember@example.com","defaultpw");
 		entMan.persist(teamMember);
 		entMan.flush();
 
@@ -190,7 +190,7 @@ public class IsAssignedEntityTest {
 		entMan.persist(task);
 		entMan.flush();
 
-		TeamMember teamMember = new TeamMember("Independent Member", "independent@example.com");
+		TeamMember teamMember = new TeamMember("Independent Member", "independent@example.com","defaultpw");
 		entMan.persist(teamMember);
 		entMan.flush();
 
