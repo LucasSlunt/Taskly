@@ -1,0 +1,24 @@
+name: IssuesLabeler
+
+on:
+
+  issues:
+    types: [opened]
+
+permissions:
+
+  issues: write 
+
+jobs:
+
+  label_issue:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Label any new issue as "To-Do"
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: "To-Do"
