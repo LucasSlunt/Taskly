@@ -1,0 +1,31 @@
+*{
+    text-decoration: none;
+}
+div.MyTasksPage{
+    color: #bfcde0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    margin: 0 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #5d5d81;
+}
+div.content-wrapper{
+    margin-left: 5%;
+    margin-right: 5%;
+    font-family: Calibri;
+}
+div.flexbox{
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    justify-content:space-between;
+    width: 90%;
+    display: flex;
+}
+.taskBox{
+    width: 90%;
+}
