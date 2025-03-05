@@ -1,20 +1,20 @@
 *{
     text-decoration: none;
 }
-div.MyTasksPage{
-    color: #bfcde0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    margin: 0 0;
+html{
     height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+div.MyTasksPage{
     background-color: #5d5d81;
 }
+.pageFlexbox{
+    display: flex;
+    flex-direction: column;
+}
 div.content-wrapper{
+    color: #bfcde0;
     margin-left: 5%;
     margin-right: 5%;
     font-family: Calibri;
@@ -25,6 +25,7 @@ div.flexbox{
     justify-content:space-between;
     width: 90%;
     display: flex;
+    flex-direction: column;
 }
 .taskBox{
     width: 90%;
