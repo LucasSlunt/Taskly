@@ -1,37 +1,47 @@
 import fakeTeamData from "../FakeData/fakeTeamData.json"
 import Header from "../Header"
+
+import {useForm, Controller} from 'react-hook-form'
 function CreateTask(){
-    function task(name, assignees, priority, discription, images){
-        this.name = name
-        this.assignees = assignees
-        this.priority = priority
-        this. discription = discription
-        this.images = images
-    }
-    const handleSubmit = (event) => {
-        //newTask = task(
-        //    event.target.name.value,
-        //    )
-        console.log(event.target.name.value)          // or directly
-      }
+    const { register, handleSubmit } = useForm();
+    const onSubmit = data => {
+        console.log(data)
+    };
+
+
         
 
     return (
         <div>
             <Header/>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <label>
                     Task Name
                     <div>
-                    <input type="text" name="Name Of Task" id="name" required/>
+                    <input type="text" name="name" id="name"{...register("name", { required: true })}/>
                     </div>
                     </label>
                 <label>
                     Assign To:
                 {fakeTeamData.map((teamMember)=>(
                     <div>
-                        {teamMember.name}
-                        <input type="checkbox" name="checkTeamMemeber" id={teamMember.id} />
+                        <Controller
+                            name="myCheckbox"
+                            control={control}
+                            defaultValue={false}
+                            render={({ field }) => (
+                            <FormControlLabel
+                                control={
+                                <Checkbox
+                                    {...field}
+                                    checked={field.value}
+                                    onChange={(e) => field.onChange(e.target.checked)}
+                                />
+                                }
+                                label={teamMember.name}
+                            />
+                            )}
+                        />
                     </div>
                 ))}
                 </label>
@@ -39,7 +49,7 @@ function CreateTask(){
                     Set Priority
                 
                 <div>
-                    <select name="setPrioity" id="setPrioity" required>
+                    <select name="priority" id="priority" required {...register("priority", { required: true })}>
                         <option value="Low">Low</option>
                         <option value="Medium">Medium</option>
                         <option value="High">High</option>
@@ -50,7 +60,7 @@ function CreateTask(){
                     Add Discription
                 
                 <div>
-                    <input type="text" name="input-discription" id="discription" />
+                    <input type="text" name="input-discription" id="discription" {...register("priority", { required: false })}/>
                 </div>
                 </label>
                 <label>
@@ -60,7 +70,7 @@ function CreateTask(){
                     <input type="file" name="input-photos" id="photos" multiple accept="image/*"/>
                 </div>
                 </label>
-                <input type="submit" value="Create Task" onClick={handleSubmit()}/>
+                <input type="submit" value="Create Task"/>
                 </form>
         </div>
     
