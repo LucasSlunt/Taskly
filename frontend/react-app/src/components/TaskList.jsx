@@ -29,6 +29,8 @@ function TaskList(){
                 return task.name.toLowerCase().includes(searchQuery.toLowerCase())
             case "team":
                 return task.team.toLowerCase().includes(searchQuery.toLowerCase())
+            case "assignees":
+                return task.assignees.toLowerCase().includes(searchQuery.toLowerCase())
             case "status":
                 return task.status.toLowerCase().includes(searchQuery.toLowerCase())
             case "priority":
@@ -79,8 +81,8 @@ function TaskList(){
                 <option value="name" >Task Name</option>
                 <option value="team">Team Name</option>
                 <option value="assignees">Assignee(s)</option>
-                <option value="priority">Priority</option>
                 <option value="status">Status</option>
+                <option value="priority">Priority</option>
                 <option value="dueDate">Due Date</option>
             </select>
             
