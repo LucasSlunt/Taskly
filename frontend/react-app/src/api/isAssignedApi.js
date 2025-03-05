@@ -8,14 +8,14 @@ export const assignTeamMemberToTask = async (teamMemberId, taskId) => {
         });
 
         if (!response.ok) {
-            console.error(`Failed to assign team member to task: ${response.status} ${response.statusText}`);
+            console.error(`Failed assigning team member to task: ${response.status} ${response.statusText}`);
             return false;
         }
 
         return true;
     }
     catch (error) {
-        console.error("Error to assign team member to task: ", error);
+        console.error("Error assigning team member to task: ", error);
         return false;
     }
 };
@@ -28,20 +28,20 @@ export const unassignTeamMemberFromTask = async (teamMemberId, taskId) => {
         });
 
         if (!response.ok) {
-            console.error(`Failed to unassign team member to task: ${response.status} ${response.statusText}`);
+            console.error(`Failed unassigning team member to task: ${response.status} ${response.statusText}`);
             return false;
         }
 
         return true;
     }
     catch (error) {
-        console.error("Error to unassign team member to task: ", error);
+        console.error("Error unassigning team member to task: ", error);
         return false;
     }
 };
 
 //Check if team member is assigned to task
-export const checkIfAssigned = async (teamMemberId, taskId) => {
+export const checkIfAssignedToTask = async (teamMemberId, taskId) => {
     try {
         const response = await fetch(`${BASE_URL}/${teamMemberId}/task/${taskId}`, {
             method: 'GET'
@@ -49,13 +49,13 @@ export const checkIfAssigned = async (teamMemberId, taskId) => {
 
         if (!response.ok) {
             console.error(`Failed to check if team member is assigned to the task: ${response.status} ${response.statusText}`);
-            return false;
+            return null;
         }
 
         return await response.json();
     }
     catch (error) {
-        console.error("Error when checking if team member is assigned to the task: ", error);
-        return false;
+        console.error("Error checking if team member is assigned to the task: ", error);
+        return null;
     }
 };

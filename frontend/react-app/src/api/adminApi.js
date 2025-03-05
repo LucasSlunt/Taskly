@@ -11,14 +11,13 @@ export const createAdmin = async (name, email, password) => {
 
         if (!response.ok) {
             console.error(`Failed to create admin: ${response.status} ${response.statusText}`);
-            return false;
         }
 
         return await response.json();
     } 
     catch (error) {
         console.error("Error creating admin: ", error);
-        return false;
+        throw error;
     }
 };
 
@@ -31,14 +30,13 @@ export const deleteAdmin = async (adminId) => {
 
         if (!response.ok) {
             console.error(`Failed to delete admin: ${response.status} ${response.statusText}`);
-            return false;
         }
 
         return true;
     }
     catch (error) {
         console.error("Error deleting admin: ", error);
-        return false;
+        throw error;
     }
 };
 
@@ -53,14 +51,13 @@ export const modifyAdminName = async (adminId, newName) => {
 
         if (!response.ok) {
             console.error(`Failed to modify admin name: ${response.status} ${response.statusText}`);
-            return false;
         }
 
         return await response.json();
     }
     catch (error) {
         console.error("Error modifying admin name: ", error);
-        return false;
+        throw error;
     }
 };
 
@@ -75,14 +72,13 @@ export const modifyAdminEmail = async (adminId, newEmail) => {
 
         if (!response.ok) {
             console.error(`Failed to modify admin email: ${response.status} ${response.statusText}`);
-            return false;
         }
 
         return await response.json();
     }
     catch (error) {
         console.error("Error modifying admin email: ", error);
-        return false;
+        throw error;
     }
 };
 
@@ -97,14 +93,13 @@ export const createTeamMember = async (name, email, password) => {
 
         if (!response.ok) {
             console.error(`Failed to create team member: ${response.status} ${response.statusText}`);
-            return false;
         }
 
         return await response.json();
     } 
     catch (error) {
         console.error("Error creating team member: ", error);
-        return false;
+        throw error;
     }
 };
 
@@ -119,14 +114,13 @@ export const modifyTeamMemberName = async (teamMemberId, newName) => {
 
         if (!response.ok) {
             console.error(`Failed to modify team member name: ${response.status} ${response.statusText}`);
-            return false;
         }
 
         return await response.json();
     }
     catch (error) {
         console.error("Error modifying team member name: ", error);
-        return false;
+        throw error;
     }
 };
 
@@ -141,14 +135,13 @@ export const modifyTeamMemberEmail = async (teamMemberId, newEmail) => {
 
         if (!response.ok) {
             console.error(`Failed to modify team member email: ${response.status} ${response.statusText}`);
-            return false;
         }
 
         return await response.json();
     }
     catch (error) {
         console.error("Error modifying team member email: ", error);
-        return false;
+        throw error;
     }
 };
 
@@ -161,36 +154,33 @@ export const deleteTeamMember = async (teamMemberId) => {
 
         if (!response.ok) {
             console.error(`Failed to delete team member: ${response.status} ${response.statusText}`);
-            return false;
         }
 
         return true;
     }
     catch (error) {
         console.error("Error deleting team member: ", error);
-        return false;
+        throw error;
     }
 };
 
 //Assign team member to a team
 export const assignTeamMemberToTeam = async (teamMemberId, teamId) => {
     try {
-        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}/assign-to-team/${teamID}`, {
+        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}/assign-to-team/${teamId}`, {
             method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(teamId)
+            headers: { "Content-Type": "application/json" }
         });
 
         if (!response.ok) {
             console.error(`Failed to assign team member to team: ${response.status} ${response.statusText}`);
-            return false;
         }
 
         return true;
     }
     catch (error) {
         console.error(`Failed to assign team member to team: `, error);
-        return false;
+        throw error;
     }
 };
 
@@ -204,14 +194,13 @@ export const promoteTeamMemberToAdmin = async (teamMemberId) => {
         
         if (!response.ok) {
             console.error(`Failed to promote team member to admin: ${response.status} ${response.statusText}`);
-            return false;
         }
 
         return true;
     }
     catch (error) {
         console.error(`Failed to promote team member to admin: `, error);
-        return false;
+        throw error;
     }
 };
 
@@ -225,14 +214,13 @@ export const lockTask = async (taskId) => {
 
         if (!response.ok) {
             console.error(`Failed to lock task: ${response.status} ${response.statusText}`);
-            return false;
         }
 
         return true;
     }
     catch (error) {
         console.error(`Failed to lock task: `, error);
-        return false;
+        throw error;
     }
 };
 
@@ -246,14 +234,13 @@ export const unlockTask = async (taskId) => {
 
         if (!response.ok) {
             console.error(`Failed to unlock task: ${response.status} ${response.statusText}`);
-            return false;
         }
 
         return true;
     }
     catch (error) {
         console.error(`Failed to unlock task: `, error);
-        return false;
+        throw error;
     }
 };
 
