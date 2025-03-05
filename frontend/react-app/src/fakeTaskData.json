@@ -5,8 +5,8 @@
         "assignees": "James Jordan Jack Ella",
         "status": "In progress",
         "priority": "Low",
-        "dueDate": "2/28/2025",
-        "": ""
+        "dueDate": "2/28/2025"
+         
     },
     {
         "name": "make backend",
@@ -14,70 +14,25 @@
         "assignees": "James Jordan Jack Ella",
         "status": "In progress",
         "priority": "Low",
-        "dueDate": "2/28/2025",
-        "": ""
+        "dueDate": "2/28/2025"
+         
     },
     {
-        "name": "",
-        "team": "",
-        "assignees": "",
-        "status": "",
-        "priority": "",
-        "dueDate": "",
-        "": ""
+        "name": "Make Table",
+        "team": "BIRNIE TEAM",
+        "assignees": "James",
+        "status": "Never gonna finish",
+        "priority": "HIGHEST",
+        "dueDate": "3/4/2002"
+         
     },
     {
-        "name": "",
-        "team": "",
-        "assignees": "",
-        "status": "",
-        "priority": "",
-        "dueDate": "",
-        "": ""
-    },
-    {
-        "name": "",
-        "team": "",
-        "assignees": "",
-        "status": "",
-        "priority": "",
-        "dueDate": "",
-        "": ""
-    },
-    {
-        "name": "",
-        "team": "",
-        "assignees": "",
-        "status": "",
-        "priority": "",
-        "dueDate": "",
-        "": ""
-    },
-    {
-        "name": "",
-        "team": "",
-        "assignees": "",
-        "status": "",
-        "priority": "",
-        "dueDate": "",
-        "": ""
-    },
-    {
-        "name": "",
-        "team": "",
-        "assignees": "",
-        "status": "",
-        "priority": "",
-        "dueDate": "",
-        "": ""
-    },
-    {
-        "name": "",
-        "team": "",
-        "assignees": "",
-        "status": "",
-        "priority": "",
-        "dueDate": "",
-        "": ""
+        "name": "Make Search Function",
+        "team": "Lucy Eats The Computer",
+        "assignees": "Ivona",
+        "status": "In progress",
+        "priority": "High",
+        "dueDate": "3/9/2025"
+         
     }
 ]
