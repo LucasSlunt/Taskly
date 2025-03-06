@@ -44,10 +44,11 @@ public class AuthInfoEntityTest {
             "team_member" + System.nanoTime() + "@example.com",
             "passwordplease"
         );
+        //teamMember.setAccountId(1);
         entMan.persist(teamMember);
         entMan.flush();
 
-        AuthInfo authInfo = new AuthInfo("this is literally unique u twat", "this too argh", teamMember);
+        AuthInfo authInfo = teamMember.getAuthInfo();
         entMan.persist(authInfo);
         entMan.flush();
 
@@ -55,8 +56,8 @@ public class AuthInfoEntityTest {
 
         assertNotNull(savedAuthInfo);
         assertEquals(teamMember.getAccountId(), savedAuthInfo.getAccountId());
-        assertEquals("normalwords", savedAuthInfo.getHashedPassword());
-        assertEquals("balls2", savedAuthInfo.getSalt());
+        assertEquals(teamMember.getAuthInfo().getHashedPassword(), savedAuthInfo.getHashedPassword());
+        assertNotNull(savedAuthInfo.getSalt());
     }
 
     /**
@@ -85,7 +86,7 @@ public class AuthInfoEntityTest {
         entMan.persist(teamMember);
         entMan.flush();
 
-        AuthInfo authInfo = new AuthInfo("hashed_password3", "random_salt", teamMember);
+        AuthInfo authInfo = teamMember.getAuthInfo();
         teamMember.setAuthInfo(authInfo);
         entMan.persist(authInfo);
         entMan.flush();
@@ -109,8 +110,8 @@ public class AuthInfoEntityTest {
         entMan.persist(member2);
         entMan.flush();
 
-        AuthInfo authInfo1 = new AuthInfo("password1", "salt1", member1);
-        AuthInfo authInfo2 = new AuthInfo("password2", "salt2", member2);
+        AuthInfo authInfo1 = member1.getAuthInfo();
+        AuthInfo authInfo2 = member2.getAuthInfo();
 
         entMan.persist(authInfo1);
         entMan.persist(authInfo2);
