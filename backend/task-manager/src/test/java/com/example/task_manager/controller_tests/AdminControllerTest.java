@@ -30,17 +30,21 @@ public class AdminControllerTest {
 
     private AdminDTO mockAdmin;
     private TeamMemberDTO mockMember;
+    private String mockAdminPassword;
+    private String mockTMPassword;
 
     @BeforeEach
     void setUp() {
         mockAdmin = new AdminDTO(1, "Admin User", "admin@example.com");
         mockMember = new TeamMemberDTO(2, "John Doe", "john.doe@example.com");
+        mockAdminPassword = "mock_password_admin";
+        mockTMPassword = "mock_password_TM";
     }
 
     // Create an Admin
     @Test
     void testCreateAdmin() throws Exception {
-        when(adminService.createAdmin("Admin User", "admin@example.com")).thenReturn(mockAdmin);
+        when(adminService.createAdmin("Admin User", "admin@example.com",mockAdminPassword)).thenReturn(mockAdmin);
 
         mockMvc.perform(post("/api/admin")
                 .param("name", "Admin User")
@@ -85,7 +89,7 @@ public class AdminControllerTest {
     // Create Team Member
     @Test
     void testCreateTeamMember() throws Exception {
-        when(adminService.createTeamMember("John Doe", "john.doe@example.com")).thenReturn(mockMember);
+        when(adminService.createTeamMember("John Doe", "john.doe@example.com",mockTMPassword)).thenReturn(mockMember);
 
         mockMvc.perform(post("/api/admin/team-member")
                 .param("name", "John Doe")
