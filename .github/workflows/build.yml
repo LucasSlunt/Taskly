@@ -13,17 +13,8 @@ jobs:
 
       - name: set and debug env variables
         env:
-          DB_USER: ${{ secrets.DB_USERNAME }}
-          DB_PW: ${{ secrets.DB_PASSWORD }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          echo "DB_USER is set: ${#DB_USER}"
-          echo "DB_PW is set: ${#DB_PW}"
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'
-
-      - name: Build with Maven
-        working-directory: ./backend/task-manager
-        run: mvn clean install
+          echo "DB_USERNAME is set: ${#DB_USERNAME}"
+          echo "DB_PASSWORD is set: ${#DB_PW}"
