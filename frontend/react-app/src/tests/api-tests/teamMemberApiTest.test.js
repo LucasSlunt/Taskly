@@ -5,7 +5,7 @@ beforeEach(() => {
     fetch.resetMocks();
 });
 
-describe('Tasks API', () => {
+describe('Team Member API', () => {
     //test: creating a task
     test('createTask should return task data on sucess', async () => {
         const mockTask = {
