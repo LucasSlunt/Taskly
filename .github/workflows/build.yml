@@ -2,8 +2,6 @@ name: Inject DB Info
 
 on:
   push:
-    branches:
-      - main
 
 jobs:
   build:
