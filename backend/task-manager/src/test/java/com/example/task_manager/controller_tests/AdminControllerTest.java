@@ -48,7 +48,8 @@ public class AdminControllerTest {
 
         mockMvc.perform(post("/api/admin")
                 .param("name", "Admin User")
-                .param("email", "admin@example.com"))
+                .param("email", "admin@example.com")
+                .param("userPassword","mock_password_admin"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(1))
                 .andExpect(jsonPath("$.userName").value("Admin User"));
@@ -93,7 +94,8 @@ public class AdminControllerTest {
 
         mockMvc.perform(post("/api/admin/team-member")
                 .param("name", "John Doe")
-                .param("email", "john.doe@example.com"))
+                .param("email", "john.doe@example.com")
+                .param("userPassword","mock_password_TM"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(2))
                 .andExpect(jsonPath("$.userName").value("John Doe"));
