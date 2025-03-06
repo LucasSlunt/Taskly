@@ -13,8 +13,8 @@ jobs:
 
       - name: set and debug env variables
         env:
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_USER: ${{ secrets.DB_USERNAME }}
+          DB_PW: ${{ secrets.DB_PASSWORD }}
         run: |
           echo "DB_USERNAME is set: ${#DB_USERNAME}"
           echo "DB_PASSWORD is set: ${#DB_PASSWORD}"
