@@ -16,5 +16,8 @@ jobs:
           DB_USER: ${{ secrets.DB_USERNAME }}
           DB_PW: ${{ secrets.DB_PASSWORD }}
         run: |
-          echo "DB_USERNAME is set: ${#DB_USERNAME}"
-          echo "DB_PASSWORD is set: ${#DB_PASSWORD}"
+          echo "DB_USER is set: ${#DB_USER}"
+          echo "DB_PW is set: ${#DB_PW}"
+
+      - name: Build with Maven
+        run: mvn clean install
