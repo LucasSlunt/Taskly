@@ -1,0 +1,18 @@
+name: Inject DB Password
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Build with Maven
+        env:
+          DB_PASSWORD: ${{ secrets.database_login_info }}
+          DB_USERNAME: ${{secrets.database_login_username}}
+        run: mvn clean package -Dspring.profiles.active=prod
