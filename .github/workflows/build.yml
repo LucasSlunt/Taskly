@@ -21,8 +21,4 @@ jobs:
         env:
             DB_PASSWORD: ${{ secrets.database_login_info }}
             DB_USERNAME: ${{ secrets.database_login_username }}
-        run: mvn clean package -Dspring.profiles.active=prod
-
-      - name: Debug DB_PASSWORD
-
         run: echo "DB_PASSWORD is set ${DB_PASSWORD}"
