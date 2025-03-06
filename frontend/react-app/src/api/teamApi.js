@@ -1,7 +1,7 @@
 const BASE_URL = "http://localhost:8080/api/teams";
 
 //Create a team
-export const createTeam = async (teamName, teamLeadId) => {
+export const createTeam = async (teamLeadId, teamName) => {
     try {
         const response = await fetch(`${BASE_URL}`, {
             method: 'POST',

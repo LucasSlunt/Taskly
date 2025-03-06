@@ -1,5 +1,6 @@
-import { mock } from 'node:test';
-import { createTask, deleteTask, editTask, assignMemberToTask, changePassword } from '../../api/taskApi';
+import { createTask, deleteTask, editTask, assignMemberToTask, changePassword } from '../../api/teamMemberApi';
+
+const BASE_URL = "http://localhost:8080/api/tasks";
 
 beforeEach(() => {
     fetch.resetMocks();
@@ -68,10 +69,10 @@ describe('Team Member API', () => {
             method: 'PUT',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                title: "Updated task",
+                title: "Updated Task",
                 description: "Updated description",
                 isLocked: true,
-                status: "In Progress",
+                status: "In progress",
                 dueDate: "2025-03-01"
             })
         });
@@ -110,7 +111,7 @@ describe('Team Member API', () => {
         expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/team-members/5/change-password`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({oldPassword: "oldPassword", newPassword: "oldPassword"})
+            body: JSON.stringify({oldPassword: "oldPassword", newPassword: "newPassword"})
         });
 
         expect(result).toEqual(mockResponse);

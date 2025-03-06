@@ -53,7 +53,8 @@ export const checkIfAssignedToTeam = async (teamMemberId, teamId) => {
             return null;
         }
 
-        return await response.json();
+        const text = await response.text();
+        return text ? JSON.parse(text) : null;
     }
     catch (error) {
         console.error("Error checking if member is assigned to team: ", error);
