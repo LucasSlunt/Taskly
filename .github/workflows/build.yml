@@ -20,5 +20,5 @@ jobs:
           echo "DB_PW is set: ${#DB_PW}"
 
       - name: Build with Maven
-        workingDirectory: ./backend/task-manager
+        working-directory: ./backend/task-manager
         run: mvn clean install
