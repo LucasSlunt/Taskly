@@ -21,5 +21,5 @@ jobs:
         env:
             DB_PASSWORD: ${{ secrets.database_login_info }}
             DB_USERNAME: ${{ secrets.database_login_username }}
-        working-directory: ../backend/task-manager
+        working-directory: ./backend/task-manager
         run: mvn clean package -Dspring.profiles.active=prod
