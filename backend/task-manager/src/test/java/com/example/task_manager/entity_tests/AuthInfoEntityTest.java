@@ -2,6 +2,7 @@ package com.example.task_manager.entity_tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -12,13 +13,25 @@ import com.example.task_manager.entity.AuthInfo;
 import com.example.task_manager.entity.TeamMember;
 
 import jakarta.persistence.PersistenceException;
+import jakarta.transaction.Transactional;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Transactional
 public class AuthInfoEntityTest {
 
     @Autowired
     private TestEntityManager entMan;
+
+    @BeforeEach
+	void cleanDatabase() {
+        entMan.getEntityManager().createQuery("DELETE FROM AuthInfo").executeUpdate();
+		entMan.getEntityManager().createQuery("DELETE FROM IsAssigned").executeUpdate();
+		entMan.getEntityManager().createQuery("DELETE FROM Task").executeUpdate();
+		entMan.getEntityManager().createQuery("DELETE FROM Team").executeUpdate();
+		entMan.getEntityManager().createQuery("DELETE FROM TeamMember").executeUpdate();
+		entMan.flush();
+	}
 
     /**
     * Tests if an AuthInfo entity can be persisted and retrieved correctly.
@@ -29,12 +42,13 @@ public class AuthInfoEntityTest {
         TeamMember teamMember = new TeamMember(
             "TeamMember" + System.nanoTime(), 
             "team_member" + System.nanoTime() + "@example.com",
-            "defaultpw"
+            "passwordplease"
         );
+        //teamMember.setAccountId(1);
         entMan.persist(teamMember);
         entMan.flush();
 
-        AuthInfo authInfo = new AuthInfo("hashed_password123", "random_salt", teamMember);
+        AuthInfo authInfo = teamMember.getAuthInfo();
         entMan.persist(authInfo);
         entMan.flush();
 
@@ -42,8 +56,8 @@ public class AuthInfoEntityTest {
 
         assertNotNull(savedAuthInfo);
         assertEquals(teamMember.getAccountId(), savedAuthInfo.getAccountId());
-        assertEquals("hashed_password123", savedAuthInfo.getHashedPassword());
-        assertEquals("random_salt", savedAuthInfo.getSalt());
+        assertEquals(teamMember.getAuthInfo().getHashedPassword(), savedAuthInfo.getHashedPassword());
+        assertNotNull(savedAuthInfo.getSalt());
     }
 
     /**
@@ -52,7 +66,7 @@ public class AuthInfoEntityTest {
      */
     @Test
     void testAuthInfoFailsWithoutTeamMember() {
-        AuthInfo authInfo = new AuthInfo("hashed_password123", "random_salt", null);
+        AuthInfo authInfo = new AuthInfo("hashed_password2", "random_salt", null);
 
         Exception e = assertThrows(PersistenceException.class, () -> {
             entMan.persist(authInfo);
@@ -68,11 +82,11 @@ public class AuthInfoEntityTest {
      */
     @Test
     void testAuthInfoIsDeletedWithTeamMember() {
-        TeamMember teamMember = new TeamMember("Auth User", "auth@example.com","defaultpw");
+        TeamMember teamMember = new TeamMember("Auth User", "auth@example.com","password2");
         entMan.persist(teamMember);
         entMan.flush();
 
-        AuthInfo authInfo = new AuthInfo("hashed_password123", "random_salt", teamMember);
+        AuthInfo authInfo = teamMember.getAuthInfo();
         teamMember.setAuthInfo(authInfo);
         entMan.persist(authInfo);
         entMan.flush();
@@ -96,8 +110,8 @@ public class AuthInfoEntityTest {
         entMan.persist(member2);
         entMan.flush();
 
-        AuthInfo authInfo1 = new AuthInfo("password1", "salt1", member1);
-        AuthInfo authInfo2 = new AuthInfo("password2", "salt2", member2);
+        AuthInfo authInfo1 = member1.getAuthInfo();
+        AuthInfo authInfo2 = member2.getAuthInfo();
 
         entMan.persist(authInfo1);
         entMan.persist(authInfo2);
