@@ -1,4 +1,4 @@
-/*package com.example.task_manager.controller_tests;
+package com.example.task_manager.controller_tests;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -195,4 +195,4 @@ public class AdminControllerTest {
         mockMvc.perform(put("/api/admin/tasks/1/unlock"))
                 .andExpect(status().isOk());
     }
-}*/
+}
