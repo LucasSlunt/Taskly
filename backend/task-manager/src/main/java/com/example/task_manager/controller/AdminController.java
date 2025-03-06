@@ -17,9 +17,9 @@ public class AdminController {
 
     // Create Admin entity
     @PostMapping
-    public ResponseEntity<?> createAdmin(@RequestParam String name, @RequestParam String email) {
+    public ResponseEntity<?> createAdmin(@RequestParam String name, @RequestParam String email, @RequestParam String userPassword) {
         try {
-            return ResponseEntity.ok(adminService.createAdmin(name, email));
+            return ResponseEntity.ok(adminService.createAdmin(name, email, userPassword));
         } 
         catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -65,9 +65,9 @@ public class AdminController {
 
     // Create Team Member
     @PostMapping("/team-member")
-    public ResponseEntity<?> createTeamMember(@RequestParam String name, @RequestParam String email) {
+    public ResponseEntity<?> createTeamMember(@RequestParam String name, @RequestParam String email, @RequestParam String userPassword) {
         try {
-            return ResponseEntity.ok(adminService.createTeamMember(name, email));
+            return ResponseEntity.ok(adminService.createTeamMember(name, email, userPassword));
         } 
         catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
