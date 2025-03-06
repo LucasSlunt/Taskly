@@ -17,9 +17,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build with Maven
+      - name: Debug Environment Variables
         env:
-            DB_PASSWORD: ${{ secrets.database_login_info }}
-            DB_USERNAME: ${{ secrets.database_login_username }}
-        working-directory: ./backend/task-manager
-        run: mvn clean package -Dspring.profiles.active=prod
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          echo "DB_USERNAME is set: ${#DB_USERNAME}"
+          echo "DB_PASSWORD is set: ${#DB_PASSWORD}"
+
+      - name: Run the application
+        env:
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: ./mvnw spring-boot:run
