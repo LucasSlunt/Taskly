@@ -93,8 +93,7 @@ public class TeamService {
 	 */
 	public List<TeamMemberDTO> getTeamMembers(int teamId) {
 		Team team = teamRepository.findById(teamId)
-			.orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
-	
+		.orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
 		return isMemberOfRepository.findMembersByTeamId(teamId).stream()
 			.map(IsMemberOf::getTeamMember)
 			.map(this::convertToDTO)
