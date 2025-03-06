@@ -11,22 +11,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Debug Environment Variables
+      - name: set and debug env variables
         env:
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
           echo "DB_USERNAME is set: ${#DB_USERNAME}"
           echo "DB_PASSWORD is set: ${#DB_PASSWORD}"
-
-      - name: Run the application
-        env:
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        run: ./backend/task-manager/mvnw spring-boot:run
