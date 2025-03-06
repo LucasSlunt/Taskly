@@ -29,4 +29,4 @@ jobs:
         env:
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        run: ./mvnw spring-boot:run
+        run: ./backend/task-manager/mvnw spring-boot:run
