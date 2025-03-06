@@ -2,8 +2,6 @@ name: Inject DB Password
 
 on:
   push:
-    branches:
-      - main
 
 jobs:
   build:
