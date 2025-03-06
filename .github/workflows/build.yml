@@ -16,5 +16,5 @@ jobs:
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          echo "DB_USERNAME is set: ${#DB_USERNAME}"
-          echo "DB_PASSWORD is set: ${#DB_PW}"
+          echo "DB_USERNAME is set: ${DB_USERNAME}"
+          echo "DB_PASSWORD is set: ${DB_PASSWORD}"
