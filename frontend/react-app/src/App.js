@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 // Import your pages/components
 import Login from './Login';
@@ -12,14 +12,18 @@ function App() {
   return (
     <Router>
       <div>
-        <Switch>
-          {/* Define routes to pages/components */}
-          <Route path="/" exact component={HomePage} />
-          <Route path="/about" component={AboutPage} />
-          <Route path="/contact" component={ContactPage} />
-          {/* Add a default route or 404 page */}
-          <Route component={() => <div>Page Not Found</div>} />
-        </Switch>
+        <Routes>
+          <Route path="/login" element={<Login/>} />
+          <Route path="/home" element={<Home/>}/>
+          <Route path="/view-task" element={<ViewTask/>}/>
+          <Route path="/profile" element={<Profile/>}/>
+          <Route path="/team-tasks" element={<TeamTasks/>}/>
+
+          {/*Default path should be login, unless specified */}
+          <Route path="/" exact element={<Login/>} />
+
+          <Route path="*" element={<div>Page Not Found</div>} /> {/*Default route if no match*/}
+        </Routes>
       </div>
     </Router>
   );
