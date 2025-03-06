@@ -1,6 +1,7 @@
 
 //takes in the searchQuery state and the setSearchQuery function as peramters 
-function SearchFilterSort({ searchQuery, setSearchQuery }){
+function SearchFilterSort({ searchQuery, setSearchQuery,searchForThis}){
+
    
     const handleSearch = (e) => {
         const value = e.target.value; //get user input
@@ -11,7 +12,7 @@ function SearchFilterSort({ searchQuery, setSearchQuery }){
         <div className="search-form"> 
             <input
                     type="text"
-                    placeholder="Search by task name.."
+                    placeholder="Search:"
                     className="search-input"
                     value={searchQuery}
                     onChange={handleSearch}
