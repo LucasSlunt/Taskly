@@ -7,7 +7,6 @@ import { useState} from 'react';
 
 
 
-
 const mockData = {
     name: "Task",
     team: "Team 1",
@@ -128,5 +127,3 @@ function TaskList(){
 }
 
 export default TaskList
-
-
