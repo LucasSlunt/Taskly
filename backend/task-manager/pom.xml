@@ -28,6 +28,8 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<DBPASSWORD>env.DBPASSWORD</DBPASSWORD>
+		<DBUSERNAME>env.DBUSERNAME</DBUSERNAME>
 	</properties>
 	<dependencies>
 		<dependency>
