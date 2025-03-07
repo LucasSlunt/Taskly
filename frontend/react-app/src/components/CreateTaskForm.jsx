@@ -40,7 +40,7 @@ function CreateTaskForm({team}){
                     Assign To:
                     <div className='Checkboxs'>
                         {team.map((teamMember)=>(
-                            <div className='checkbox'>
+                            <div className='checkbox' key = {teamMember.name}>
                                 {teamMember.name}
                                 <input type="checkbox" name="" id="" value = {teamMember.name} {...register("assignees")}/>
                             </div>
