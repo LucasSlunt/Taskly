@@ -1,4 +1,4 @@
-/*package com.example.task_manager.entity_tests;
+package com.example.task_manager.entity_tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,7 +38,7 @@ public class AdminEntityTest {
 	/*
 	 * Tests if an Admin entity can be persisted and retrieved correctly.
 	 * Ensures that the saved Admin retains the expected username and email.
-	 *
+	 */
 	@Test
 	void testAdminPersistence() {
 		// Admin admin = new Admin("Admin User TESTING", "adminTESTING@example.com");
@@ -56,7 +56,7 @@ public class AdminEntityTest {
 	/*
      * Tests whether an Admin entity is also stored as a TeamMember.
      * Ensures that Admin objects are properly recognized as instances of TeamMember.
-     *
+     */
 	@Test
 	void testAdminStoredAsTeamMember() {
 		Admin admin = new Admin("Admin" + System.nanoTime(), "admin" + System.nanoTime() + "@example.com","defaultpw");
@@ -72,7 +72,7 @@ public class AdminEntityTest {
 	 /*
      * Tests whether an Admin can be retrieved when querying all TeamMembers.
      * Ensures that when querying TeamMember entities, Admins are included in the result set.
-     *
+     */
 	@Test
 	@Transactional
 	@Rollback
@@ -93,7 +93,7 @@ public class AdminEntityTest {
 
 	/*
 	 * Ensuring that deleting an admin works just like deleting a teamMember
-	 *
+	 */
 	@Test
 	void testAdminDeletion() {
 		Admin admin = new Admin("AdminToDelete", "deleteadmin@example.com","defaultpw");
@@ -109,7 +109,7 @@ public class AdminEntityTest {
 
 	/*
 	 * test that admin can be found with id
-	 *
+	 */
 	@Test
 	void testAdminQueryById() {
 		Admin admin = new Admin("AdminLookup", "lookupadmin@example.com","defaultpw");
@@ -127,7 +127,7 @@ public class AdminEntityTest {
 
 	/*
 	 * Ensure Admin still functions as a teammmember (because it extends TeamMember)
-	 *
+	 */
 	@Test
 	void testAdminInheritsTeamMemberBehavior() {
 		Admin admin = new Admin("InheritedAdmin", "inheritadmin@example.com","defaultpw");
@@ -139,4 +139,4 @@ public class AdminEntityTest {
 		assertNotNull(foundMember);
 		assertTrue(foundMember instanceof Admin);
 	}
-}*/
+}
