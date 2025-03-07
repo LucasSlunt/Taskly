@@ -1,0 +1,19 @@
+.page{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0 0 0 0;
+    padding: 0 0;
+    background-color: #5d5d81;
+}
+.pageBox{
+    display: flex;
+    flex-direction: column;
+}
+.body{
+    margin-left: 5%;
+    margin-right: 5%;
+    font-family: Calibri;
+}
