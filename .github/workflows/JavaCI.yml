@@ -11,14 +11,6 @@ jobs:
 
     steps:
 
-      - name: set and debug env variables
-        env:
-          DBUSERNAME: ${{ secrets.database_login_username }}
-          DBPASSWORD: ${{ secrets.database_login_info }}
-        run: |
-          echo "DBUSERNAME is set: ${DBUSERNAME}"
-          echo "DBPASSWORD is set: ${DBPASSWORD}"
-
       - uses: actions/checkout@v2
       - name: Setup Java JDK
         uses: actions/setup-java@v4
@@ -27,4 +19,5 @@ jobs:
           java-version: 21
           cache: 'maven'
       - name: Build with Maven
-        run: mvn -B package --file backend/task-manager/pom.xml
+        run: mvn -B package --file backend/task-manager/pom.xml -DBUSERNAME=${{ secrets.database_login_username }} -DBPASSWORD=${{ secrets.database_login_info }}
+
