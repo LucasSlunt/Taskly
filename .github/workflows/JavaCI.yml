@@ -5,21 +5,23 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
+
 jobs:
   build:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup Java JDK
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'oracle'
-        java-version: 21
-        cache: 'maven'
-    - name: Build with Maven
-      run: mvn -B package --file backend/task-manager/pom.xml
+
+      - uses: actions/checkout@v2
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: 21
+          cache: 'maven'
+      - name: Build with Maven
+        run: mvn -B -D DBUSERNAME=${{ secrets.database_login_username }} -D DBPASSWORD=${{ secrets.database_login_info }} package --file backend/task-manager/pom.xml
+
+
+ 
