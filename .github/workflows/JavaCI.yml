@@ -19,5 +19,5 @@ jobs:
           java-version: 21
           cache: 'maven'
       - name: Build with Maven
-        run: mvn -DBUSERNAME=${{ secrets.database_login_username }} -DBPASSWORD=${{ secrets.database_login_info }} -B package --file backend/task-manager/pom.xml
+        run: mvn  -B -DBUSERNAME=${{ secrets.database_login_username }} -DBPASSWORD=${{ secrets.database_login_info }} package --file backend/task-manager/pom.xml
  
