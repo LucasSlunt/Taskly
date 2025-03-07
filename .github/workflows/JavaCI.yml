@@ -14,15 +14,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - env:
-        databaseLoginUsername: ${{ secrets.database_login_username }}
-        databaseLoginInfo: ${{secrets.database_login_info}}
-    - uses: actions/checkout@v2
-    - name: Setup Java JDK
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'oracle'
-        java-version: 21
-        cache: 'maven'
-    - name: Build with Maven
-      run: mvn -B package --file backend/task-manager/pom.xml
+
+      - name: set and debug env variables
+        env:
+          DB_USERNAME: ${{ secrets.database_login_username }}
+          DB_PASSWORD: ${{ secrets.database_login_info }}
+        run: |
+          echo "DB_USERNAME is set: ${DB_USERNAME}"
+          echo "DB_PASSWORD is set: ${DB_PASSWORD}"
+
+      - uses: actions/checkout@v2
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: 21
+          cache: 'maven'
+      - name: Build with Maven
+        run: mvn -B package --file backend/task-manager/pom.xml
