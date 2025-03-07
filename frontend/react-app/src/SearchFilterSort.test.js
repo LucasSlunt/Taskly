@@ -7,7 +7,7 @@ test('updates searchQuery state when typing in the input', () => {
     render(<SearchFilterSort searchQuery="" setSearchQuery={setSearchQuery} />);
   
     //getting the input element
-    const input = screen.getByPlaceholderText('Search by task name..');
+    const input = screen.getByPlaceholderText('Search:');
   
     // test the user typing 'test' in as input
     fireEvent.change(input, { target: { value: 'test' } });

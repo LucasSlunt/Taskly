@@ -1,5 +1,5 @@
-import "./ViewTask.css"
-import Header from "./Header.jsx"
+import "../css/ViewTask.css"
+import Header from "../components/Header.jsx"
 function ViewTask(){
     //Mock Data
     const task = {
