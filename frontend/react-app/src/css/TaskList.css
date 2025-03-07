@@ -1,0 +1,16 @@
+table{
+    width: 90%;
+    border-collapse: collapse;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+th,td{
+    padding:10px;
+    background-color: darkgrey;
+}
+thead th{
+    background-color: dimgrey;
+}
+tbody tr :hover{
+    background-color: darkslategray;
+}
