@@ -4,7 +4,7 @@ import "../css/TaskList.css"
 import fakeData from "../fakeTaskData.json"
 import SearchFilterSort from './SearchFilterSort';
 import { useState} from 'react';
-import $ from 'jquery'
+
 
 
 
