@@ -28,8 +28,8 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
-		<DBPASSWORD>${env.DBPASSWORD}</DBPASSWORD>
-		<DBUSERNAME>${env.DBUSERNAME}</DBUSERNAME>
+		<DBPASSWORD>${DBPASSWORD}</DBPASSWORD>
+		<DBUSERNAME>${DBUSERNAME}</DBUSERNAME>
 	</properties>
 	<dependencies>
 		<dependency>
