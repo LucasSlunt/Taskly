@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/admin")
+//This is an admin controller
 public class AdminController {
 
     private final AdminService adminService;
