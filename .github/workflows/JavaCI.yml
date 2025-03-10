@@ -22,13 +22,8 @@ jobs:
           java-version: 21
           cache: 'maven'
       - name: Build with Maven
-        run: mvn -D DBUSERNAMEFROMYML=${{ secrets.database_login_username }} -D DBPASSWORDFROMYML=${{ secrets.database_login_info }} clean package --file backend/task-manager/pom.xml
-        
-      - run: mkdir staging && cp target/*.jar staging
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Package
-          path: staging
+        run: mvn -B -D -Dspring.profiles.active=cicd DBUSERNAMEFROMYML=${{ secrets.database_login_username }} -D DBPASSWORDFROMYML=${{ secrets.database_login_info }} clean package --file backend/task-manager/pom.xml
+
 
 
  
