@@ -3,9 +3,11 @@
         "name": "make frontend",
         "team": "Team 1",
         "assignees": "James Jordan Jack Ella",
-        "status": "In progress",
+        "status": "done",
         "priority": "Low",
-        "dueDate": "2/28/2025"
+        "dueDate": "2/28/2025",
+        "dateCompteted": "3/10/2025",
+        "isLocked" : "false"
          
     },
     {
@@ -14,7 +16,9 @@
         "assignees": "James Jordan Jack Ella",
         "status": "In progress",
         "priority": "Low",
-        "dueDate": "2/28/2025"
+        "dueDate": "2/28/2025",
+        "dateCompteted": "",
+        "isLocked" : "false"
          
     },
     {
@@ -23,7 +27,8 @@
         "assignees": "James",
         "status": "Never gonna finish",
         "priority": "HIGHEST",
-        "dueDate": "3/4/2002"
+        "dueDate": "3/4/2002",
+        "isLocked" : "false"
          
     },
     {
@@ -32,7 +37,20 @@
         "assignees": "Ivona",
         "status": "In progress",
         "priority": "High",
-        "dueDate": "3/9/2025"
+        "dueDate": "3/9/2025",
+        "dateCompteted": "",
+        "isLocked" : "false"
+         
+    },
+    {
+        "name": "Make Drop down for search",
+        "team": "Lucy Eats The Computer",
+        "assignees": "James",
+        "status": "done",
+        "priority": "High",
+        "dueDate": "3/9/2025",
+        "dateCompteted": "3/9/2025",
+        "isLocked" : "false"
          
     }
 ]
