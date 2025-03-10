@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import com.example.task_manager.entity.IsMemberOf;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.repository.IsMemberOfRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
@@ -31,6 +32,9 @@ public class IsMemberOfRepositoryTest {
     @Autowired
     private TeamMemberRepository teamMemberRepository;
 
+    @Autowired
+    private AuthInfoRepository authInfoRepository;
+
     private Team testTeam;
     private TeamMember testMember;
     private IsMemberOf isMemberOf;
@@ -43,6 +47,7 @@ public class IsMemberOfRepositoryTest {
     void setUp() {
         isMemberOfRepository.deleteAllInBatch();
         teamRepository.deleteAllInBatch();
+        authInfoRepository.deleteAllInBatch();
         teamMemberRepository.deleteAllInBatch();
 
         // Create and save a test Team

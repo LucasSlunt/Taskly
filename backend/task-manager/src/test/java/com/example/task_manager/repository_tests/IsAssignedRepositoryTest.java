@@ -19,6 +19,7 @@ import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.repository.IsAssignedRepository;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
@@ -39,6 +40,9 @@ public class IsAssignedRepositoryTest {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    private AuthInfoRepository authInfoRepository;
+
     private Task task;
     private TeamMember teamMember;
     private Team team;
@@ -50,7 +54,9 @@ public class IsAssignedRepositoryTest {
         isAssignedRepository.deleteAllInBatch();
         taskRepository.deleteAllInBatch();
         teamRepository.deleteAllInBatch();
+        authInfoRepository.deleteAllInBatch();
         teamMemberRepository.deleteAllInBatch();
+        
 
         // Create and save a Team
         team = new Team();
