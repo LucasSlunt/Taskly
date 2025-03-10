@@ -15,6 +15,7 @@ import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
@@ -37,6 +38,9 @@ public class IsAssignedServiceTest {
 	@Autowired
 	private TeamRepository teamRepository;
 
+	@Autowired
+    private AuthInfoRepository authInfoRepository;
+
 	private Task task;
 	private TeamMember teamMember;
 	private Team team;
@@ -45,6 +49,7 @@ public class IsAssignedServiceTest {
 	void setUp() {
 		taskRepository.deleteAllInBatch();
 		teamRepository.deleteAllInBatch();
+		authInfoRepository.deleteAllInBatch();
 		teamMemberRepository.deleteAllInBatch();
 
 		teamMember = new TeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com","defaultpw");
