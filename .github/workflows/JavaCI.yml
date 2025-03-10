@@ -3,6 +3,8 @@ name: JavaCI
 
 on:
   push:
+    branches:
+      - main
 
 jobs:
   build:
