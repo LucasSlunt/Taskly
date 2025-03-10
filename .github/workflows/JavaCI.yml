@@ -3,7 +3,9 @@ name: JavaCI
 
 on:
   push:
-
+    branches:
+      - main
+      - Github-Secrets-Injecting
 
 jobs:
   build:
@@ -22,11 +24,11 @@ jobs:
       - name: Build with Maven
         run: mvn -D DBUSERNAMEFROMYML=${{ secrets.database_login_username }} -D DBPASSWORDFROMYML=${{ secrets.database_login_info }} clean package --file backend/task-manager/pom.xml
         
-      - name: Upload artifact
-        uses: actions/upload-artifact@v1
+      - run: mkdir staging && cp target/*.jar staging
+      - uses: actions/upload-artifact@v4
         with:
-          name: surefire-reports
-          path: mymeeave/target/surefire-reports/**
+          name: Package
+          path: staging
 
 
  
