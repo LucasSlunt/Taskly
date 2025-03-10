@@ -28,6 +28,8 @@ function TaskList({dataToUse, headersAndAccessors}){
                 return task.dueDate.toLowerCase().includes(searchQuery.toLowerCase())
             case "dateCompteted":
                 return task.dateCompteted.toLowerCase().includes(searchQuery.toLowerCase())
+            case "isLocked":
+                return task.isLocked.toLowerCase().includes(searchQuery.toLowerCase())
         }}
     );}, [searchQuery],((searchForThis),[setSearch])) ;
     
