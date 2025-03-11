@@ -30,6 +30,7 @@ public class AdminEntityTest {
 	void cleanDatabase() {
 		entMan.getEntityManager().createQuery("DELETE FROM IsAssigned").executeUpdate();
 		entMan.getEntityManager().createQuery("DELETE FROM Task").executeUpdate();
+		entMan.getEntityManager().createQuery("DELETE FROM AuthInfo").executeUpdate();
 		entMan.getEntityManager().createQuery("DELETE FROM Team").executeUpdate();
 		entMan.getEntityManager().createQuery("DELETE FROM TeamMember").executeUpdate();
 		entMan.flush();

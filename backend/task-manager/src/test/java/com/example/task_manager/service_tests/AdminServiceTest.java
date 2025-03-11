@@ -74,9 +74,9 @@ public class AdminServiceTest {
 		isMemberOfRepository.deleteAllInBatch();
 		taskRepository.deleteAllInBatch();
 		teamRepository.deleteAllInBatch();
+		authInfoRepository.deleteAllInBatch();
 		teamMemberRepository.deleteAllInBatch();
 		adminRepository.deleteAllInBatch();
-		authInfoRepository.deleteAllInBatch();
 
 		admin = adminService.createAdmin("Admin Name", "admin" + System.nanoTime() + "@example.com","defaultpw");
 		teamMember = adminService.createTeamMember("TM Name", "teamMember" + System.nanoTime() + "@example.com","defaultpw");

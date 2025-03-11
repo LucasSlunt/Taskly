@@ -19,6 +19,7 @@ import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
+import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.repository.IsMemberOfRepository;
 import com.example.task_manager.service.IsMemberOfService;
 import com.example.task_manager.service.TeamService;
@@ -43,6 +44,9 @@ public class TeamServiceTest {
 	@Autowired
 	private IsMemberOfRepository isMemberOfRepository;
 
+	@Autowired
+    private AuthInfoRepository authInfoRepository;
+
 	private TeamDTO team;
 	private TeamMember teamLead;
 	private TeamMember newTeamLead;
@@ -52,6 +56,7 @@ public class TeamServiceTest {
 	void setUp() {
 		isMemberOfRepository.deleteAllInBatch();
 		teamRepository.deleteAllInBatch();
+		authInfoRepository.deleteAllInBatch();
 		teamMemberRepository.deleteAllInBatch();
 
 		teamLead = new TeamMember("Team Lead", "team_lead" + System.nanoTime() + "@example.com","defaultpw");
