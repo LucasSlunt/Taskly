@@ -74,7 +74,7 @@ public class TeamService {
 	 * @param teamId The ID of the team whose lead should be changed.
 	 * @param teamLeadId The ID of the new team lead.
 	 */
-	public void changeTeamLead(int teamId, int teamLeadId) {
+	public TeamDTO changeTeamLead(int teamId, String teamName, int teamLeadId) {
 		Team team = teamRepository.findById(teamId)
 				.orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
 
@@ -82,7 +82,10 @@ public class TeamService {
 				.orElseThrow(() -> new RuntimeException("Team Lead not found with ID: " + teamLeadId));
 
 		team.setTeamLead(teamMember);
+		team.setTeamName(teamName);
 		teamRepository.save(team);
+
+		return new TeamDTO(team.getTeamId(), team.getTeamName(), team.getTeamLead().getAccountId());
 	}
 
 	/**

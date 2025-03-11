@@ -234,18 +234,44 @@ All API requests should be made to the following base URL (Spring Boot's default
 
 ### Endpoints
 - **Create a Team:** `POST`
-    - **Parameters:**: 
-        - `teamName` (string, required): The name of the new team.
-        - `teamLeadId` (integer, required): The ID of the team lead of the new team.
-            - This parameter **must be included** in the request, but it can be set to `null` if no team lead is assigned.
+    - **Request Body:**
+    ```json
+    {
+        "teamId": 1, 
+        "teamName": "Development Team",
+        "teamLeadId": 1001
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "teamId": 1,
+        "teamName": "Development Team",
+        "teamLeadId": 1001
+    }
+    ```
     - **Description:** Creates a team in the database.
 
 - **Delete a Team:** `DELETE /{teamId}`
     - **Description:** Deletes a team from the database.
     
 - **Change Team Lead:** `PUT /{teamId}/change-lead`
-    - **Parameters:**: 
-        - `teamLeadId` (integer, required): The ID of the team member that is becoming the team lead.
+    - **Request Body:**
+    ```json
+    {
+        "teamId": 1,
+        "teamName": "Updated Team Name",
+        "teamLeadId": 1002
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "teamId": 1,
+        "teamName": "Updated Team Name",
+        "teamLeadId": 1002
+    }
+    ```
     - **Description:** Updates the team lead for a specified team by assigning a different team member.
 
 - **Get Team Members:** `GET /{teamId}/members`

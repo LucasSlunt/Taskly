@@ -2,6 +2,7 @@ package com.example.task_manager.controller;
 
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.DTO.TeamRequestDTO;
 import com.example.task_manager.service.TeamService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +20,9 @@ public class TeamController {
 
     // Create a Team
     @PostMapping
-    public ResponseEntity<?> createTeam(@RequestParam String teamName, @RequestParam int teamLeadId) {
+    public ResponseEntity<?> createTeam(@RequestBody TeamRequestDTO request) {
         try {
-            TeamDTO team = teamService.createTeam(teamName, teamLeadId);
+            TeamDTO team = teamService.createTeam(request.getTeamName(), request.getTeamLeadId());
             return ResponseEntity.ok(team);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -41,10 +42,10 @@ public class TeamController {
 
     // Change Team Lead
     @PutMapping("/{teamId}/change-lead")
-    public ResponseEntity<?> changeTeamLead(@PathVariable int teamId, @RequestParam int teamLeadId) {
+    public ResponseEntity<?> changeTeamLead(@PathVariable int teamId, @RequestBody TeamRequestDTO request) {
         try {
-            teamService.changeTeamLead(teamId, teamLeadId);
-            return ResponseEntity.ok().build();
+            TeamDTO updatedTeam = teamService.changeTeamLead(teamId, request.getTeamName(), request.getTeamLeadId());
+            return ResponseEntity.ok(updatedTeam);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

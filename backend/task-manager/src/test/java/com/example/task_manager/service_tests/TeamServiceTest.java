@@ -114,20 +114,32 @@ public class TeamServiceTest {
 	}
 
 	@Test
-	void testChangeTeamLead() {
-		teamService.changeTeamLead(team.getTeamId(), newTeamLead.getAccountId());
+    void testChangeTeamLead() {
+        int teamId = team.getTeamId();
+        String newTeamName = "Updated Team Name";
+        int newTeamLeadId = newTeamLead.getAccountId();
 
-		Team updatedTeam = teamRepository.findById(team.getTeamId()).orElseThrow();
-		assertEquals(newTeamLead.getAccountId(), updatedTeam.getTeamLead().getAccountId());
-	}
+        TeamDTO updatedTeamDTO = teamService.changeTeamLead(teamId, newTeamName, newTeamLeadId);
+
+        assertNotNull(updatedTeamDTO);
+        assertEquals(newTeamName, updatedTeamDTO.getTeamName());
+        assertEquals(newTeamLeadId, updatedTeamDTO.getTeamLeadId());
+
+        Team updatedTeam = teamRepository.findById(teamId).orElseThrow();
+        assertEquals(newTeamName, updatedTeam.getTeamName());
+        assertEquals(newTeamLeadId, updatedTeam.getTeamLead().getAccountId());
+    }
 
 	@Test
-	void testChangeTeamLeadToNonExistentMember() {
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> teamService.changeTeamLead(team.getTeamId(), 9999));
+    void testChangeTeamLeadToNonExistentMember() {
+        int teamId = team.getTeamId();
+        String newTeamName = "Updated Team Name";
 
-		assertTrue(exception.getMessage().contains("Team Lead not found"));
-	}
+        Exception exception = assertThrows(RuntimeException.class, 
+            () -> teamService.changeTeamLead(teamId, newTeamName, 9999));
+
+        assertTrue(exception.getMessage().contains("Team Lead not found"));
+    }
 
 	@Test
 	void testGetTeamMembers() {
