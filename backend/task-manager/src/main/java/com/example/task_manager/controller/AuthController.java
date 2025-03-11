@@ -20,9 +20,13 @@ public class AuthController {
      * Expects a JSON request body with `teamMemberId` and `password`.
      */
     @PostMapping("/login")
-    public ResponseEntity<AuthInfoDTO> login(@RequestParam int teamMemberId, @RequestParam String password) {
+    public ResponseEntity<AuthInfoDTO> login(@RequestBody AuthInfoDTO loginRequest) {
         try {
-            AuthInfoDTO authInfo = authInfoService.authenticateUser(teamMemberId, password);
+            AuthInfoDTO authInfo = authInfoService.authenticateUser(
+                loginRequest.getAccountId(),
+                loginRequest.getPassword()
+            );
+
             return ResponseEntity.ok(authInfo);
         } catch (RuntimeException e) {
             return ResponseEntity.status(401).body(null); // 401 Unauthorized
@@ -40,7 +44,7 @@ public class AuthController {
             return ResponseEntity.ok(isAdmin);
         }
         catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(null);
+            return ResponseEntity.ok(false);
         }
     }
 }

@@ -25,13 +25,19 @@ export const login = async (teamMemberId, password) => {
 
 export const isAdmin = async (teamMemberId) => {
     try {
-        const response = await fetch(`${BASE_URL}`/is-admin, {
-            method: 'GET',
-            
-        })
+        const response = await fetch(`${BASE_URL}/${teamMemberId}/is-admin`, {
+            method: 'GET' 
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to get member role: ${response.status} ${response.statusText}`);
+            return false;
+        }
+
+        return await response.json();
     }
     catch (error) {
         console.error("Error checking member role: ", error);
-        throw error;
+        return false;
     }
 };

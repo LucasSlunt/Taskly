@@ -2,6 +2,7 @@ package com.example.task_manager.DTO;
 
 public class AuthInfoDTO {
     private int accountId;
+    private String password;
     private String userName;
     private boolean isAdmin;
 
@@ -17,6 +18,14 @@ public class AuthInfoDTO {
 
     public void setAccountId(int accountId) {
         this.accountId = accountId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getUserName() {
