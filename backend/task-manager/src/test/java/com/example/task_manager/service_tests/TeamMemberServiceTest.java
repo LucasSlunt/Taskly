@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
@@ -201,4 +202,35 @@ public class TeamMemberServiceTest {
 		assertFalse(authInfoService.approveLogin(teamMemberId,"coolnewpassword"));
 	}
 
+    @Test
+ 	void testIsAdmin() {
+ 		Admin admin = new Admin("Admin Name" + System.nanoTime(), "admin_email_" + System.nanoTime(), "admin_password");
+ 		admin = teamMemberRepository.save(admin);
+ 		boolean isAdmin = authInfoService.isAdmin(admin.getAccountId());
+ 
+ 		assertTrue(isAdmin);
+ 	}
+ 
+ 	//testing a team member is not an admin, should be false
+ 	@Test
+ 	void testIsNotAdmin() {
+ 		TeamMember teamMember = new TeamMember("Team Member " + System.nanoTime(),
+ 				"team_member_email_" + System.nanoTime(), "password");
+ 		teamMember = teamMemberRepository.save(teamMember);
+ 
+ 		boolean isAdmin = authInfoService.isAdmin(teamMember.getAccountId());
+ 
+ 		assertFalse(isAdmin);
+ 	}
+ 	
+ 	@Test
+ 	void testIsAdminForNonExistentMember() {
+ 		int fakeId = 999999; // Assuming this ID does not exist
+ 
+ 		Exception exception = assertThrows(RuntimeException.class, () -> {
+            authInfoService.isAdmin(fakeId);
+ 		});
+ 
+ 		assertTrue(exception.getMessage().contains("Team Member not found"));
+ 	}
 }
