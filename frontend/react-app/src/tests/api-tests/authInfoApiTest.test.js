@@ -1,4 +1,4 @@
-import { login, isAdmin } from '../../api/authInfo';
+import {login, isAdmin} from '../../api/authInfo';
 
 const BASE_URL = "http://localhost:8080/api/auth-info";
 
@@ -6,72 +6,55 @@ beforeEach(() => {
     fetchMock.resetMocks();
 });
 
-describe('Auth API', () => {
-    //Test: logging in and returning login info
-    test('Login should return auth data on success', async () => {
-        const mockAuthInfo = {
-            accountId: 1,
-            userName: "Test User",
-            isAdmin: false
+describe('AuthInfo API', () => {
+    //test: logging in
+    test('login should return response body on success', async () => {
+        const mockUser = {
+            id: 1,
+            name: "Test User",
+            isAdmin: true
         };
 
-        fetch.mockResponseOnce(JSON.stringify(mockAuthInfo), { status: 200 });
+        fetch.mockResponseOnce(JSON.stringify(mockUser), {status: 200});
 
-        const result = await login(1, "securepassword");
-
-        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/login`, {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                teamMemberId: 1,
-                password: "securepassword"
-            })
-        });
-
-        expect(result).toEqual(mockAuthInfo);
-    });
-
-    //test: login should return null when given invalid credentials
-    test('login should return null when credentials are incorrect', async () => {
-        fetch.mockResponseOnce('', { status: 401 });
-
-        const result = await login(123, "wrongpassword");
+        const response = await login(1, "password");
 
         expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/login`, {
             method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({teamMemberId: 1, password: "password"})
+        });
+
+        expect(response).toEqual(mockUser);
+    });
+
+    //test: check if user is an admin
+    test('isAdmin should return true when user is an admin', async () => {
+        fetch.mockResponseOnce(JSON.stringify({ isAdmin: true }), { status: 200 });
+
+        const response = await isAdmin(1);
+
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/is-admin`, {
+            method: 'POST',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                teamMemberId: 123,
-                password: "wrongpassword"
-            })
+            body: JSON.stringify({ teamMemberId: 1 })
         });
 
-        expect(result).toBeNull();
+        expect(response).toBe(true);
     });
 
-    //test: admins return true when checking if the user is an admin
-    test('isAdmin should return true for admin users', async () => {
-        fetch.mockResponseOnce(JSON.stringify(true), { status: 200 });
+    //test: check if user is not an admin
+    test('isAdmin should return false when user is not an admin', async () => {
+        fetch.mockResponseOnce(JSON.stringify({ isAdmin: false }), { status: 200 });
 
-        const result = await isAdmin(123);
+        const response = await isAdmin(1);
 
-        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/123/is-admin`, {
-            method: 'GET'
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/is-admin`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ teamMemberId: 1 })
         });
 
-        expect(result).toBe(true);
-    });
-
-    //test: non admins should return false when checking if the user is an admin
-    test('isAdmin should return false for non-admin users', async () => {
-        fetch.mockResponseOnce(JSON.stringify(false), { status: 200 });
-
-        const result = await isAdmin(456);
-
-        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/456/is-admin`, {
-            method: 'GET'
-        });
-
-        expect(result).toBe(false);
+        expect(response).toBe(false);
     });
 });

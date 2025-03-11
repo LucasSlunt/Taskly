@@ -25,6 +25,7 @@ export const login = async (teamMemberId, password) => {
 
 export const isAdmin = async (teamMemberId) => {
     try {
+<<<<<<< HEAD
         const response = await fetch(`${BASE_URL}/${teamMemberId}/is-admin`, {
             method: 'GET' 
         });
@@ -35,6 +36,23 @@ export const isAdmin = async (teamMemberId) => {
         }
 
         return await response.json();
+=======
+        const response = await fetch(`${BASE_URL}/is-admin`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({teamMemberId})
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to check member role: ${response.status} ${response.statusText}`);
+            return false;
+        }
+
+        const data = await response.json();
+        return data.isAdmin === true;
+>>>>>>> ac9dc6a (Added frontend API endpoints and implemented the tests.)
     }
     catch (error) {
         console.error("Error checking member role: ", error);
