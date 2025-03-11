@@ -36,11 +36,24 @@ All API requests should be made to the following base URL (Spring Boot's default
 
 ### **Endpoints**
 
-- **Create Admin:** `POST /`
-    - **Parameters:**  
-        - `name` (string, required): The name of the new admin.  
-        - `email` (string, required): The email of the new admin.  
+- **Create Admin:** `POST /` 
     - **Description:** Creates a new admin in the system.
+    - **Request Body:**
+    ```json
+    {
+        "name": "Admin Name",
+        "email": "admin@example.com",
+        "password": "securepassword"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 1,
+        "userName": "Admin Name",
+        "userEmail": "admin@example.com"
+    }
+    ```
 
 - **Delete Admin:** `DELETE /{adminId}`
     - **Parameters:**
@@ -48,29 +61,90 @@ All API requests should be made to the following base URL (Spring Boot's default
     - **Description:** Removes an admin from the system permanently.
 
 - **Modify Admin Name:** `PUT /{adminId}/update-name`
-    - **Parameters:**  
-        - `newName` (string, required): The updated name for the admin.  
+    - **Request Body:**
+    ```json
+    {
+        "newName": "Updated Admin Name"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 1,
+        "userName": "Updated Admin Name",
+        "userEmail": "admin@example.com"
+    }
+    ```
     - **Description:** Updates the admin's **name** field in the database.
 
 - **Modify Admin Email:** `PUT /{adminId}/update-email`
-    - **Parameters:**  
-        - `newEmail` (string, required): The updated email for the admin.  
+    - **Request Body:**
+    ```json
+    {
+        "newEmail": "updated.admin@example.com"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 1,
+        "userName": "Admin Name",
+        "userEmail": "updated.admin@example.com"
+    }
+    ``` 
     - **Description:** Updates the admin's **email** field in the database.
 
 - **Create Team Member:** `POST /team-member`
-    - **Parameters:**  
-        - `name` (string, required): The name of the new team member.  
-        - `email` (string, required): The email of the new team member.  
+    - **Request Body:**
+    ```json
+    {
+        "name": "Team Member",
+        "email": "teammember@example.com",
+        "password": "securepassword"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 2,
+        "userName": "Team Member",
+        "userEmail": "teammember@example.com"
+    }
+    ```
     - **Description:** Adds a new team member to the system.
 
 - **Modify Team Member Name:** `PUT /team-member/{teamMemberId}/update-name`
-    - **Parameters:**  
-        - `newName` (string, required): The updated name for the team member.  
+    - **Request Body:**
+    ```json
+    {
+        "newName": "Updated Team Member"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 2,
+        "userName": "Updated Team Member",
+        "userEmail": "teammember@example.com"
+    }
+    ```
     - **Description:** Updates the **name** field of the specified team member in the database.
 
 - **Modify Team Member Email:** `PUT /team-member/{teamMemberId}/update-email`
-    - **Parameters:**  
-        - `newEmail` (string, required): The updated email for the team member.  
+    - **Request Body:**
+    ```json
+    {
+        "newEmail": "updated.tm@example.com"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 2,
+        "userName": "Team Member",
+        "userEmail": "updated.tm@example.com"
+    }
+    ```
     - **Description:** Updates the **email** field of the specified team member in the database.
 
 - **Delete Team Member:** `DELETE /team-member/{teamMemberId}`
