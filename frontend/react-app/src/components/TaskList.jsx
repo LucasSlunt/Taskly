@@ -1,29 +1,19 @@
 import {useTable, useSortBy} from 'react-table'
 import React, { use } from 'react';
 import "../css/TaskList.css"
-import fakeData from "../fakeTaskData.json"
 import SearchFilterSort from './SearchFilterSort';
 import { useState} from 'react';
 
 
-
-const mockData = {
-    name: "Task",
-    team: "Team 1",
-    assignees: "James Liam Evan Kelly",
-    status: "in progress",
-    priority: "Low",
-    dueDate: "2/15/2025"
-}
-
-
-function TaskList(){
-    
-    const [searchForThis, setSearch] = useState({value:"name"})
+function TaskList({dataToUse, headersAndAccessors}){
+    let  defaultSearch = headersAndAccessors[0].accessor
+    const [searchForThis, setSearch] = useState({value: defaultSearch})
     const [searchQuery, setSearchQuery] = useState(""); //creates a state variable "searchQuery" and function "setSearchQuery" to update it
     //whenever the searchQuery changes, runs the useMemo and filters through the fakeData data to only the task names that contain the searchQuery 
-    const filteredData = React.useMemo(()=> {return fakeData.filter((task) =>{
-        switch(searchForThis.value){
+    const filteredData = React.useMemo(()=> {return dataToUse.filter((task) =>{
+        console.log("task")
+        console.log(task)
+            switch(searchForThis.value){
             case "name":
                 return task.name.toLowerCase().includes(searchQuery.toLowerCase())
             case "team":
@@ -36,6 +26,10 @@ function TaskList(){
                 return task.priority.toLowerCase().includes(searchQuery.toLowerCase())
             case "dueDate":
                 return task.dueDate.toLowerCase().includes(searchQuery.toLowerCase())
+            case "dateCompteted":
+                return task.dateCompteted.toLowerCase().includes(searchQuery.toLowerCase())
+            case "isLocked":
+                return task.isLocked.toLowerCase().includes(searchQuery.toLowerCase())
         }}
     );}, [searchQuery],((searchForThis),[setSearch])) ;
     
@@ -44,32 +38,7 @@ function TaskList(){
           return {value: event.target.value}
         });
       }
-    const columns = React.useMemo(() => [
-        {
-            Header: "Task Name",
-            accessor: "name",
-        },
-        {
-            Header: "Team",
-            accessor:"team",
-        },
-        {
-            Header: "Assignee(s)",
-            accessor: "assignees",
-        },
-        {
-            Header: "Status",
-            accessor: "status",
-        },
-        {
-            Header: "Priority",
-            accessor: "priority",
-        },
-        {
-            Header: "Due Date",
-            accessor: "dueDate",
-        }
-    ],
+    const columns = React.useMemo(() => headersAndAccessors,
     [])
     
     const { getTableBodyProps, getTableProps, rows, prepareRow, headerGroups} = useTable({columns,data: filteredData}, useSortBy)
@@ -77,12 +46,9 @@ function TaskList(){
         
         <div className='container'>
             <select name="searchThis" id="searchThis" onChange={changeSearch}>
-                <option value="name" >Task Name</option>
-                <option value="team">Team Name</option>
-                <option value="assignees">Assignee(s)</option>
-                <option value="status">Status</option>
-                <option value="priority">Priority</option>
-                <option value="dueDate">Due Date</option>
+                {headersAndAccessors.map((headerAndAccessor) =>(
+                    <option value={headerAndAccessor.accessor} key = {headerAndAccessor.accessor}>{headerAndAccessor.Header}</option>
+                ))}
             </select>
             
             {/* pass searchQuery and setSearchQuery to SearchFilterSort component */}
