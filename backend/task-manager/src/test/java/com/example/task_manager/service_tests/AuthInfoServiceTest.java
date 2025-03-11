@@ -10,6 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import jakarta.transaction.Transactional;
 
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.repository.AuthInfoRepository;
+import com.example.task_manager.repository.IsAssignedRepository;
+import com.example.task_manager.repository.IsMemberOfRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.service.AuthInfoService;
 
@@ -24,11 +27,25 @@ public class AuthInfoServiceTest {
 @Autowired
 	private TeamMemberRepository teamMemberRepository;
 
+@Autowired
+	private IsAssignedRepository isAssignedRepository;
+
+@Autowired
+	private IsMemberOfRepository isMemberOfRepository;
+	
+@Autowired
+	private AuthInfoRepository authInfoRepository;
+
+
+
 private TeamMember teamMember;
 
 @BeforeEach
 	void setUp() {
-		//teamMemberRepository.deleteAllInBatch();
+        isAssignedRepository.deleteAllInBatch();
+        isMemberOfRepository.deleteAllInBatch();
+        authInfoRepository.deleteAllInBatch();
+		teamMemberRepository.deleteAllInBatch();
 
         teamMember = new TeamMember("Authentication Tester", "auth_test" + System.nanoTime() + "@secure.com","defaultpw");
 		teamMember = teamMemberRepository.save(teamMember);

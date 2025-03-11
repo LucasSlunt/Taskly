@@ -11,6 +11,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
@@ -43,6 +44,9 @@ public class IsMemberOfServiceTest {
 
     @Autowired
     private TeamMemberRepository teamMemberRepository;
+    
+    @Autowired
+    private AuthInfoRepository authInfoRepository;
 
     private TeamDTO team;
     private TeamMemberDTO teamLead;
@@ -53,6 +57,7 @@ public class IsMemberOfServiceTest {
         // Clear DB to avoid conflicts
         taskRepository.deleteAllInBatch();
         teamRepository.deleteAllInBatch();
+        authInfoRepository.deleteAllInBatch();
         teamMemberRepository.deleteAllInBatch();
 
         teamLead = adminService.createTeamMember("Team Lead", "team_lead" + System.nanoTime() + "@example.com","defaultpw");
