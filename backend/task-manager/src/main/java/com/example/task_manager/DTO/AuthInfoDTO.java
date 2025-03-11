@@ -2,11 +2,13 @@ package com.example.task_manager.DTO;
 
 public class AuthInfoDTO {
     private int accountId;
-    private int teamMemberId;
+    private String userName;
+    private boolean isAdmin;
 
-    public AuthInfoDTO(int accountId, int teamMemberId) {
+    public AuthInfoDTO(int accountId, String userName, boolean isAdmin) {
         this.accountId = accountId;
-        this.teamMemberId = teamMemberId;
+        this.userName = userName;
+        this.isAdmin = isAdmin;
     }
 
     public int getAccountId() {
@@ -17,11 +19,19 @@ public class AuthInfoDTO {
         this.accountId = accountId;
     }
 
-    public int getTeamMemberId() {
-        return teamMemberId;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setTeamMemberId(int teamMemberId) {
-        this.teamMemberId = teamMemberId;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public boolean getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 }
