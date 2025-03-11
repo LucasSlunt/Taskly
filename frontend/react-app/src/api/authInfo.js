@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080/api/auth-info";
+const BASE_URL = "http://localhost:8080/api/auth-info"; 
 
 export const login = async (teamMemberId, password) => {
     try {

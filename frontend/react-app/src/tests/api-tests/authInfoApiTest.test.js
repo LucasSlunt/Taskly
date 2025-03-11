@@ -1,4 +1,4 @@
-import {login, isAdmin} from '../../api/authInfo';
+import {login, isAdmin} from '../../api/authInfo'; 
 
 const BASE_URL = "http://localhost:8080/api/auth-info";
 
