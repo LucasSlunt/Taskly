@@ -7,9 +7,10 @@ public class AdminRequestDTO {
 
     public AdminRequestDTO() {}
 
-    public AdminRequestDTO(String name, String email) {
+    public AdminRequestDTO(String name, String email, String password) {
         this.name = name;
         this.email = email;
+        this.password = password;
     }
 
     public String getName() {
