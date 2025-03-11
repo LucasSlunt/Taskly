@@ -1,9 +1,16 @@
 package com.example.task_manager.controller;
 
+import com.example.task_manager.DTO.AdminDTO;
+import com.example.task_manager.DTO.AdminRequestDTO;
+import com.example.task_manager.DTO.UpdateNameRequestDTO;
 import com.example.task_manager.service.AdminService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.NoSuchElementException;
+
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -18,12 +25,17 @@ public class AdminController {
 
     // Create Admin entity
     @PostMapping
-    public ResponseEntity<?> createAdmin(@RequestParam String name, @RequestParam String email, @RequestParam String userPassword) {
+    public ResponseEntity<AdminDTO> createAdmin(@RequestBody AdminRequestDTO request) {
         try {
-            return ResponseEntity.ok(adminService.createAdmin(name, email, userPassword));
+            AdminDTO createAdmin = adminService.createAdmin(
+                request.getName(),
+                request.getEmail(),
+                request.getPassword()
+            );
+            return ResponseEntity.ok(createAdmin);
         } 
         catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
@@ -41,9 +53,10 @@ public class AdminController {
 
     // Modify Admin Name
     @PutMapping("/{adminId}/update-name")
-    public ResponseEntity<?> updateAdminName(@PathVariable int adminId, @RequestParam String newName) {
+    public ResponseEntity<?> updateAdminName(@PathVariable int adminId, @RequestBody UpdateNameRequestDTO request) {
         try {
-            return ResponseEntity.ok(adminService.modifyAdminName(adminId, newName));
+            AdminDTO updatedAdmin = adminService.modifyAdminName(adminId, request.getNewName());
+            return ResponseEntity.ok(updatedAdmin);
         } 
         catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
