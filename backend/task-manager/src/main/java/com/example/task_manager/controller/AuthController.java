@@ -28,4 +28,19 @@ public class AuthController {
             return ResponseEntity.status(401).body(null); // 401 Unauthorized
         }
     }
+
+    /*
+     * Endpoint for figuring out is a user is an admin
+     * Takes `teamMemberId` as a path variable
+     */
+    @GetMapping("/{teamMemberId}/is-admin")
+    public ResponseEntity<Boolean> isAdmin(@PathVariable int teamMemberId) {
+        try {
+            boolean isAdmin = authInfoService.isAdmin(teamMemberId);
+            return ResponseEntity.ok(isAdmin);
+        }
+        catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(null);
+        }
+    }
 }

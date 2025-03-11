@@ -98,4 +98,47 @@ public class AuthInfoControllerTest {
 
         verify(authInfoService, times(1)).authenticateUser(9999, "somepassword");
     }
+
+    /**
+     * Test `isAdmin` when the user is an admin so should return true
+     */
+    @Test
+    void testIsAdmin_Success_AdminUser() throws Exception {
+        when(authInfoService.isAdmin(2)).thenReturn(true);
+
+        mockMvc.perform(get("/auth-info/2/is-admin"))
+                .andExpect(status().isOk()) // Expect HTTP 200
+                .andExpect(content().string("true"));
+
+        verify(authInfoService, times(1)).isAdmin(2);
+    }
+
+    /**
+     * Test `isAdmin` when the user is NOT an admin so should return false
+     */
+    @Test
+    void testIsAdmin_Success_NonAdminUser() throws Exception {
+        when(authInfoService.isAdmin(1)).thenReturn(false);
+
+        mockMvc.perform(get("/auth-info/1/is-admin"))
+                .andExpect(status().isOk()) // Expect HTTP 200
+                .andExpect(content().string("false"));
+
+        verify(authInfoService, times(1)).isAdmin(1);
+    }
+
+    /**
+     * Test `isAdmin` when the user does NOT exist so should return 404
+     */
+    @Test
+    void testIsAdmin_Failure_UserNotFound() throws Exception {
+        when(authInfoService.isAdmin(9999))
+                .thenThrow(new RuntimeException("Team Member not found"));
+
+        mockMvc.perform(get("/auth-info/9999/is-admin"))
+                .andExpect(status().isNotFound()) // Expect HTTP 404
+                .andExpect(content().string(""));
+
+        verify(authInfoService, times(1)).isAdmin(9999);
+    }
 }
