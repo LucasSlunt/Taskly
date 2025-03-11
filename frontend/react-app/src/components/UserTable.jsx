@@ -56,9 +56,12 @@ const AllTeams = [
     ]
 function UserTable(){
     const deleteUser=((event)=>{
-        console.log("delete THIS USER ", event.target.value)})
+        console.log("delete THIS USER ")
+        console.log(event.target.value)
+    })
     
     const changeRole = ((userID, event)=>{
+        console.log("rolesChanged")
         console.log(userID, event.target.value)
     }
     )
@@ -71,6 +74,7 @@ function UserTable(){
         return firstSetOfData
     })
     const changeSearch =(event) =>{
+        console.log("seeing a new team")
         let membersValue = []
         let arrReturn = []
         for(let i = 0; i<AllTeams.length;i++){
@@ -102,7 +106,7 @@ function UserTable(){
             Header: "Role",
             accessor:"role",
             Cell: (original) => (
-                <select name="" id="" defaultValue={original.value} onChange={(e)=>changeRole(original.cell.row.values.del, e)}>
+                <select className="cellSelect" id={"role "+original.cell.row.values.del} defaultValue={original.value} onChange={(e)=>changeRole(original.cell.row.values.del, e)}>
                     <option value="teamLead">Team Lead</option>
                     <option value="admin">Admin</option>
                     <option value="teamMember">Team Member</option>
@@ -113,7 +117,7 @@ function UserTable(){
             Header: "",
             accessor: "del",
             Cell: (original) => (
-                <button value={original.value} onClick={(e)=>deleteUser(e)}>
+                <button id= {"delete " + original.value} value={original.value} onClick={(e)=>deleteUser(e)}>
                     Delete
                 </button>
               )
