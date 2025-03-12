@@ -1,41 +1,64 @@
 import "../css/ViewTask.css"
 import Header from "../components/Header.jsx"
+import {useLocation} from 'react-router-dom'
+import fakeTaskData from '../FakeData/fakeTaskData.json'
+function getAssignnesNames(task){
+    let returnArr = []
+    task.assignees.map((assigne)=>{
+        returnArr = [...returnArr, (assigne.name+" ")]
+    })
+    return returnArr
+}
 function ViewTask(){
-    //Mock Data
-    const task = {
-        name: "Task",
-        assignees: "James",
-        priority: "Low",
-        discription: "This is a really cool task with lots of stuff in it",
-        pic1:"https://th.bing.com/th/id/OIP.cqp9dHHXg-Vwj5TNQO8-SgHaEK?w=312&h=180&c=7&r=0&o=5&pid=1.7",
-        pic2:"https://th.bing.com/th/id/OIP.hEdNtgAioJP9H_d_U1nCWAHaE8?w=263&h=180&c=7&r=0&o=5&pid=1.7",
-
-
+    const location = useLocation()
+    const { taskToSee } = location.state
+    console.log(taskToSee)
+    function getTask (){
+        //We will do an API GET call for the task here
+        let returnArr =[]
+        fakeTaskData.map((task)=>{
+            if(task.id === taskToSee){
+                returnArr = [...returnArr, {
+                    id: task.id,
+                    name: task.name,
+                    team: task.team,
+                    assignees: getAssignnesNames(task),
+                    dueDate: task.dueDate,
+                    priority: task.priority,
+                    discription: task.discription,
+                    dateCompteted: task.dateCompteted
+                }]
+            }
+        })
+        if(returnArr.length ===0){
+            return {name: "TaskFailedToLoad"}
+        }
+        return returnArr[0]
     }
+    
     return(
         <div class = "viewTask">
             <Header/>
             <div class="page-body">
                 <div class="flexbox">
                     <div class="header"style={{ whiteSpace: 'pre-line' }}>
-                    <strong class ="nameOfTask">{task.name + "\n"}</strong> Assigned to: {task.assignees}
+                    <strong class ="nameOfTask">{getTask().name + "\n"}</strong> Assigned to: {getTask().assignees}
                     </div>
                     {/* Place holder for when we get our database we will get the prority DB*/}
                     <div class="priority">
-                        Priority: {task.priority}
+                        Priority: {getTask().priority}
                     </div>
                 </div>
                 <div class="discription">
-                    {task.discription}
+                    {getTask().discription}
                 </div>
-                <div class="pic">
+                {/*<div class="pic">
                     <ul>
-                    {/* Place holder for when we get our database imgs will be its own coponent */}
-                        <li class="imgSpacing"><img src={task.pic1} alt="" /></li>
-                        <li class="imgSpacing"><img src={task.pic2} alt="" /></li>
+                        <li class="imgSpacing"><img src={getTask.pic1} alt="" /></li>
+                        <li class="imgSpacing"><img src={getTask.pic2} alt="" /></li>
                     </ul>
 
-                </div>
+                </div>*/}
                 <div class="comment-section">
                     <form action="">
                         <input type="text" name="Comment" id="comment" placeholder = "Add Comment/Note"class = "comment"/>
@@ -45,10 +68,9 @@ function ViewTask(){
                 <form class="update-class">
                     <div class = "updateStatus">
                         <select name="update status" id="newStatus" class = "updateSelector">
-                            <option value="">Update Status</option>
-                            <option value="Backlog">Backlog</option>
+                            <option value="" disabled selected>Update Status</option>
+                            <option value="notStarted">Not Started</option>
                             <option value="InProgress">In Progress</option>
-                            <option value="UnderReview">Under Review</option>
                             <option value="Done">Done</option>
                         </select>
                         <input type="button" value="EDIT" class="fotterbutton"/>
