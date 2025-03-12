@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import jakarta.transaction.Transactional;
 
 import com.example.task_manager.DTO.TaskDTO;
+import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
@@ -75,7 +76,17 @@ public class TeamMemberServiceTest {
 
 	@Test
 	void testCreateTask() {
-		TaskDTO newTaskDTO = teamMemberService.createTask("New Task", "Task Description", false, "Open", LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), team, null);
+		TaskRequestDTO taskRequestDTO = new TaskRequestDTO(
+			"New Task",
+			"Task Description",
+			false,
+			"Open",
+			LocalDate.now().plusDays(5),
+			null,
+			team.getTeamId()
+		);
+
+		TaskDTO newTaskDTO = teamMemberService.createTask(taskRequestDTO);
 
 		assertNotNull(newTaskDTO);
 		assertEquals("New Task", newTaskDTO.getTitle());
@@ -85,27 +96,28 @@ public class TeamMemberServiceTest {
 
 	@Test
 	void testCreateTaskWithNullTitle() {
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> teamMemberService.createTask(null, "Task Description", false, "Open", 
-				LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), team, null));
+		TaskRequestDTO taskRequestDTO = new TaskRequestDTO(
+				null, "Task Description", false, "Open", LocalDate.now(), null, team.getTeamId());
 
-		assertTrue(exception.getMessage().contains("Task title cannot be null"));
+		Exception exception = assertThrows(RuntimeException.class, () -> teamMemberService.createTask(taskRequestDTO));
+
+		assertTrue(exception.getMessage().contains("Task title cannot be null or empty"));
 	}
 
 	@Test
 	void testCreateTaskWithEmptyTitle() {
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> teamMemberService.createTask("", "Task Description", false, "Open", 
-				LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), team, null));
+		TaskRequestDTO taskRequestDTO = new TaskRequestDTO("", "Task Description", false, "Open", LocalDate.now(), null, team.getTeamId());
+
+        Exception exception = assertThrows(RuntimeException.class, () -> teamMemberService.createTask(taskRequestDTO));
 
 		assertTrue(exception.getMessage().contains("Task title cannot be null or empty"));
 	}
 
 	@Test
 	void testCreateTaskWithNullTeam() {
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> teamMemberService.createTask("New Task", "Task Description", false, "Open", 
-				LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), null, null));
+		TaskRequestDTO taskRequestDTO = new TaskRequestDTO("New Task", "Task Description", false, "Open", LocalDate.now(), null, null);
+
+        Exception exception = assertThrows(RuntimeException.class, () -> teamMemberService.createTask(taskRequestDTO));
 
 		assertTrue(exception.getMessage().contains("Task must be assigned to a team"));
 	}
@@ -128,19 +140,37 @@ public class TeamMemberServiceTest {
 
 	@Test
 	void testEditTask() {
-		TaskDTO updatedTask = teamMemberService.editTask(task.getTaskId(), "Updated Task Title", "Updated Description", true, "In Progress", LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
+		TaskDTO taskDTO = new TaskDTO(
+			task.getTaskId(),
+			"Updated Task Title",
+			"Updated Description",
+			true,
+			"In Progress",
+			LocalDate.now(),
+			team.getTeamId()
+		);
+
+		TaskDTO updatedTask = teamMemberService.editTask(task.getTaskId(), taskDTO);
 
 		assertEquals("Updated Task Title", updatedTask.getTitle());
 		assertEquals("Updated Description", updatedTask.getDescription());
 		assertEquals("In Progress", updatedTask.getStatus());
-		assertTrue(updatedTask.isLocked());
+		assertTrue(updatedTask.getIsLocked());
 	}
 
 	@Test
 	void testEditNonExistentTask() {
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> teamMemberService.editTask(9999, "Updated Title", "Updated Description", true, 
-				"In Progress", LocalDate.now().plusDays(7), LocalDate.now().plusDays(10)));
+		TaskDTO taskDTO = new TaskDTO(
+			9999,
+			"Updated Title",
+			"Updated Description",
+			true,
+			"In Progress",
+			LocalDate.now(),
+			team.getTeamId()
+		);
+
+		Exception exception = assertThrows(RuntimeException.class, () -> teamMemberService.editTask(9999, taskDTO));
 
 		assertTrue(exception.getMessage().contains("Task not found"));
 	}

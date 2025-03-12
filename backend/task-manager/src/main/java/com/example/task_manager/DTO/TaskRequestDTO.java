@@ -1,6 +1,7 @@
 package com.example.task_manager.DTO;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class TaskRequestDTO {
     private String title;
@@ -8,12 +9,12 @@ public class TaskRequestDTO {
     private Boolean isLocked;
     private String status;
     private LocalDate dueDate;
-    private Integer assignedTo;
+    private List<Integer> assignedTo;
     private Integer teamId;
 
     public TaskRequestDTO() {}
 
-    public TaskRequestDTO(String title, String description, Boolean isLocked, String status, LocalDate dueDate, Integer assignedTo, Integer teamId) {
+    public TaskRequestDTO(String title, String description, Boolean isLocked, String status, LocalDate dueDate, List<Integer> assignedTo, Integer teamId) {
         this.title = title;
         this.description = description;
         this.isLocked = isLocked;
@@ -55,11 +56,11 @@ public class TaskRequestDTO {
         this.dueDate = dueDate;
     }
 
-    public Integer getAssignedTo() {
+    public List<Integer> getAssignedTo() {
         return assignedTo;
     }
 
-    public void setAssignedTo(Integer assignedTo) {
+    public void setAssignedTo(List<Integer> assignedTo) {
         this.assignedTo = assignedTo;
     }
 

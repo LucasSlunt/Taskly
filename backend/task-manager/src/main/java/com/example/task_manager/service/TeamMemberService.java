@@ -67,6 +67,10 @@ public class TeamMemberService {
 		if (request.getTitle() == null || request.getTitle().trim().isEmpty()) {
 			throw new RuntimeException("Task title cannot be null or empty");
 		}
+
+		if (request.getTeamId() == null) {
+			throw new RuntimeException("Task must be assigned to a team");
+		}
 	
 		Team team = teamRepository.findById(request.getTeamId())
 			.orElseThrow(() -> new RuntimeException("Task must be assigned to a valid team"));

@@ -2,6 +2,7 @@ package com.example.task_manager.service_tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import jakarta.transaction.Transactional;
 
 import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.TaskDTO;
+import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.Admin;
@@ -85,8 +87,29 @@ public class AdminServiceTest {
 		team.setTeamName("Team Name " + System.nanoTime());
 		team = teamRepository.save(team);
 
-		unlockedTask = adminService.createTask("Unlocked Task", null, false, "Open", null, null, team, null);
-		lockedTask = adminService.createTask("Locked Task", null, false, "Open", null, null, team, null);
+		TaskRequestDTO taskRequest = new TaskRequestDTO(
+			"Unlocked Task",
+			"Task Description",
+			false,
+			"Open",
+			LocalDate.now(),
+			null,
+			team.getTeamId()
+		);
+
+		unlockedTask = adminService.createTask(taskRequest);
+
+		taskRequest = new TaskRequestDTO(
+			"Locked Task",
+			"Task Description",
+			true,
+			"Open",
+			LocalDate.now(),
+			null,
+			team.getTeamId()
+		);
+
+		lockedTask = adminService.createTask(taskRequest);
 	}
 
 	// Try to create admin account
