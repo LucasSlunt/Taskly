@@ -83,5 +83,5 @@ This documentation provides an overview on the Docker image for this project. Ea
 ### If Ports Are Blocked
 - Run:  
   - `netstat -ano | findstr :8080`
-- If another process is using the port, kill it (BE CAREFUL, CHECK WHAT IS RUNNING ON THE PORT FIRST):
+- If another process is using the port, kill it -- **BE CAREFUL, CHECK WHAT IS RUNNING ON THE PORT FIRST**:
   - `taskkill /PID <process_id> /F`
