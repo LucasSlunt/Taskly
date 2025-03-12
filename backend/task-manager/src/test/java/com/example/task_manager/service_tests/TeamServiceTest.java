@@ -19,8 +19,11 @@ import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
+import com.example.task_manager.repository.AdminRepository;
 import com.example.task_manager.repository.AuthInfoRepository;
+import com.example.task_manager.repository.IsAssignedRepository;
 import com.example.task_manager.repository.IsMemberOfRepository;
+import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.service.IsMemberOfService;
 import com.example.task_manager.service.TeamService;
 
@@ -36,16 +39,25 @@ public class TeamServiceTest {
 	private IsMemberOfService isMemberOfService;
 
 	@Autowired
-	private TeamRepository teamRepository;
+	private AdminRepository adminRepository;
 
 	@Autowired
 	private TeamMemberRepository teamMemberRepository;
 
 	@Autowired
-	private IsMemberOfRepository isMemberOfRepository;
+	private TaskRepository taskRepository;
 
 	@Autowired
-    private AuthInfoRepository authInfoRepository;
+	private TeamRepository teamRepository;
+
+	@Autowired
+	private IsAssignedRepository isAssignedRepository;
+
+	@Autowired
+	private IsMemberOfRepository isMemberOfRepository;
+	
+	@Autowired
+	private AuthInfoRepository authInfoRepository;
 
 	private TeamDTO team;
 	private TeamMember teamLead;
@@ -54,10 +66,13 @@ public class TeamServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		isMemberOfRepository.deleteAllInBatch();
-		teamRepository.deleteAllInBatch();
-		authInfoRepository.deleteAllInBatch();
-		teamMemberRepository.deleteAllInBatch();
+		isAssignedRepository.deleteAll();
+		isMemberOfRepository.deleteAll();
+		taskRepository.deleteAll();
+		teamMemberRepository.deleteAll();
+		authInfoRepository.deleteAll();
+		adminRepository.deleteAll();
+		teamRepository.deleteAll();
 
 		teamLead = new TeamMember("Team Lead", "team_lead" + System.nanoTime() + "@example.com","defaultpw");
 		teamLead = teamMemberRepository.save(teamLead);

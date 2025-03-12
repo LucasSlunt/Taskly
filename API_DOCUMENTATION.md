@@ -275,6 +275,21 @@ All API requests should be made to the following base URL (Spring Boot's default
     - **Description:** Updates the team lead for a specified team by assigning a different team member.
 
 - **Get Team Members:** `GET /{teamId}/members`
+    - **Response Body:**
+    ```json
+    [
+        {
+            "accountId": 1,
+            "userName": "John Doe",
+            "userEmail": "john@example.com"
+        },
+        {
+            "accountId": 2,
+            "userName": "Jane Smith",
+            "userEmail": "jane@example.com"
+        }
+    ]
+    ```
     - **Description:** Returns a list of every team member in a team. Each list item contains the team member's ID, name, and email.
 
 ---
@@ -285,37 +300,79 @@ All API requests should be made to the following base URL (Spring Boot's default
 
 ### Endpoints
 - **Create a Task:** `POST`
-    - **Parameters:**:
-        - `title` (string, required): The title of the new task.
-        - `description` (string, optional): A description of the task.
-        - `isLocked` (boolean, optional): Whether the task is locked (`true`) or unlocked (`false`). Defaults to `null` if not provided.
-        - `status` (string, optional): The status of the task (e.g., "To-Do", "In Progress", "Done"). Defaults to `null` if not provided.
-        - `teamId` (integer, required): The ID of the team being assigned to the task.
+    - **Request Body:**
+    ```json
+    {
+        "title": "Task Title",
+        "description": "Task Description",
+        "isLocked": false,
+        "status": "To-Do",
+        "dueDate": "2025-03-01",
+        "teamId": 3
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "taskId": 4,
+        "title": "Task Title",
+        "description": "Task Description",
+        "isLocked": false,
+        "status": "To-Do",
+        "dueDate": "2025-03-01",
+        "teamId": 3
+    }
+    ```
+    - **Description:** Creates a task in the database.
 
 - **Delete a Task:** `DELETE /{taskId}`
     - **Description:** Deletes a task from the database.
 
 - **Edit a Task:** `PUT /{taskId}`
-    - **Description:** Updates the details of a task.
     - **Request Body:** (TaskDTO, JSON)
     ```json
     {
-        "title": "New Task Title",
+        "title": "Updated Title",
         "description": "Updated Description",
         "isLocked": false,
         "status": "In Progress",
-        "dueDate": "2025-03-01"
+        "dueDate": "2025-04-01"
     }
     ```
-    - **Note:** Only the provided fields will be updated. Missing fields will remain the same.
+    - **Response Body:**
+    ```json
+    {
+        "taskId": 4,
+        "title": "Updated Title",
+        "description": "Updated Description",
+        "isLocked": false,
+        "status": "In Progress",
+        "dueDate": "2025-04-01",
+        "teamId": 3
+    }
+    ```
+    - **Description:** Updates the details of a task.
 
 - **Assign Member to a Task:** `POST /{taskId}/assign/{teamMemberId}`
+    - **Response Body:**
+    ```json
+    {
+        "isAssignedId": 1,
+        "taskId": 4,
+        "teamMemberId": 2,
+        "teamId": 3
+    }
+    ```
     - **Description:** Assigns a member (admin or team member) to a task.
 
 - **Change Password:** `POST /team-members/{teamMemberId}/change-password`
-    - **Parameters:**
-        - `oldPassword` (string, required): The current password of the user.
-        - `newPassword` (string, optional): The new password of the user.
+    - **Request Body:**
+    ```json
+    {
+        "oldPassword": "oldPass123",
+        "newPassword": "newPass456"
+    }
+    ```
     - **Description:** Updates the password field for a team member.
 
 ---

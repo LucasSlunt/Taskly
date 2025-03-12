@@ -21,8 +21,10 @@ import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
+import com.example.task_manager.repository.AdminRepository;
 import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.repository.IsAssignedRepository;
+import com.example.task_manager.repository.IsMemberOfRepository;
 import com.example.task_manager.service.AuthInfoService;
 import com.example.task_manager.service.TeamMemberService;
 
@@ -38,10 +40,13 @@ public class TeamMemberServiceTest {
 	private TeamMemberService teamMemberService;
 
 	@Autowired
-	private TaskRepository taskRepository;
+	private AdminRepository adminRepository;
 
 	@Autowired
 	private TeamMemberRepository teamMemberRepository;
+
+	@Autowired
+	private TaskRepository taskRepository;
 
 	@Autowired
 	private TeamRepository teamRepository;
@@ -50,7 +55,10 @@ public class TeamMemberServiceTest {
 	private IsAssignedRepository isAssignedRepository;
 
 	@Autowired
-    private AuthInfoRepository authInfoRepository;
+	private IsMemberOfRepository isMemberOfRepository;
+	
+	@Autowired
+	private AuthInfoRepository authInfoRepository;
 
 	private Task task;
 	private TeamMember teamMember;
@@ -58,11 +66,13 @@ public class TeamMemberServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		isAssignedRepository.deleteAllInBatch();
-		taskRepository.deleteAllInBatch();
-		teamRepository.deleteAllInBatch();
-		authInfoRepository.deleteAllInBatch();
-		teamMemberRepository.deleteAllInBatch();
+		isAssignedRepository.deleteAll();
+		isMemberOfRepository.deleteAll();
+		taskRepository.deleteAll();
+		teamMemberRepository.deleteAll();
+		authInfoRepository.deleteAll();
+		adminRepository.deleteAll();
+		teamRepository.deleteAll();
 
 		teamMember = new TeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com","defaultpw");
 		teamMember = teamMemberRepository.save(teamMember);
