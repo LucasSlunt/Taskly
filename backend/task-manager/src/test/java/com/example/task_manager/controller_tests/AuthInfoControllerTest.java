@@ -40,12 +40,14 @@ public class AuthInfoControllerTest {
     // Test Successful Login
     @Test
     void testLogin_Success() throws Exception {
+        AuthInfoDTO loginRequest = new AuthInfoDTO(1, "correctpassword", false);
+
         when(authInfoService.authenticateUser(1, "correctpassword")).thenReturn(mockUser);
 
         mockMvc.perform(post("/auth-info/login")
-                .param("teamMemberId", "1")
-                .param("password", "correctpassword"))
-                .andExpect(status().isOk()) // Expect HTTP 200
+                .contentType("application/json")
+                .content("{\"accountId\":1, \"password\":\"correctpassword\"}"))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(1))
                 .andExpect(jsonPath("$.userName").value("John Doe"))
                 .andExpect(jsonPath("$.isAdmin").value(false));
@@ -56,12 +58,14 @@ public class AuthInfoControllerTest {
     //  Test Login as Admin
     @Test
     void testLogin_AdminSuccess() throws Exception {
+        AuthInfoDTO loginRequest = new AuthInfoDTO(2, "adminpassword", true);
+
         when(authInfoService.authenticateUser(2, "adminpassword")).thenReturn(mockAdmin);
 
         mockMvc.perform(post("/auth-info/login")
-                .param("teamMemberId", "2")
-                .param("password", "adminpassword"))
-                .andExpect(status().isOk()) // Expect HTTP 200
+                .contentType("application/json")
+                .content("{\"accountId\":2, \"password\":\"adminpassword\"}"))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(2))
                 .andExpect(jsonPath("$.userName").value("Admin User"))
                 .andExpect(jsonPath("$.isAdmin").value(true));
@@ -76,8 +80,8 @@ public class AuthInfoControllerTest {
                 .thenThrow(new RuntimeException("Invalid Credentials"));
 
         mockMvc.perform(post("/auth-info/login")
-                .param("teamMemberId", "1")
-                .param("password", "wrongpassword"))
+                .contentType("application/json")
+                .content("{\"accountId\":1, \"password\":\"wrongpassword\"}"))
                 .andExpect(status().isUnauthorized()) // Expect HTTP 401
                 .andExpect(content().string(""));
 
@@ -91,9 +95,9 @@ public class AuthInfoControllerTest {
                 .thenThrow(new RuntimeException("Team Member not found"));
 
         mockMvc.perform(post("/auth-info/login")
-                .param("teamMemberId", "9999")
-                .param("password", "somepassword"))
-                .andExpect(status().isUnauthorized()) // Expect HTTP 401
+                .contentType("application/json")
+                .content("{\"accountId\":9999, \"password\":\"somepassword\"}"))
+                .andExpect(status().isUnauthorized())
                 .andExpect(content().string(""));
 
         verify(authInfoService, times(1)).authenticateUser(9999, "somepassword");
@@ -136,7 +140,7 @@ public class AuthInfoControllerTest {
                 .thenThrow(new RuntimeException("Team Member not found"));
 
         mockMvc.perform(get("/auth-info/9999/is-admin"))
-                .andExpect(status().isNotFound()) // Expect HTTP 404
+                .andExpect(status().isNotFound())
                 .andExpect(content().string(""));
 
         verify(authInfoService, times(1)).isAdmin(9999);

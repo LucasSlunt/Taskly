@@ -44,6 +44,9 @@ public class AuthController {
             return ResponseEntity.ok(isAdmin);
         }
         catch (RuntimeException e) {
+            if (e.getMessage().contains("not found")) {
+                return ResponseEntity.status(404).body(null);
+            }
             return ResponseEntity.ok(false);
         }
     }
