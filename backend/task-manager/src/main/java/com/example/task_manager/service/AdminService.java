@@ -1,6 +1,8 @@
 package com.example.task_manager.service;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -147,10 +149,24 @@ public class AdminService extends TeamMemberService {
 	// Unlocks a Task by setting its isLocked property to false
 	public void unlockTask(int taskId) {
 		Task task = taskRepository.findById(taskId)
-			.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
-		
+				.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+
 		task.setIsLocked(false);
 		taskRepository.save(task);
+	}
+	
+	//get all admins
+	public List<AdminDTO> getAllAdmins() {
+		return adminRepository.findAll().stream()
+				.map(admin -> new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail()))
+				.collect(Collectors.toList());
+	}
+
+	//get all team members
+	public List<TeamMemberDTO> getAllTeamMembers() {
+		return adminRepository.findAll().stream()
+				.map(teamMember -> new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail()))
+				.collect(Collectors.toList());
 	}
 
 	private AdminDTO convertToDTO(Admin admin) {
