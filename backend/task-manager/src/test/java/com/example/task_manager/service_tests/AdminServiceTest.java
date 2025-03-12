@@ -1,5 +1,8 @@
 package com.example.task_manager.service_tests;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
@@ -110,6 +113,10 @@ public class AdminServiceTest {
 		);
 
 		lockedTask = adminService.createTask(taskRequest);
+
+		adminRepository.save(new Admin("Alice Chains", "alice@example.com", "alice_password"));
+		adminRepository.save(new Admin("Rooster", "rooster@example.com", "rooster_password"));
+		adminRepository.save(new Admin("Pink Floyd", "pink@example.com", "pink_password"));
 	}
 
 	// Try to create admin account
@@ -261,9 +268,29 @@ public class AdminServiceTest {
 
 	@Test
 	void testLockNonexistentTask() {
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> adminService.lockTask(9999));
+		Exception exception = assertThrows(RuntimeException.class,
+				() -> adminService.lockTask(9999));
 
 		assertNotNull(exception);
+	}
+
+	@Test
+	void testGetAllAdmins() {
+
+		List<AdminDTO> result = adminService.getAllAdmins();
+
+		assertEquals(4, result.size());
+		assertEquals("Alice Chains", result.get(1).getUserName());
+		assertEquals("pink@example.com", result.get(3).getUserEmail());
+	}
+	
+	@Test
+	void testGetAllTeamMembers() {
+
+		List<TeamMemberDTO> result = adminService.getAllTeamMembers();
+
+		assertEquals(4, result.size());
+		assertEquals("Alice Chains", result.get(1).getUserName());
+		assertEquals("pink@example.com", result.get(3).getUserEmail());
 	}
 }

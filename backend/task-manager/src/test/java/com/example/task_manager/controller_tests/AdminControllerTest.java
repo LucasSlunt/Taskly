@@ -1,5 +1,8 @@
 package com.example.task_manager.controller_tests;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -222,9 +225,44 @@ public class AdminControllerTest {
     // Unlock Task
     @Test
     void testUnlockTask() throws Exception {
-        doNothing().when(adminService).unlockTask(1);
+            doNothing().when(adminService).unlockTask(1);
 
-        mockMvc.perform(put("/api/admin/tasks/1/unlock"))
-                .andExpect(status().isOk());
+            mockMvc.perform(put("/api/admin/tasks/1/unlock"))
+                            .andExpect(status().isOk());
     }
+    
+    // Getting all admins
+        @Test
+        void testGetAllAdmins() throws Exception {
+                List<AdminDTO> mockAdmins = Arrays.asList(
+                                new AdminDTO(1, "Alice Johnson", "alice@example.com"),
+                                new AdminDTO(2, "Bob Smith", "bob@example.com"));
+
+                when(adminService.getAllAdmins()).thenReturn(mockAdmins);
+
+                mockMvc.perform(get("/api/admin/admins"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.size()").value(2))
+                                .andExpect(jsonPath("$[0].accountId").value(1))
+                                .andExpect(jsonPath("$[0].userName").value("Alice Johnson"))
+                                .andExpect(jsonPath("$[1].userEmail").value("bob@example.com"));
+        }
+        
+        // Getting all admins
+        @Test
+        void getAllTeamMembers() throws Exception {
+                List<TeamMemberDTO> mockTMs = Arrays.asList(
+                        new TeamMemberDTO(1, "Alice Johnson", "alice@example.com"),
+                        new TeamMemberDTO(2, "Bob Smith", "bob@example.com")
+                );
+
+                when(adminService.getAllTeamMembers()).thenReturn(mockTMs);
+
+                mockMvc.perform(get("/api/admin/team-members"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.size()").value(2))
+                        .andExpect(jsonPath("$[0].accountId").value(1))
+                        .andExpect(jsonPath("$[0].userName").value("Alice Johnson"))
+                        .andExpect(jsonPath("$[1].userEmail").value("bob@example.com"));
+        }
 }
