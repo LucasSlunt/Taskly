@@ -1,7 +1,7 @@
 import {useForm} from 'react-hook-form'
 import {login} from '../api/authInfo'
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
-import { useNavigate } from 'react-router-dom';
+
 function LoginForm(){
     const { register, handleSubmit, formState: {errors}} = useForm();
     const signIn = useSignIn();
@@ -23,7 +23,6 @@ function LoginForm(){
                         role: (responseLogin.isAdmin ? "admin":"teamMember")
                     }
                 })
-                window.location.href="/home";
                 
             }
         } catch (error) {
