@@ -14,10 +14,13 @@ import jakarta.transaction.Transactional;
 import com.example.task_manager.DTO.AuthInfoDTO;
 import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.repository.AdminRepository;
 import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.repository.IsAssignedRepository;
 import com.example.task_manager.repository.IsMemberOfRepository;
+import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
+import com.example.task_manager.repository.TeamRepository;
 import com.example.task_manager.service.AuthInfoService;
 
 @SpringBootTest
@@ -29,26 +32,38 @@ public class AuthInfoServiceTest {
     private AuthInfoService authInfoService;
 
     @Autowired
-    private TeamMemberRepository teamMemberRepository;
+	private AdminRepository adminRepository;
 
-    @Autowired
-    private IsAssignedRepository isAssignedRepository;
+	@Autowired
+	private TeamMemberRepository teamMemberRepository;
 
-    @Autowired
-    private IsMemberOfRepository isMemberOfRepository;
-        
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
+	@Autowired
+	private TaskRepository taskRepository;
+
+	@Autowired
+	private TeamRepository teamRepository;
+
+	@Autowired
+	private IsAssignedRepository isAssignedRepository;
+
+	@Autowired
+	private IsMemberOfRepository isMemberOfRepository;
+	
+	@Autowired
+	private AuthInfoRepository authInfoRepository;
 
     private TeamMember teamMember;
     private Admin admin;
 
     @BeforeEach
 	void setUp() {
-        isAssignedRepository.deleteAllInBatch();
-        isMemberOfRepository.deleteAllInBatch();
-        authInfoRepository.deleteAllInBatch();
-		teamMemberRepository.deleteAllInBatch();
+        isAssignedRepository.deleteAll();
+		isMemberOfRepository.deleteAll();
+		taskRepository.deleteAll();
+		teamMemberRepository.deleteAll();
+		authInfoRepository.deleteAll();
+		adminRepository.deleteAll();
+		teamRepository.deleteAll();
 
         teamMember = new TeamMember("Authentication Tester", "auth_test" + System.nanoTime() + "@secure.com","defaultpw");
         teamMember = teamMemberRepository.save(teamMember);

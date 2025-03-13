@@ -1,35 +1,27 @@
 package com.example.task_manager.DTO;
 
 import java.time.LocalDate;
+import java.util.List;
 
-public class TaskDTO {
-    private int taskId;
+public class TaskRequestDTO {
     private String title;
     private String description;
-    private boolean isLocked;
+    private Boolean isLocked;
     private String status;
     private LocalDate dueDate;
-    private int teamId;
+    private List<Integer> assignedTo;
+    private Integer teamId;
 
-    public TaskDTO() {}
+    public TaskRequestDTO() {}
 
-    public TaskDTO(int taskId, String title, String description, boolean isLocked, String status, LocalDate dueDate, int teamId) {
-        this.taskId = taskId;
+    public TaskRequestDTO(String title, String description, Boolean isLocked, String status, LocalDate dueDate, List<Integer> assignedTo, Integer teamId) {
         this.title = title;
         this.description = description;
         this.isLocked = isLocked;
         this.status = status;
         this.dueDate = dueDate;
+        this.assignedTo = assignedTo;
         this.teamId = teamId;
-    }
-
-    //getters and setters
-    public int getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(int taskId) {
-        this.taskId = taskId;
     }
 
     public String getTitle() {
@@ -48,20 +40,12 @@ public class TaskDTO {
         this.description = description;
     }
 
-    public boolean getIsLocked() {
+    public Boolean getIsLocked() {
         return isLocked;
     }
 
-    public void setLocked(boolean isLocked) {
+    public void setIsLocked(Boolean isLocked) {
         this.isLocked = isLocked;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public LocalDate getDueDate() {
@@ -72,11 +56,27 @@ public class TaskDTO {
         this.dueDate = dueDate;
     }
 
-    public int getTeamId() {
+    public List<Integer> getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(List<Integer> assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Integer getTeamId() {
         return teamId;
     }
 
-    public void setTeamId(int teamId) {
+    public void setTeamId(Integer teamId) {
         this.teamId = teamId;
     }
 }

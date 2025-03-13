@@ -2,13 +2,13 @@ package com.example.task_manager.service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.DTO.TaskDTO;
+import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.IsAssigned;
@@ -63,33 +63,32 @@ public class TeamMemberService {
 	 * @param assignedMembers       The set of assigned members (nullable).
 	 * @return The created Task entity.
 	 */
-	public TaskDTO createTask(String title, String description, Boolean isLocked, String status, 
-						   LocalDate expectedCompletionDate, LocalDate dueDate, Team team, 
-						   Set<IsAssigned> assignedMembers) {
+	public TaskDTO createTask(TaskRequestDTO request) {
 
-		if (title == null || title.trim().isEmpty()) {
+		if (request.getTitle() == null || request.getTitle().trim().isEmpty()) {
 			throw new RuntimeException("Task title cannot be null or empty");
 		}
-	
-		if (team == null) {
+
+		if (request.getTeamId() == null) {
 			throw new RuntimeException("Task must be assigned to a team");
 		}
+	
+		Team team = teamRepository.findById(request.getTeamId())
+			.orElseThrow(() -> new RuntimeException("Task must be assigned to a valid team"));
+
 
 		Task task = new Task();
-		task.setTitle(title);
-		task.setIsLocked(isLocked);
-		task.setStatus(status);
+		task.setTitle(request.getTitle());
+		task.setIsLocked(request.getIsLocked());
+		task.setStatus(request.getStatus());
 		task.setDateCreated(LocalDate.now());
 		task.setTeam(team);
 
-		if (description != null) {
-			task.setDescription(description);
+		if (request.getDescription() != null) {
+			task.setDescription(request.getDescription());
 		}
-		if (expectedCompletionDate != null) {
-			task.setExpectedCompletionDate(expectedCompletionDate);
-		}
-		if (dueDate != null) {
-			task.setDueDate(dueDate);
+		if (request.getDueDate() != null) {
+			task.setExpectedCompletionDate(request.getDueDate());
 		}
 
 		task = taskRepository.save(task);
@@ -125,28 +124,24 @@ public class TeamMemberService {
 	 * @param newDueDate            The new due date (nullable).
 	 * @return The updated Task entity.
 	 */
-	public TaskDTO editTask(int taskId, String newTitle, String newDescription, Boolean isLocked, 
-						 String newStatus, LocalDate newExpectedCompletionDate, LocalDate newDueDate) {
+	public TaskDTO editTask(int taskId, TaskDTO taskDTO) {
 		Task task = taskRepository.findById(taskId)
 			.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
 	
-		if (newTitle != null && !newTitle.isEmpty()) {
-			task.setTitle(newTitle);
+		if (taskDTO.getTitle() != null && !taskDTO.getTitle().isEmpty()) {
+			task.setTitle(taskDTO.getTitle());
 		}
-		if (newDescription != null && !newDescription.isEmpty()) {
-			task.setDescription(newDescription);
+		if (taskDTO.getDescription() != null && !taskDTO.getDescription().isEmpty()) {
+			task.setDescription(taskDTO.getDescription());
 		}
-		if (isLocked != null) {
-			task.setIsLocked(isLocked);
+		
+		task.setIsLocked(taskDTO.getIsLocked());
+		
+		if (taskDTO.getStatus() != null && !taskDTO.getStatus().isEmpty()) {
+			task.setStatus(taskDTO.getStatus());
 		}
-		if (newStatus != null && !newStatus.isEmpty()) {
-			task.setStatus(newStatus);
-		}
-		if (newExpectedCompletionDate != null) {
-			task.setExpectedCompletionDate(newExpectedCompletionDate);
-		}
-		if (newDueDate != null) {
-			task.setDueDate(newDueDate);
+		if (taskDTO.getDueDate() != null) {
+			task.setDueDate(taskDTO.getDueDate());
 		}
 
 		task = taskRepository.save(task);

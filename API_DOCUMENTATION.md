@@ -36,11 +36,24 @@ All API requests should be made to the following base URL (Spring Boot's default
 
 ### **Endpoints**
 
-- **Create Admin:** `POST /`
-    - **Parameters:**  
-        - `name` (string, required): The name of the new admin.  
-        - `email` (string, required): The email of the new admin.  
+- **Create Admin:** `POST /` 
     - **Description:** Creates a new admin in the system.
+    - **Request Body:**
+    ```json
+    {
+        "name": "Admin Name",
+        "email": "admin@example.com",
+        "password": "securepassword"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 1,
+        "userName": "Admin Name",
+        "userEmail": "admin@example.com"
+    }
+    ```
 
 - **Delete Admin:** `DELETE /{adminId}`
     - **Parameters:**
@@ -48,29 +61,90 @@ All API requests should be made to the following base URL (Spring Boot's default
     - **Description:** Removes an admin from the system permanently.
 
 - **Modify Admin Name:** `PUT /{adminId}/update-name`
-    - **Parameters:**  
-        - `newName` (string, required): The updated name for the admin.  
+    - **Request Body:**
+    ```json
+    {
+        "newName": "Updated Admin Name"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 1,
+        "userName": "Updated Admin Name",
+        "userEmail": "admin@example.com"
+    }
+    ```
     - **Description:** Updates the admin's **name** field in the database.
 
 - **Modify Admin Email:** `PUT /{adminId}/update-email`
-    - **Parameters:**  
-        - `newEmail` (string, required): The updated email for the admin.  
+    - **Request Body:**
+    ```json
+    {
+        "newEmail": "updated.admin@example.com"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 1,
+        "userName": "Admin Name",
+        "userEmail": "updated.admin@example.com"
+    }
+    ``` 
     - **Description:** Updates the admin's **email** field in the database.
 
 - **Create Team Member:** `POST /team-member`
-    - **Parameters:**  
-        - `name` (string, required): The name of the new team member.  
-        - `email` (string, required): The email of the new team member.  
+    - **Request Body:**
+    ```json
+    {
+        "name": "Team Member",
+        "email": "teammember@example.com",
+        "password": "securepassword"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 2,
+        "userName": "Team Member",
+        "userEmail": "teammember@example.com"
+    }
+    ```
     - **Description:** Adds a new team member to the system.
 
 - **Modify Team Member Name:** `PUT /team-member/{teamMemberId}/update-name`
-    - **Parameters:**  
-        - `newName` (string, required): The updated name for the team member.  
+    - **Request Body:**
+    ```json
+    {
+        "newName": "Updated Team Member"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 2,
+        "userName": "Updated Team Member",
+        "userEmail": "teammember@example.com"
+    }
+    ```
     - **Description:** Updates the **name** field of the specified team member in the database.
 
 - **Modify Team Member Email:** `PUT /team-member/{teamMemberId}/update-email`
-    - **Parameters:**  
-        - `newEmail` (string, required): The updated email for the team member.  
+    - **Request Body:**
+    ```json
+    {
+        "newEmail": "updated.tm@example.com"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 2,
+        "userName": "Team Member",
+        "userEmail": "updated.tm@example.com"
+    }
+    ```
     - **Description:** Updates the **email** field of the specified team member in the database.
 
 - **Delete Team Member:** `DELETE /team-member/{teamMemberId}`
@@ -190,21 +264,62 @@ All API requests should be made to the following base URL (Spring Boot's default
 
 ### Endpoints
 - **Create a Team:** `POST`
-    - **Parameters:**: 
-        - `teamName` (string, required): The name of the new team.
-        - `teamLeadId` (integer, required): The ID of the team lead of the new team.
-            - This parameter **must be included** in the request, but it can be set to `null` if no team lead is assigned.
+    - **Request Body:**
+    ```json
+    {
+        "teamId": 1, 
+        "teamName": "Development Team",
+        "teamLeadId": 1001
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "teamId": 1,
+        "teamName": "Development Team",
+        "teamLeadId": 1001
+    }
+    ```
     - **Description:** Creates a team in the database.
 
 - **Delete a Team:** `DELETE /{teamId}`
     - **Description:** Deletes a team from the database.
     
 - **Change Team Lead:** `PUT /{teamId}/change-lead`
-    - **Parameters:**: 
-        - `teamLeadId` (integer, required): The ID of the team member that is becoming the team lead.
+    - **Request Body:**
+    ```json
+    {
+        "teamId": 1,
+        "teamName": "Updated Team Name",
+        "teamLeadId": 1002
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "teamId": 1,
+        "teamName": "Updated Team Name",
+        "teamLeadId": 1002
+    }
+    ```
     - **Description:** Updates the team lead for a specified team by assigning a different team member.
 
 - **Get Team Members:** `GET /{teamId}/members`
+    - **Response Body:**
+    ```json
+    [
+        {
+            "accountId": 1,
+            "userName": "John Doe",
+            "userEmail": "john@example.com"
+        },
+        {
+            "accountId": 2,
+            "userName": "Jane Smith",
+            "userEmail": "jane@example.com"
+        }
+    ]
+    ```
     - **Description:** Returns a list of every team member in a team. Each list item contains the team member's ID, name, and email.
 
 ---
@@ -215,37 +330,79 @@ All API requests should be made to the following base URL (Spring Boot's default
 
 ### Endpoints
 - **Create a Task:** `POST`
-    - **Parameters:**:
-        - `title` (string, required): The title of the new task.
-        - `description` (string, optional): A description of the task.
-        - `isLocked` (boolean, optional): Whether the task is locked (`true`) or unlocked (`false`). Defaults to `null` if not provided.
-        - `status` (string, optional): The status of the task (e.g., "To-Do", "In Progress", "Done"). Defaults to `null` if not provided.
-        - `teamId` (integer, required): The ID of the team being assigned to the task.
+    - **Request Body:**
+    ```json
+    {
+        "title": "Task Title",
+        "description": "Task Description",
+        "isLocked": false,
+        "status": "To-Do",
+        "dueDate": "2025-03-01",
+        "teamId": 3
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "taskId": 4,
+        "title": "Task Title",
+        "description": "Task Description",
+        "isLocked": false,
+        "status": "To-Do",
+        "dueDate": "2025-03-01",
+        "teamId": 3
+    }
+    ```
+    - **Description:** Creates a task in the database.
 
 - **Delete a Task:** `DELETE /{taskId}`
     - **Description:** Deletes a task from the database.
 
 - **Edit a Task:** `PUT /{taskId}`
-    - **Description:** Updates the details of a task.
     - **Request Body:** (TaskDTO, JSON)
     ```json
     {
-        "title": "New Task Title",
+        "title": "Updated Title",
         "description": "Updated Description",
         "isLocked": false,
         "status": "In Progress",
-        "dueDate": "2025-03-01"
+        "dueDate": "2025-04-01"
     }
     ```
-    - **Note:** Only the provided fields will be updated. Missing fields will remain the same.
+    - **Response Body:**
+    ```json
+    {
+        "taskId": 4,
+        "title": "Updated Title",
+        "description": "Updated Description",
+        "isLocked": false,
+        "status": "In Progress",
+        "dueDate": "2025-04-01",
+        "teamId": 3
+    }
+    ```
+    - **Description:** Updates the details of a task.
 
 - **Assign Member to a Task:** `POST /{taskId}/assign/{teamMemberId}`
+    - **Response Body:**
+    ```json
+    {
+        "isAssignedId": 1,
+        "taskId": 4,
+        "teamMemberId": 2,
+        "teamId": 3
+    }
+    ```
     - **Description:** Assigns a member (admin or team member) to a task.
 
 - **Change Password:** `POST /team-members/{teamMemberId}/change-password`
-    - **Parameters:**
-        - `oldPassword` (string, required): The current password of the user.
-        - `newPassword` (string, optional): The new password of the user.
+    - **Request Body:**
+    ```json
+    {
+        "oldPassword": "oldPass123",
+        "newPassword": "newPass456"
+    }
+    ```
     - **Description:** Updates the password field for a team member.
 
 ---

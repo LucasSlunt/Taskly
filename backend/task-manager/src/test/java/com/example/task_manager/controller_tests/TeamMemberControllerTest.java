@@ -1,25 +1,28 @@
 package com.example.task_manager.controller_tests;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import com.example.task_manager.DTO.TaskDTO;
+import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.controller.TeamMemberController;
 import com.example.task_manager.service.TeamMemberService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 @WebMvcTest(TeamMemberController.class)
 public class TeamMemberControllerTest {
@@ -33,6 +36,9 @@ public class TeamMemberControllerTest {
     @InjectMocks
     private TeamMemberController teamMemberController;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     private TaskDTO mockTask;
 
     @BeforeEach
@@ -40,21 +46,30 @@ public class TeamMemberControllerTest {
         mockTask = new TaskDTO(1, "Task Title", "Description", false, "Open", LocalDate.now(), 1);
     }
 
-    // Create a Task
     @Test
     void testCreateTask() throws Exception {
-        when(teamMemberService.createTask(anyString(), anyString(), anyBoolean(), anyString(),
-                any(LocalDate.class), any(LocalDate.class), any(), any()))
-                .thenReturn(mockTask);
+        // Given: Creating a mock request DTO
+        TaskRequestDTO requestDTO = new TaskRequestDTO(
+            "Task Title",
+            "Description",
+            false,
+            "Open",
+            LocalDate.of(2025, 3, 11),
+            Arrays.asList(1, 2, 3),
+            1
+        );
+
+        when(teamMemberService.createTask(any(TaskRequestDTO.class))).thenReturn(mockTask);
 
         mockMvc.perform(post("/api/tasks")
-                .param("title", "Task Title")
-                .param("description", "Description")
-                .param("isLocked", "false")
-                .param("status", "Open")
-                .param("teamId", "1"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("Task Title"));
+                .andExpect(jsonPath("$.title").value("Task Title"))
+                .andExpect(jsonPath("$.description").value("Description"))
+                .andExpect(jsonPath("$.isLocked").value(false))
+                .andExpect(jsonPath("$.status").value("Open"))
+                .andExpect(jsonPath("$.teamId").value(1));
     }
 
     // Delete Task
@@ -66,19 +81,29 @@ public class TeamMemberControllerTest {
                 .andExpect(status().isNoContent());
     }
 
-    // Edit Task
     @Test
     void testEditTask() throws Exception {
-        TaskDTO mockTask = new TaskDTO(1, "Updated Title", "Updated Description", false, "In Progress", LocalDate.now().plusDays(3), 1);
+        TaskDTO requestDTO = new TaskDTO(
+                1,
+                "Updated Title",
+                "Updated Description",
+                false,
+                "In Progress",
+                LocalDate.now().plusDays(3),
+                1
+        );
 
-        when(teamMemberService.editTask(anyInt(), anyString(), anyString(), anyBoolean(),
-                anyString(), any(LocalDate.class), any(LocalDate.class)))
-                .thenReturn(mockTask);
+        when(teamMemberService.editTask(eq(1), any(TaskDTO.class))).thenReturn(requestDTO);
 
         mockMvc.perform(put("/api/tasks/1")
-                .param("title", "Updated Title")
-                .param("description", "Updated Description")
-                .param("status", "In Progress"));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Updated Title"))
+                .andExpect(jsonPath("$.description").value("Updated Description"))
+                .andExpect(jsonPath("$.isLocked").value(false))
+                .andExpect(jsonPath("$.status").value("In Progress"))
+                .andExpect(jsonPath("$.teamId").value(1));
     }
 
     // Assign Member to Task
