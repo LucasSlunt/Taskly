@@ -5,6 +5,8 @@ import Header from "../components/Header";
 import "../css/TeamTasks.css";
 import TeamMember from "../components/TeamMember";
 import fakeData from "../FakeData/fakeTaskData.json"
+import React, { useState } from 'react';
+
 
 
 const headerAndAccessors = [
@@ -108,6 +110,11 @@ function AdminTeamTasks(){
     { id: 5, name: "Joe Smith" },
   ];
 
+  
+
+
+  
+
     return(
         <div className="team-tasks-page">
             <Header/>
@@ -123,8 +130,16 @@ function AdminTeamTasks(){
             dataToUse={setUpDataComplete(fakeData)}
             headersAndAccessors={headerAndAccessorsComplete}
             />
-            <h2>Team 1 Name</h2>
-            <p>Description of what the team is working on. idk?</p>
+            <div className="edit">
+                <h2>Team 1 Name</h2>
+                <button className="edit-btn">edit</button>
+            </div>
+            
+            <div className="edit">
+                <p>Description of what the team is working on. idk?</p>
+                <button className="edit-btn">edit</button>
+            </div>
+            
 
             <h2>Team Members</h2>
             <div className="team-list">
