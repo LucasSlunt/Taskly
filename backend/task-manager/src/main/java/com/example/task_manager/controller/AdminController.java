@@ -7,6 +7,7 @@ import com.example.task_manager.DTO.UpdateEmailRequestDTO;
 import com.example.task_manager.DTO.UpdateNameRequestDTO;
 import java.util.List;
 import com.example.task_manager.repository.AdminRepository;
+import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.service.AdminService;
 
 import org.springframework.http.ResponseEntity;
@@ -24,13 +25,19 @@ import com.example.task_manager.DTO.TeamMemberDTO;
 //This is an admin controller
 public class AdminController {
 
+    private final AuthInfoRepository authInfoRepository;
+
+    private final AuthController authController;
+
     private final AdminRepository adminRepository;
 
     private final AdminService adminService;
 
-    public AdminController(AdminService adminService, AdminRepository adminRepository) {
+    public AdminController(AdminService adminService, AdminRepository adminRepository, AuthController authController, AuthInfoRepository authInfoRepository) {
         this.adminService = adminService;
         this.adminRepository = adminRepository;
+        this.authController = authController;
+        this.authInfoRepository = authInfoRepository;
     }
 
     // Create Admin entity
@@ -213,8 +220,27 @@ public class AdminController {
         try {
             List<TeamDTO> teams = adminService.getAllTeams();
             return ResponseEntity.ok(teams);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        catch (RuntimeException e) {
+    }
+    
+    @GetMapping("/{adminId}")
+    public ResponseEntity<?> getAdminById(@PathVariable int adminId) {
+        try {
+            AdminDTO admin = adminService.getAdminById(adminId);
+            return ResponseEntity.ok(admin);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
+    @GetMapping("/{teamMemberId}")
+    public ResponseEntity<?> getTeamMemberById(@PathVariable int teamMemberId) {
+        try {
+            TeamMemberDTO teamMember = adminService.getTeamMemberById(teamMemberId);
+            return ResponseEntity.ok(teamMember);
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

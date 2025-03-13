@@ -300,3 +300,41 @@ export const getTeams = async () => {
         throw error;
     } 
 };
+
+//Get an admin with their ID
+export const getAdminById = async (adminId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/${adminId}`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve admin: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve admin: `, error);
+        throw error;
+    } 
+};
+
+//Get a team member with their ID
+export const getTeamMemberById = async (teamMemberId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/${teamMemberId}`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve team member: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve team member: `, error);
+        throw error;
+    } 
+};

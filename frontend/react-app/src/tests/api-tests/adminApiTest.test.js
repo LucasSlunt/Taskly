@@ -1,4 +1,4 @@
-import { createAdmin, deleteAdmin, modifyAdminName, createTeamMember, deleteTeamMember, modifyTeamMemberName, modifyTeamMemberEmail, modifyAdminEmail, assignTeamMemberToTeam, lockTask, promoteTeamMemberToAdmin, unlockTask, getTeamMembers, getAdmins, getTeams } from '../../api/adminApi';
+import { createAdmin, deleteAdmin, modifyAdminName, createTeamMember, deleteTeamMember, modifyTeamMemberName, modifyTeamMemberEmail, modifyAdminEmail, assignTeamMemberToTeam, lockTask, promoteTeamMemberToAdmin, unlockTask, getTeamMembers, getAdmins, getTeams, getAdminById, getTeamMemberById } from '../../api/adminApi';
 
 const BASE_URL = "http://localhost:8080/api/admin";
 
@@ -269,5 +269,37 @@ describe('Admin API', () => {
 
         expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/all-teams`, { method: 'GET' });
         expect(result).toEqual(mockTeams);
+    });
+
+    //test: retrieving admin info with their ID
+    test('getAdminById should return admin data on success', async () => {
+        const mockAdmin = {
+            accountId: 1,
+            userName: "Admin User",
+            userEmail: "admin@example.com"
+        };
+
+        fetch.mockResponseOnce(JSON.stringify(mockAdmin), { status: 200 });
+
+        const result = await getAdminById(1);
+        
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/1`, { method: 'GET' });
+        expect(result).toEqual(mockAdmin);
+    });
+
+    //test: retrieving team emember info with ID
+    test('getTeamMemberById should return team member data on success', async () => {
+        const mockTeamMember = {
+            accountId: 2,
+            userName: "John Doe",
+            userEmail: "john.doe@example.com"
+        };
+
+        fetch.mockResponseOnce(JSON.stringify(mockTeamMember), { status: 200 });
+
+        const result = await getTeamMemberById(2);
+        
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/2`, { method: 'GET' });
+        expect(result).toEqual(mockTeamMember);
     });
 });

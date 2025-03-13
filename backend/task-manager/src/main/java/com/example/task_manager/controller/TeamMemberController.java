@@ -95,9 +95,8 @@ public class TeamMemberController {
         try {
             List<TaskDTO> tasks = teamMemberService.getAssignedTasks(teamMemberId);
             return ResponseEntity.ok(tasks);
-        } 
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
+    }    
 }

@@ -3,6 +3,8 @@ package com.example.task_manager.controller_tests;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -11,6 +13,8 @@ import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.AdminRequestDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.controller.AdminController;
+import com.example.task_manager.entity.Admin;
+import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.repository.AdminRepository;
 import com.example.task_manager.service.AdminService;
 
@@ -25,6 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.UpdateEmailRequestDTO;
 import com.example.task_manager.DTO.UpdateNameRequestDTO;
+import com.example.task_manager.repository.TeamMemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(AdminController.class)
@@ -38,6 +43,9 @@ public class AdminControllerTest {
 
     @MockBean
     private AdminRepository adminRepository;
+
+    @MockBean
+    private TeamMemberRepository teamMemberRepository;
 
     @Autowired
     private ObjectMapper objectMapper; //used top convert DTO's to json
@@ -282,4 +290,24 @@ public class AdminControllerTest {
                                 .andExpect(jsonPath("$[0].teamName").value("Team 1"))
                                 .andExpect(jsonPath("$[1].teamLeadId").value("2"));
         }
+        
+        @Test
+        void testGetAdminById() throws Exception {
+            when(adminService.getAdminById(1)).thenReturn(mockAdmin);
+    
+            mockMvc.perform(get("/api/admin/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.accountId").value(1))
+                    .andExpect(jsonPath("$.userName").value("Admin User"))
+                    .andExpect(jsonPath("$.userEmail").value("admin@example.com"));
+        }
+    
+        @Test
+        void testGetAdminById_NotFound() throws Exception {
+            when(adminService.getAdminById(999)).thenThrow(new RuntimeException("Admin not found"));
+    
+            mockMvc.perform(get("/api/admin/999"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string("Admin not found"));
+        }    
 }

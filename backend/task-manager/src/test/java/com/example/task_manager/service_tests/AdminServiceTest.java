@@ -302,4 +302,30 @@ public class AdminServiceTest {
 		assertEquals(team.getTeamId(), result.get(0).getTeamId());
 		assertEquals(team.getTeamName(), result.get(0).getTeamName());
 	}
+
+	// Getting admin by ID
+	@Test
+	void getAdminById() throws Exception {
+		Admin admin = new Admin("Test Admin", "admin@example.com", "password");
+		admin = adminRepository.save(admin);
+
+		AdminDTO result = adminService.getAdminById(admin.getAccountId());
+
+		assertNotNull(result);
+		assertEquals(admin.getAccountId(), result.getAccountId());
+		assertEquals("Test Admin", result.getUserName());
+	}
+
+	//get team member by ID
+	@Test
+	void testGetTeamMemberById() {
+		TeamMember teamMember = new TeamMember("Test TM", "tm@example.com", "password");
+		teamMember = teamMemberRepository.save(teamMember);
+
+		TeamMemberDTO result = adminService.getTeamMemberById(teamMember.getAccountId());
+
+		assertNotNull(result);
+		assertEquals(teamMember.getAccountId(), result.getAccountId());
+		assertEquals("Test TM", result.getUserName());
+	}
 }
