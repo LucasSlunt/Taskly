@@ -43,12 +43,12 @@ export const deleteTeam = async (teamId) => {
 };
 
 //Change team lead
-export const changeTeamLead = async (teamId, teamLeadId) => {
+export const changeTeamLead = async (teamId, teamLeadId, teamName) => {
     try {
         const response = await fetch(`${BASE_URL}/${teamId}/change-lead`, {
             method: 'PUT',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({teamLeadId})
+            body: JSON.stringify({teamLeadId, teamName})
         });
 
         if (!response.ok) {

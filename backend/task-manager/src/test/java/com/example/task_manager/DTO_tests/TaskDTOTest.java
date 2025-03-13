@@ -18,7 +18,7 @@ public class TaskDTOTest {
         assertEquals(1, dto.getTaskId());
         assertEquals("Task Title", dto.getTitle());
         assertEquals("Task Description", dto.getDescription());
-        assertFalse(dto.isLocked());
+        assertFalse(dto.getIsLocked());
         assertEquals("Open", dto.getStatus());
         assertEquals(dueDate, dto.getDueDate());
         assertEquals(201, dto.getTeamId());
@@ -40,7 +40,7 @@ public class TaskDTOTest {
         assertEquals(2, dto.getTaskId());
         assertEquals("Updated Task Title", dto.getTitle());
         assertEquals("Updated Description", dto.getDescription());
-        assertTrue(dto.isLocked());
+        assertTrue(dto.getIsLocked());
         assertEquals("In Progress", dto.getStatus());
         assertEquals(newDueDate, dto.getDueDate());
         assertEquals(202, dto.getTeamId());

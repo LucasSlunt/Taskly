@@ -1,10 +1,13 @@
 package com.example.task_manager.controller_tests;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.DTO.TeamRequestDTO;
 import com.example.task_manager.controller.TeamController;
 import com.example.task_manager.service.TeamService;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,9 +16,12 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @WebMvcTest(TeamController.class)
 public class TeamControllerTest {
@@ -29,6 +35,9 @@ public class TeamControllerTest {
     @InjectMocks
     private TeamController teamController;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     private TeamDTO mockTeam;
     private TeamMemberDTO mockTeamMember;
 
@@ -41,11 +50,14 @@ public class TeamControllerTest {
     // Create a Team
     @Test
     void testCreateTeam() throws Exception {
+        TeamRequestDTO requestDTO = new TeamRequestDTO(1, "Development Team", 1);
+        TeamDTO mockTeam = new TeamDTO(1, "Development Team", 1);
+        
         when(teamService.createTeam(anyString(), anyInt())).thenReturn(mockTeam);
 
         mockMvc.perform(post("/api/teams")
-                .param("teamName", "Development Team")
-                .param("teamLeadId", "1"))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.teamName").value("Development Team"));
     }
@@ -62,11 +74,18 @@ public class TeamControllerTest {
     // Change Team Lead
     @Test
     void testChangeTeamLead() throws Exception {
-        doNothing().when(teamService).changeTeamLead(1, 2);
+        TeamRequestDTO requestDTO = new TeamRequestDTO(1, "Engineering Team", 2);
+        TeamDTO mockResponse = new TeamDTO(1, "Engineering Team", 2);
+
+        when(teamService.changeTeamLead(1, "Engineering Team", 2)).thenReturn(mockResponse);
 
         mockMvc.perform(put("/api/teams/1/change-lead")
-                .param("teamLeadId", "2"))
-                .andExpect(status().isOk());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestDTO)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.teamId").value(1))
+            .andExpect(jsonPath("$.teamName").value("Engineering Team"))
+            .andExpect(jsonPath("$.teamLeadId").value(2));
     }
 
     // Get Team Members

@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - Github-Secrets-Injecting
 
 jobs:
   build:
@@ -21,7 +22,8 @@ jobs:
           java-version: 21
           cache: 'maven'
       - name: Build with Maven
-        run: mvn -B -D DBUSERNAME=${{ secrets.database_login_username }} -D DBPASSWORD=${{ secrets.database_login_info }} package --file backend/task-manager/pom.xml
+        run: mvn -B -Dspring.profiles.active=cicd -D DBUSERNAMEFROMYML=${{ secrets.database_login_username }} -D DBPASSWORDFROMYML=${{ secrets.database_login_info }} package --file backend/task-manager/pom.xml
+
 
 
  
