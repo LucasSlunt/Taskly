@@ -1,11 +1,14 @@
 import "../css/ViewTask.css"
 import Header from "../components/Header.jsx"
+import {Link} from 'react-router-dom'
+import team from '../FakeData/fakeTeamData.json'
 function ViewTask(){
+
     //Mock Data
     const task = {
         name: "Task",
         assignees: "James",
-        priority: "Low",
+        priority: "High",
         discription: "This is a really cool task with lots of stuff in it",
         pic1:"https://th.bing.com/th/id/OIP.cqp9dHHXg-Vwj5TNQO8-SgHaEK?w=312&h=180&c=7&r=0&o=5&pid=1.7",
         pic2:"https://th.bing.com/th/id/OIP.hEdNtgAioJP9H_d_U1nCWAHaE8?w=263&h=180&c=7&r=0&o=5&pid=1.7",
@@ -42,7 +45,7 @@ function ViewTask(){
                         <input type="button" value="SUBMIT" class ="submit-comment"/>
                     </form>
                 </div>
-                <form class="update-class">
+                <div class="update-class">
                     <div class = "updateStatus">
                         <select name="update status" id="newStatus" class = "updateSelector">
                             <option value="">Update Status</option>
@@ -51,12 +54,16 @@ function ViewTask(){
                             <option value="UnderReview">Under Review</option>
                             <option value="Done">Done</option>
                         </select>
-                        <input type="button" value="EDIT" class="fotterbutton"/>
+                        <Link to = {'/edit-task'} state={{taskToEdit: task, onThisTeam: team}}>
+                            <button class="fotterbutton">EDIT</button>
+                            </Link>
                     </div>
                     <input type="button" value="DELETE TASK" class="fotterbutton"/>
-                </form>
+
+                </div>
             </div>
         </div>
     )
 }
 export default ViewTask
+//as = {Link} to = {'/edit-task'} state={{taskToEdit: task, onThisTeam: team}}
