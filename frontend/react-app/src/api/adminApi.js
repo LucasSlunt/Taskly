@@ -243,3 +243,14 @@ export const unlockTask = async (taskId) => {
         throw error;
     }
 };
+
+//Get all admins
+export const getAdmins = async () => {
+    try {
+        
+    }
+    catch (error) {
+        console.error(`Failed to retrieve all admins: `, error);
+        throw error;
+    } 
+};
