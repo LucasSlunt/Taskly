@@ -52,12 +52,6 @@ public class AuthInfoServiceTest {
 	@Autowired
 	private AuthInfoRepository authInfoRepository;
 
-    @Autowired
-    private IsMemberOfRepository isMemberOfRepository;
-        
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
-
     private TeamMember teamMember;
     private Admin admin;
 
