@@ -235,7 +235,7 @@ public class AdminController {
         }
     }
     
-    @GetMapping("/{teamMemberId}")
+    @GetMapping("/team-member/{teamMemberId}")
     public ResponseEntity<?> getTeamMemberById(@PathVariable int teamMemberId) {
         try {
             TeamMemberDTO teamMember = adminService.getTeamMemberById(teamMemberId);

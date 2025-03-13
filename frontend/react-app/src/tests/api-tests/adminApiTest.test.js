@@ -299,7 +299,7 @@ describe('Admin API', () => {
 
         const result = await getTeamMemberById(2);
         
-        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/2`, { method: 'GET' });
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/team-member/2`, { method: 'GET' });
         expect(result).toEqual(mockTeamMember);
     });
 });

@@ -21,7 +21,9 @@ import com.example.task_manager.service.AdminService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,7 +34,8 @@ import com.example.task_manager.DTO.UpdateNameRequestDTO;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebMvcTest(AdminController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class AdminControllerTest {
 
     @Autowired

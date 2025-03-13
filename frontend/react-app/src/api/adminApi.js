@@ -323,7 +323,7 @@ export const getAdminById = async (adminId) => {
 //Get a team member with their ID
 export const getTeamMemberById = async (teamMemberId) => {
     try {
-        const response = await fetch(`${BASE_URL}/${teamMemberId}`, {
+        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}`, {
             method: 'GET'
         });
 

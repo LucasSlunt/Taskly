@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
-import com.example.task_manager.controller.AdminController;
 import com.example.task_manager.entity.*;
 import com.example.task_manager.repository.*;
 
@@ -19,7 +18,6 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class AdminService extends TeamMemberService {
 
-    private final AdminController adminController;
 
 	private final AdminRepository adminRepository;
 
@@ -30,10 +28,9 @@ public class AdminService extends TeamMemberService {
 						IsMemberOfRepository isMemberOfRepository, 
 						TaskRepository taskRepository,
 						IsAssignedRepository isAssignedRepository,
-						AuthInfoService authInfoService, AdminController adminController) {
+						AuthInfoService authInfoService) {
 		super(teamMemberRepository, teamRepository, taskRepository, isMemberOfRepository, isAssignedRepository, authInfoService);
 		this.adminRepository = adminRepository;
-		this.adminController = adminController;
 	}
 
 	// Creates and saves a new Admin entity
