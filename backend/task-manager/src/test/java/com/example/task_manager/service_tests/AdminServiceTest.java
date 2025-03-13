@@ -86,9 +86,9 @@ public class AdminServiceTest {
 		admin = adminService.createAdmin("Admin Name", "admin" + System.nanoTime() + "@example.com","defaultpw");
 		teamMember = adminService.createTeamMember("TM Name", "teamMember" + System.nanoTime() + "@example.com","defaultpw");
 
-		team = new Team();
-		team.setTeamName("Team Name " + System.nanoTime());
+		team = new Team("Team Name " + System.nanoTime(), teamMemberRepository.findById(teamMember.getAccountId()).orElseThrow());
 		team = teamRepository.save(team);
+
 
 		TaskRequestDTO taskRequest = new TaskRequestDTO(
 			"Unlocked Task",
@@ -292,5 +292,14 @@ public class AdminServiceTest {
 		assertEquals(4, result.size());
 		assertEquals("Alice Chains", result.get(1).getUserName());
 		assertEquals("pink@example.com", result.get(3).getUserEmail());
+	}
+
+	@Test
+	void getAllTeams() {
+		List<TeamDTO> result = adminService.getAllTeams();
+
+		assertEquals(1, result.size());
+		assertEquals(team.getTeamId(), result.get(0).getTeamId());
+		assertEquals(team.getTeamName(), result.get(0).getTeamName());
 	}
 }
