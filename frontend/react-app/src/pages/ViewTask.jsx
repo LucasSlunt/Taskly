@@ -1,7 +1,10 @@
 import "../css/ViewTask.css"
 import Header from "../components/Header.jsx"
-import {useLocation} from 'react-router-dom'
+import {useLocation, Link} from 'react-router-dom'
 import fakeTaskData from '../FakeData/fakeTaskData.json'
+import team from '../FakeData/fakeTeamData.json'
+
+const teamData = team
 function getAssignnesNames(task){
     let returnArr = []
     task.assignees.map((assigne)=>{
@@ -35,6 +38,8 @@ function ViewTask(){
         }
         return returnArr[0]
     }
+
+    const taskInfo = getTask()
     
     return(
         <div class = "viewTask">
@@ -73,7 +78,7 @@ function ViewTask(){
                             <option value="InProgress">In Progress</option>
                             <option value="Done">Done</option>
                         </select>
-                        <Link to = {'/edit-task'} state={{taskToEdit: task, onThisTeam: team}}>
+                        <Link to = {'/edit-task'} state={{taskToEdit: taskInfo, onThisTeam: teamData}}>
                             <button class="fotterbutton">EDIT</button>
                             </Link>
                     </div>
