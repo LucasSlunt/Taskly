@@ -165,7 +165,8 @@ public class AdminService extends TeamMemberService {
 	//get all team members
 	public List<TeamMemberDTO> getAllTeamMembers() {
 		return adminRepository.findAll().stream()
-				.map(teamMember -> new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail()))
+				.map(teamMember -> new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(),
+						teamMember.getUserEmail()))
 				.collect(Collectors.toList());
 	}
 

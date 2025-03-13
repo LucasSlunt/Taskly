@@ -2,10 +2,13 @@ package com.example.task_manager.controller;
 
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.DTO.TaskDTO;
+import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.service.TeamMemberService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -79,11 +82,22 @@ public class TeamMemberController {
     @PostMapping("/team-members/{teamMemberId}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable int teamMemberId,
                                             @RequestParam String oldPassword,
-                                            @RequestParam String newPassword) {
+            @RequestParam String newPassword) {
         try {
             teamMemberService.changePassword(teamMemberId, oldPassword, newPassword);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
+    @GetMapping("/{teamMemberId}/teams")
+    public ResponseEntity<?> getTeamsForMember(@PathVariable int teamMemberId) {
+        try {
+            List<TeamDTO> teams = teamMemberService.getTeamsForMember(teamMemberId);
+            return ResponseEntity.ok(teams);
+        }
+        catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

@@ -8,6 +8,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import com.example.task_manager.DTO.TaskDTO;
+import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.controller.TeamMemberController;
 import com.example.task_manager.service.TeamMemberService;
@@ -18,8 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 @WebMvcTest(TeamMemberController.class)
 public class TeamMemberControllerTest {
@@ -95,6 +99,22 @@ public class TeamMemberControllerTest {
     // Change Password (Placeholder)
     @Test
     void testChangePassword() throws Exception {
+
+    }
+    
+    @Test
+    void testGetTeamsForMember() throws Exception {
+        List<TeamDTO> mockTeams = Arrays.asList(
+                new TeamDTO(1, "Team 1", 1),
+                new TeamDTO(2, "Team 2", 1)
+        );
+
+        when(teamMemberService.getTeamsForMember(1)).thenReturn(mockTeams);
+
+        MvcResult result = mockMvc.perform(get("/api/tasks/1/teams"))
+            .andExpect(status().isOk())
+            .andReturn();
         
+        // System.out.println("Response: " + result.getResponse().getContentAsString());
     }
 }
