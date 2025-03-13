@@ -8,19 +8,25 @@ import org.bouncycastle.crypto.params.Argon2Parameters;
 //import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.task_manager.DTO.AuthInfoDTO;
+import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.repository.TeamMemberRepository;
-
+import com.example.task_manager.service.TeamService;
 
 
 @Service
 public class AuthInfoService {
 
     protected final TeamMemberRepository teamMemberRepository;
+    private TeamService teamService;
     
-        // Constructor for required repositories
-        public AuthInfoService(TeamMemberRepository teamMemberRepository){
-            this.teamMemberRepository = teamMemberRepository;
+    // Constructor for required repositories
+    public AuthInfoService(TeamMemberRepository teamMemberRepository, TeamService teamService){
+        this.teamMemberRepository = teamMemberRepository;
+        this.teamService = teamService;
+
+
     }
 
     public boolean approveLogin(int teamMemberId, String enteredPassword) {
@@ -32,6 +38,30 @@ public class AuthInfoService {
         String enteredHashedPassword = hashPassword(enteredPassword, TMSalt);
         if (enteredHashedPassword.equals(TMHashedPassword)) {isSuccess = true;}
         return isSuccess;
+    }
+
+    public AuthInfoDTO authenticateUser(int teamMemberId, String enteredPassword) {       
+        TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+                .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+
+        if (!approveLogin(teamMemberId, enteredPassword)) {
+            throw new RuntimeException("Invalid Credentials");
+        }
+
+        boolean isAdmin = isAdmin(teamMemberId);
+
+        return new AuthInfoDTO(
+            teamMember.getAccountId(),
+            teamMember.getUserName(),
+            isAdmin
+        );
+    }
+
+    public boolean isAdmin(int teamMemberId) {
+        TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+                .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+
+        return teamMember instanceof Admin;
     }
 
     public static String hashPassword(String plainTextPassword, String saltString){

@@ -11,7 +11,10 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.repository.AdminRepository;
 import com.example.task_manager.repository.AuthInfoRepository;
+import com.example.task_manager.repository.IsAssignedRepository;
+import com.example.task_manager.repository.IsMemberOfRepository;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
@@ -37,16 +40,25 @@ public class IsMemberOfServiceTest {
     private IsMemberOfService isMemberOfService;
 
     @Autowired
-    private TeamRepository teamRepository;
+	private AdminRepository adminRepository;
 
-    @Autowired
-    private TaskRepository taskRepository;
+	@Autowired
+	private TeamMemberRepository teamMemberRepository;
 
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-    
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
+	@Autowired
+	private TaskRepository taskRepository;
+
+	@Autowired
+	private TeamRepository teamRepository;
+
+	@Autowired
+	private IsAssignedRepository isAssignedRepository;
+
+	@Autowired
+	private IsMemberOfRepository isMemberOfRepository;
+	
+	@Autowired
+	private AuthInfoRepository authInfoRepository;
 
     private TeamDTO team;
     private TeamMemberDTO teamLead;
@@ -55,10 +67,13 @@ public class IsMemberOfServiceTest {
     @BeforeEach
     void setUp() {
         // Clear DB to avoid conflicts
-        taskRepository.deleteAllInBatch();
-        teamRepository.deleteAllInBatch();
-        authInfoRepository.deleteAllInBatch();
-        teamMemberRepository.deleteAllInBatch();
+        isAssignedRepository.deleteAll();
+		isMemberOfRepository.deleteAll();
+		taskRepository.deleteAll();
+		teamMemberRepository.deleteAll();
+		authInfoRepository.deleteAll();
+		adminRepository.deleteAll();
+		teamRepository.deleteAll();
 
         teamLead = adminService.createTeamMember("Team Lead", "team_lead" + System.nanoTime() + "@example.com","defaultpw");
         team = teamService.createTeam("Development Team " + System.nanoTime(), teamLead.getAccountId());

@@ -1,9 +1,18 @@
 package com.example.task_manager.controller;
 
+import com.example.task_manager.DTO.AdminDTO;
+import com.example.task_manager.DTO.AdminRequestDTO;
+import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.DTO.UpdateEmailRequestDTO;
+import com.example.task_manager.DTO.UpdateNameRequestDTO;
 import com.example.task_manager.service.AdminService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.NoSuchElementException;
+
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -18,9 +27,14 @@ public class AdminController {
 
     // Create Admin entity
     @PostMapping
-    public ResponseEntity<?> createAdmin(@RequestParam String name, @RequestParam String email, @RequestParam String userPassword) {
+    public ResponseEntity<?> createAdmin(@RequestBody AdminRequestDTO request) {
         try {
-            return ResponseEntity.ok(adminService.createAdmin(name, email, userPassword));
+            AdminDTO createAdmin = adminService.createAdmin(
+                request.getName(),
+                request.getEmail(),
+                request.getPassword()
+            );
+            return ResponseEntity.ok(createAdmin);
         } 
         catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -41,9 +55,10 @@ public class AdminController {
 
     // Modify Admin Name
     @PutMapping("/{adminId}/update-name")
-    public ResponseEntity<?> updateAdminName(@PathVariable int adminId, @RequestParam String newName) {
+    public ResponseEntity<?> updateAdminName(@PathVariable int adminId, @RequestBody UpdateNameRequestDTO request) {
         try {
-            return ResponseEntity.ok(adminService.modifyAdminName(adminId, newName));
+            AdminDTO updatedAdmin = adminService.modifyAdminName(adminId, request.getNewName());
+            return ResponseEntity.ok(updatedAdmin);
         } 
         catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -52,9 +67,10 @@ public class AdminController {
 
     // Modify Admin Email
     @PutMapping("/{adminId}/update-email")
-    public ResponseEntity<?> updateAdminEmail(@PathVariable int adminId, @RequestParam String newEmail) {
+    public ResponseEntity<?> updateAdminEmail(@PathVariable int adminId, @RequestBody UpdateEmailRequestDTO request) {
         try {
-            return ResponseEntity.ok(adminService.modifyAdminEmail(adminId, newEmail));
+            AdminDTO updatedAdmin = adminService.modifyAdminEmail(adminId, request.getNewEmail());
+            return ResponseEntity.ok(updatedAdmin);
         }
         catch (NoSuchElementException e) {
             return ResponseEntity.status(404).body("Admin not found");
@@ -66,9 +82,14 @@ public class AdminController {
 
     // Create Team Member
     @PostMapping("/team-member")
-    public ResponseEntity<?> createTeamMember(@RequestParam String name, @RequestParam String email, @RequestParam String userPassword) {
+    public ResponseEntity<?> createTeamMember(@RequestBody AdminRequestDTO request) {
         try {
-            return ResponseEntity.ok(adminService.createTeamMember(name, email, userPassword));
+            TeamMemberDTO createTeamMember = adminService.createTeamMember(
+                request.getName(),
+                request.getEmail(),
+                request.getPassword()
+            );
+            return ResponseEntity.ok(createTeamMember);
         } 
         catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -77,9 +98,9 @@ public class AdminController {
 
     // Modify Team Member Name
     @PutMapping("/team-member/{teamMemberId}/update-name")
-    public ResponseEntity<?> modifyTeamMemberName(@PathVariable int teamMemberId, @RequestParam String newName) {
+    public ResponseEntity<?> modifyTeamMemberName(@PathVariable int teamMemberId, @RequestBody UpdateNameRequestDTO request) {
         try {
-            return ResponseEntity.ok(adminService.modifyTeamMemberName(teamMemberId, newName));
+            return ResponseEntity.ok(adminService.modifyTeamMemberName(teamMemberId, request.getNewName()));
         }
         catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -88,9 +109,9 @@ public class AdminController {
 
     // Modify Team Member Email
     @PutMapping("/team-member/{teamMemberId}/update-email")
-    public ResponseEntity<?> modifyTeamMemberEmail(@PathVariable int teamMemberId, @RequestParam String newEmail) {
+    public ResponseEntity<?> modifyTeamMemberEmail(@PathVariable int teamMemberId, @RequestBody UpdateEmailRequestDTO request) {
         try {
-            return ResponseEntity.ok(adminService.modifyTeamMemberEmail(teamMemberId, newEmail));
+            return ResponseEntity.ok(adminService.modifyTeamMemberEmail(teamMemberId, request.getNewEmail()));
         } 
         catch (NoSuchElementException e) {
             return ResponseEntity.status(404).body("Team member not found");

@@ -65,7 +65,7 @@ function ViewTask(){
                         <input type="button" value="SUBMIT" class ="submit-comment"/>
                     </form>
                 </div>
-                <form class="update-class">
+                <div class="update-class">
                     <div class = "updateStatus">
                         <select name="update status" id="newStatus" class = "updateSelector">
                             <option value="" disabled selected>Update Status</option>
@@ -73,12 +73,16 @@ function ViewTask(){
                             <option value="InProgress">In Progress</option>
                             <option value="Done">Done</option>
                         </select>
-                        <input type="button" value="EDIT" class="fotterbutton"/>
+                        <Link to = {'/edit-task'} state={{taskToEdit: task, onThisTeam: team}}>
+                            <button class="fotterbutton">EDIT</button>
+                            </Link>
                     </div>
                     <input type="button" value="DELETE TASK" class="fotterbutton"/>
-                </form>
+
+                </div>
             </div>
         </div>
     )
 }
 export default ViewTask
+//as = {Link} to = {'/edit-task'} state={{taskToEdit: task, onThisTeam: team}}
