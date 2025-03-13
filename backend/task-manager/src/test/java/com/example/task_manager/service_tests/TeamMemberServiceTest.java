@@ -294,9 +294,8 @@ public class TeamMemberServiceTest {
 
 		System.out.println("Found " + teamsForMember.size() + " memberships in DB");
 
-
 		assertNotNull(teamsForMember);
-    	assertEquals(2, teamsForMember.size());
+		assertEquals(2, teamsForMember.size());
 
 		assertEquals(team.getTeamId(), teamsForMember.get(1).getTeamId());
 		assertEquals(team.getTeamName(), teamsForMember.get(1).getTeamName());
@@ -306,4 +305,23 @@ public class TeamMemberServiceTest {
 		assertEquals(team2.getTeamName(), teamsForMember.get(0).getTeamName());
 		assertEquals(team2.getTeamLead().getAccountId(), teamsForMember.get(0).getTeamLeadId());
 	}
+	
+	@Test
+	void testGetAllTeams() {
+		List<TeamDTO> teams = adminService.getAllTeams();
+
+		System.out.println("Found " + teams.size() + " teams in DB");
+
+		assertNotNull(teams);
+		assertEquals(2, teams.size());
+
+		assertEquals(team.getTeamId(), teams.get(1).getTeamId());
+		assertEquals(team.getTeamName(), teams.get(1).getTeamName());
+		assertEquals(team.getTeamLead().getAccountId(), teams.get(1).getTeamLeadId());
+
+		assertEquals(team2.getTeamId(), teams.get(0).getTeamId());
+		assertEquals(team2.getTeamName(), teams.get(0).getTeamName());
+		assertEquals(team2.getTeamLead().getAccountId(), teams.get(0).getTeamLeadId());
+	}
+
 }

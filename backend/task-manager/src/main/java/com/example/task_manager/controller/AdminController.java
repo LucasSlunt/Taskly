@@ -6,7 +6,7 @@ import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.DTO.UpdateEmailRequestDTO;
 import com.example.task_manager.DTO.UpdateNameRequestDTO;
 import java.util.List;
-
+import com.example.task_manager.repository.AdminRepository;
 import com.example.task_manager.service.AdminService;
 
 import org.springframework.http.ResponseEntity;
@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import com.example.task_manager.DTO.AdminDTO;
+import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 
 @RestController
@@ -23,10 +24,13 @@ import com.example.task_manager.DTO.TeamMemberDTO;
 //This is an admin controller
 public class AdminController {
 
+    private final AdminRepository adminRepository;
+
     private final AdminService adminService;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, AdminRepository adminRepository) {
         this.adminService = adminService;
+        this.adminRepository = adminRepository;
     }
 
     // Create Admin entity
@@ -199,6 +203,16 @@ public class AdminController {
         try {
             List<TeamMemberDTO> teamMembers = adminService.getAllTeamMembers();
             return ResponseEntity.ok(teamMembers);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
+    @GetMapping("/all-teams")
+    public ResponseEntity<?> getAllTeams() {
+        try {
+            List<TeamDTO> teams = adminService.getAllTeams();
+            return ResponseEntity.ok(teams);
         }
         catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
