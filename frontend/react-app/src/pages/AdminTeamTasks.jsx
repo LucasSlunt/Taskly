@@ -144,7 +144,7 @@ function AdminTeamTasks(){
             <h2>Team Members</h2>
             <div className="team-list">
               {members.map((member) => (
-                <TeamMember key={member.id} member={member} />
+                <TeamMember key={member.id} member={member} isAdminPage={true} />
               ))}
             
             </div>
