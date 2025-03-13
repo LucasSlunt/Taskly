@@ -8,7 +8,7 @@ import ViewTask from './pages/ViewTask';
 import Profile from './pages/Profile'
 import TeamTasks from './pages/TeamTasks';
 import MyTasks from './pages/MyTasks';
-import RequireAuth from '@auth-kit/react-router/RequireAuth'
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -16,11 +16,11 @@ function App() {
       <div>
         <Routes>
           <Route path="/login" element={<Login/>} />
-          <Route path="/home" element={<Home/>}/>
-          <Route path="/view-task" element={<ViewTask/>}/>
-          <Route path="/profile" element={<Profile/>}/>
-          <Route path="/team-tasks" element={<TeamTasks/>}/>
-          <Route path="/my-tasks" element={<MyTasks/>}/>
+          <Route path="/home" element={<ProtectedRoute allowedRoles={['admin', 'teamMember']} protectedContent={<Home/>} urlReirect={"/login"}></ProtectedRoute>}/>
+          <Route path="/view-task" element={<ProtectedRoute allowedRoles={['admin', 'teamMember']} protectedContent={<ViewTask/>} urlReirect={"/login"}></ProtectedRoute>}/>
+          <Route path="/profile" element={<ProtectedRoute allowedRoles={['admin', 'teamMember']} protectedContent={<Profile/>} urlReirect={"/login"}></ProtectedRoute>}/>
+          <Route path="/team-tasks" element={<ProtectedRoute allowedRoles={['admin', 'teamMember']} protectedContent={<TeamTasks/>} urlReirect={"/login"}></ProtectedRoute>}/>
+          <Route path="/my-tasks" element={<ProtectedRoute allowedRoles={['admin', 'teamMember']} protectedContent={<MyTasks/>} urlReirect={"/login"}></ProtectedRoute>}/>
 
           {/*Default path should be login, unless specified */}
           <Route path="/" exact element={<Login/>} />

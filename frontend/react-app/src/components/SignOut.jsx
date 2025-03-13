@@ -1,7 +1,12 @@
-import useSignOut from 'react-auth-kit/hooks/useSignOut';
+import { useCookies } from "react-cookie";
 export default function SignOut(){
-    const signout = useSignOut();
+    const [cookie, removeCookie] = useCookies('userInfo');
+    function clearCookies(){
+        removeCookie("userInfo")
+        window.location.href="/home";
+    }
     return(
-        <button onClick={() => signOut()}>Sign Out</button>
+        
+        <button onClick={clearCookies}>Sign Out</button>
     )
 }

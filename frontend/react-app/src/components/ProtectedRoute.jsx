@@ -1,20 +1,20 @@
-import {useAuthUser} from 'react-auth-kit'
-
+import { Navigate } from 'react-router-dom';
+import {useCookies} from 'react-cookie'
 export default function ProtectedRoute({
     allowedRoles,
+    urlReirect,
     protectedContent,
 }){
-    const auth = useAuthUser()
 
-    if(auth === undefined){
-        return <div>Loading...</div>
+    const [cookies] = useCookies(['userInfo'])
+    console.log(cookies)
+    if(Object.keys(cookies).length === 0 || cookies.userInfo === undefined){
+       return <Navigate to={urlReirect} replace />;
     }
-    if(auth === null){
-        return <div>Permisson Denied</div>
+    if(cookies && !allowedRoles.includes(cookies.userInfo.role)){
+       return <Navigate to={'/login'} replace />;
     }
-    if(auth && !allowedRoles.includes(auth.role)){
-        return <div>Admins Only</div>
-    }
+    
     return protectedContent;
     
 }

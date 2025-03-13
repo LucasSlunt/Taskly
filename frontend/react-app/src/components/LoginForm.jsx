@@ -1,31 +1,26 @@
 import {useForm} from 'react-hook-form'
-import {login} from '../api/authInfo'
-import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import {isAdmin, login} from '../api/authInfo'
+import { useCookies } from 'react-cookie';
 function LoginForm(){
     const { register, handleSubmit, formState: {errors}} = useForm();
-    const signIn = useSignIn();
+    const [cookie, setCookie] = useCookies(['userInfo',{doNotParse: true}]);
     const onSubmit = async(data)=> {
         try {
             const responseLogin = await login(data.username, data.password);
             if(responseLogin === null){
                 alert("Failed Login")
             }else{
-                signIn({
-                    auth:{
-                        //sample token until we implement tokens for user auth
-                        token: 'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTc0MTg0ODI1MywiaWF0IjoxNzQxODQ4MjUzfQ.UWOWdqHIfEy9-PT3tZoeosL8hofXY3vPB0w72o-4_wo',
-                        type: 'Bearer'
-                    },
-                    userState:{
-                        id: responseLogin.id,
-                        name: responseLogin.name,
-                        role: (responseLogin.isAdmin ? "admin":"teamMember")
-                    }
-                })
+                const dataToCokie= {
+                    accountId:responseLogin.accountId,
+                    userName:responseLogin.userName,
+                    role:(responseLogin.isAdmin ? "admin":"teamMember"),
+                    password: responseLogin.password}
+                await setCookie("userInfo", dataToCokie,{secure: false});
                 window.location.href="/home";
+                
             }
         } catch (error) {
-
+            console.log(error)
         } 
     };
     return(
