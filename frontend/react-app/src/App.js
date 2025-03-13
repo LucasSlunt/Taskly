@@ -16,11 +16,11 @@ function App() {
       <div>
         <Routes>
           <Route path="/login" element={<Login/>} />
-          <Route path="/home" element={<RequireAuth fallbackPath={'/login'}><Home/></RequireAuth>}/>
-          <Route path="/view-task" element={<RequireAuth fallbackPath={'/login'}><ViewTask/></RequireAuth>}/>
-          <Route path="/profile" element={<RequireAuth fallbackPath={'/login'}><Profile/></RequireAuth>}/>
-          <Route path="/team-tasks" element={<RequireAuth fallbackPath={'/login'}><TeamTasks/></RequireAuth>}/>
-          <Route path="/my-tasks" element={<RequireAuth fallbackPath={'/login'}><MyTasks/></RequireAuth>}/>
+          <Route path="/home" element={<Home/>}/>
+          <Route path="/view-task" element={<ViewTask/>}/>
+          <Route path="/profile" element={<Profile/>}/>
+          <Route path="/team-tasks" element={<TeamTasks/>}/>
+          <Route path="/my-tasks" element={<MyTasks/>}/>
 
           {/*Default path should be login, unless specified */}
           <Route path="/" exact element={<Login/>} />
