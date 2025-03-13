@@ -238,7 +238,7 @@ All API requests should be made to the following base URL (Spring Boot's default
     ```
     - **Description:** Returns the id, name, and email of the requested admin.
 
-**Get Team Member by ID** `GET /{teamMemberId}`
+**Get Team Member by ID** `GET /team-member/{teamMemberId}`
     - **Parameters:** 
         - `teamMemberId` (integer, required): The ID of the team member being retrieved.
     - **Response Body:**
