@@ -96,7 +96,17 @@ public class TeamMemberController {
         try {
             List<TeamDTO> teams = teamMemberService.getTeamsForMember(teamMemberId);
             return ResponseEntity.ok(teams);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+    
+    @GetMapping("/{teamMemberId}/tasks")
+    public ResponseEntity<?> getAssignedTasks(@PathVariable int teamMemberId) {
+        try {
+            List<TaskDTO> tasks = teamMemberService.getAssignedTasks(teamMemberId);
+            return ResponseEntity.ok(tasks);
+        } 
         catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

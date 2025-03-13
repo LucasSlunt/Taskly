@@ -106,15 +106,28 @@ public class TeamMemberControllerTest {
     void testGetTeamsForMember() throws Exception {
         List<TeamDTO> mockTeams = Arrays.asList(
                 new TeamDTO(1, "Team 1", 1),
-                new TeamDTO(2, "Team 2", 1)
-        );
+                new TeamDTO(2, "Team 2", 1));
 
         when(teamMemberService.getTeamsForMember(1)).thenReturn(mockTeams);
 
         MvcResult result = mockMvc.perform(get("/api/tasks/1/teams"))
-            .andExpect(status().isOk())
-            .andReturn();
-        
+                .andExpect(status().isOk())
+                .andReturn();
+
         // System.out.println("Response: " + result.getResponse().getContentAsString());
+    }
+    
+    @Test
+    void testGetAssignedTasks() throws Exception {
+        List<TaskDTO> mockTasks = Arrays.asList(
+                new TaskDTO(1, "Task Title 1", "Task 1 description", false, "Open", LocalDate.now(), 1),
+                new TaskDTO(2, "Task Title 2", "Task 2 description", true, "Closed", LocalDate.now(), 1));
+
+        when(teamMemberService.getAssignedTasks(1)).thenReturn(mockTasks);
+
+        MvcResult result = mockMvc.perform(get("/api/tasks/1/tasks"))
+                .andExpect(status().isOk())
+                .andReturn();
+
     }
 }
