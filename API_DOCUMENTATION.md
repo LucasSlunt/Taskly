@@ -173,6 +173,84 @@ All API requests should be made to the following base URL (Spring Boot's default
         - `taskId` (integer, required): The ID of the task to unlock.  
     - **Description:** Unlocks a task, allowing updates and modifications.
 
+- **Get All Admins:** `GET /admins`
+    - **Response Body:** 
+    ```json
+    [
+        {
+            "accountId": 1,
+            "userName": "Admin Name",
+            "userEmail": "admin@example.com"
+        },
+        {
+            "accountId": 2,
+            "userName": "Admin 2",
+            "userEmail": "admin_2@example.com"
+        }
+    ]
+    ```
+    - **Description:** Returns a list of every admin in the database.
+
+ **Get All Team Members:** `GET /team-members`
+    - **Response Body:** 
+    ```json
+    [
+        {
+            "accountId": 2,
+            "userName": "Team Member",
+            "userEmail": "teammember@example.com"
+        },
+        {
+            "accountId": 3,
+            "userName": "Team Member3",
+            "userEmail": "teammember3@example.com"
+        }
+    ]
+    ```
+    - **Description:** Returns a list of every team member in the database.
+
+**Get All Teams:** `GET /all-teams`
+    - **Response Body:**
+    ```json
+    [
+        {
+            "teamId": 1,
+            "teamName": "Development Team"
+        },
+        {
+            "teamId": 2,
+            "teamName": "Marketing Team"
+        }
+    ]
+    ```
+    - **Description:** Returns a list of every team in the database.
+
+**Get Admin by ID** `GET /{adminId}`
+    - **Parameters:** 
+        - `adminId` (integer, required): The ID of the admin being retrieved.
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 1,
+        "userName": "Admin Name",
+        "userEmail": "admin@example.com"
+    }
+    ```
+    - **Description:** Returns the id, name, and email of the requested admin.
+
+**Get Team Member by ID** `GET /{teamMemberId}`
+    - **Parameters:** 
+        - `teamMemberId` (integer, required): The ID of the team member being retrieved.
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 1,
+        "userName": "Team Member Name",
+        "userEmail": "teamMember@example.com"
+    }
+    ```
+    - **Description:** Returns the id, name, and email of the requested team member.
+
 ---
 
 ## **AuthInfoController**
@@ -404,6 +482,56 @@ All API requests should be made to the following base URL (Spring Boot's default
     }
     ```
     - **Description:** Updates the password field for a team member.
+
+- **Get a Team Member's Teams:** `GET /{teamMemberId}/teams`
+    - **Parameters:**
+        - `teamMemberId` (integer, required): The ID of the team member whose teams you are retrieving.
+    - **Response Body:**
+    ```json
+    [
+        {
+            "teamId": 1,
+            "teamName": "Team 1",
+            "teamLeadId": 2
+
+        },
+        {
+            "teamId": 2,
+            "teamName": "Team 2",
+            "teamLeadId": 4
+        }
+    ]
+    ```
+    - **Description:** Returns every team that a team member is a member of.
+
+- **Get a Team Member's Tasks:** `GET /{teamMemberId}/tasks`
+    - **Parameters:**
+        - `teamMemberId` (integer, required): The ID of the team member whose tasks you are retrieving.
+    - **Response Body:**
+    ```json
+    [
+        {
+            "taskId": 1,
+            "title": "Task 1",
+            "description": "Task 1 description",
+            "isLocked": false,
+            "status": "Open",
+            "dueDate": "2025-03-14",
+            "teamId": 4
+        },
+        {
+            "taskId": 2,
+            "title": "Task 2",
+            "description": "Task 2 description",
+            "isLocked": true,
+            "status": "Paused",
+            "dueDate": "2025-03-27",
+            "teamId": 4
+        }
+    ]
+    ```
+    - **Description:** Returns every task assigned to a team member. 
+    - **Note:** The date format is expected to be `YYYY-MM-DD`.
 
 ---
 
