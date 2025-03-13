@@ -7,10 +7,10 @@ WORKDIR /app
 # Copy only the built JAR file, whcih builds on your machine first
 COPY target/*.jar app.jar
 
-# Expose the application port, so application inside the container listens to this port, 8080
+# Expose the application port, so application inside the container listens to the port 8080
 EXPOSE 8080
 
-# Set environment variables for profiles, set when docker-compose.yml is run
+# Set environment variables for profiles, so set when docker-compose.yml is run
 ENV SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
 
 # Run the application
