@@ -3,6 +3,8 @@ package com.example.task_manager.service_tests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +18,8 @@ import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.Admin;
+import com.example.task_manager.DTO.TeamDTO;
+import com.example.task_manager.entity.IsMemberOf;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
@@ -26,6 +30,7 @@ import com.example.task_manager.repository.AdminRepository;
 import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.repository.IsAssignedRepository;
 import com.example.task_manager.repository.IsMemberOfRepository;
+import com.example.task_manager.service.AdminService;
 import com.example.task_manager.service.AuthInfoService;
 import com.example.task_manager.service.TeamMemberService;
 
@@ -35,8 +40,11 @@ import com.example.task_manager.service.TeamMemberService;
 public class TeamMemberServiceTest {
 
 	@Autowired
-    private AuthInfoService authInfoService;
+	private AuthInfoService authInfoService;
 
+	@Autowired
+    private AdminService adminService;
+	
 	@Autowired
 	private TeamMemberService teamMemberService;
 
@@ -64,6 +72,7 @@ public class TeamMemberServiceTest {
 	private Task task;
 	private TeamMember teamMember;
 	private Team team;
+	private Team team2;
 
 	@BeforeEach
 	void setUp() {
@@ -81,8 +90,14 @@ public class TeamMemberServiceTest {
 		team = new Team("Team Name " + System.nanoTime(), teamMember);
 		team = teamRepository.save(team);
 
+		team2 = new Team("Team Name " + System.nanoTime(), teamMember);
+		team2 = teamRepository.save(team2);
+
 		task = new Task("Task Title " + System.nanoTime(), "Task Description", team, false, "Open", LocalDate.now());
 		task = taskRepository.save(task);
+
+		adminService.assignToTeam(teamMember.getAccountId(), team.getTeamId());
+    	adminService.assignToTeam(teamMember.getAccountId(), team2.getTeamId());
 	}
 
 	@Test
@@ -239,7 +254,7 @@ public class TeamMemberServiceTest {
 	void testChangePasswordButSupplyWrongPassword() {
 		int teamMemberId = teamMember.getAccountId();
 		teamMemberService.changePassword(teamMemberId, "wrongpw", "coolnewpassword");
-		assertFalse(authInfoService.approveLogin(teamMemberId,"coolnewpassword"));
+		assertFalse(authInfoService.approveLogin(teamMemberId, "coolnewpassword"));
 	}
 
     @Test
@@ -273,4 +288,22 @@ public class TeamMemberServiceTest {
  
  		assertTrue(exception.getMessage().contains("Team Member not found"));
  	}
+	@Test
+	void testGetTeamsForMember() {
+		List<TeamDTO> teamsForMember = teamMemberService.getTeamsForMember(teamMember.getAccountId());
+
+		System.out.println("Found " + teamsForMember.size() + " memberships in DB");
+
+
+		assertNotNull(teamsForMember);
+    	assertEquals(2, teamsForMember.size());
+
+		assertEquals(team.getTeamId(), teamsForMember.get(1).getTeamId());
+		assertEquals(team.getTeamName(), teamsForMember.get(1).getTeamName());
+		assertEquals(team.getTeamLead().getAccountId(), teamsForMember.get(1).getTeamLeadId());
+
+		assertEquals(team2.getTeamId(), teamsForMember.get(0).getTeamId());
+		assertEquals(team2.getTeamName(), teamsForMember.get(0).getTeamName());
+		assertEquals(team2.getTeamLead().getAccountId(), teamsForMember.get(0).getTeamLeadId());
+	}
 }

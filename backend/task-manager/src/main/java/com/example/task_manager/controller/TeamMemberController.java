@@ -4,9 +4,13 @@ import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.DTO.PasswordChangeRequestDTO;
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
+import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.service.TeamMemberService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -72,6 +76,17 @@ public class TeamMemberController {
             teamMemberService.changePassword(teamMemberId, request.getOldPassword(), request.getNewPassword());
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
+    @GetMapping("/{teamMemberId}/teams")
+    public ResponseEntity<?> getTeamsForMember(@PathVariable int teamMemberId) {
+        try {
+            List<TeamDTO> teams = teamMemberService.getTeamsForMember(teamMemberId);
+            return ResponseEntity.ok(teams);
+        }
+        catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
