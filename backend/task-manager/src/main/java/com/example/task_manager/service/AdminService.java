@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.example.task_manager.DTO.AdminDTO;
+import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.*;
 import com.example.task_manager.repository.*;
@@ -168,6 +169,13 @@ public class AdminService extends TeamMemberService {
 				.map(teamMember -> new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(),
 						teamMember.getUserEmail()))
 				.collect(Collectors.toList());
+	}
+
+	//get all teams
+	public List<TeamDTO> getAllTeams() {
+		return teamRepository.findAll().stream()
+			.map(team -> new TeamDTO(team.getTeamId(), team.getTeamName(), team.getTeamLead().getAccountId()))
+			.collect(Collectors.toList());
 	}
 
 	private AdminDTO convertToDTO(Admin admin) {
