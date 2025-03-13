@@ -1,10 +1,11 @@
 import {useForm} from 'react-hook-form'
 import {login} from '../api/authInfo'
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
-
+import { useNavigate } from 'react-router-dom';
 function LoginForm(){
     const { register, handleSubmit, formState: {errors}} = useForm();
     const signIn = useSignIn();
+    const nav = useNavigate();
     const onSubmit = async(data)=> {
         try {
             const responseLogin = await login(data.username, data.password);
@@ -23,7 +24,7 @@ function LoginForm(){
                         role: (responseLogin.isAdmin ? "admin":"teamMember")
                     }
                 })
-                
+                nav('/home')
             }
         } catch (error) {
 
