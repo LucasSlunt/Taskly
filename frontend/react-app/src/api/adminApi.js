@@ -247,10 +247,56 @@ export const unlockTask = async (taskId) => {
 //Get all admins
 export const getAdmins = async () => {
     try {
-        
+        const response = await fetch(`${BASE_URL}/admins`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve admins: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
     }
     catch (error) {
         console.error(`Failed to retrieve all admins: `, error);
+        throw error;
+    } 
+};
+
+//Get all team ememebrs
+export const getTeamMembers = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/team-members`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve team members: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve all team members: `, error);
+        throw error;
+    } 
+};
+
+//Get all teams
+export const getTeams = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/all-teams`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve teams: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve all teams: `, error);
         throw error;
     } 
 };
