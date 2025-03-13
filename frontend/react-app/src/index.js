@@ -2,13 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './login.css';
 import App from './App';
-
+import AuthProvider from 'react-auth-kit';
+import createStore from 'react-auth-kit/createStore';
 import reportWebVitals from './reportWebVitals';
-
+const store = createStore("user","cookie")
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <AuthProvider store = {store}>
+      <App />
+    </AuthProvider>
   </React.StrictMode>
 );
 
