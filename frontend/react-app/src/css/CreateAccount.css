@@ -1,3 +1,62 @@
-.testMe {
-    background-color: pink;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+    font-family: inherit;
+}
+
+body {
+    background-color: #4e456e;
+}
+
+input {
+    all: unset; /* Resets input to a neutral state */
+    width: 100%; /* Makes sure it follows container width */
+    height: auto;
+    box-sizing: border-box;
+}
+
+#createAccountForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 5% auto;
+    background-color: white;
+    width: 500px;
+    height: 375px;
+    border: none;
+    border-radius: 10px;
+}
+
+#createAccountForm input {
+    width: 350px;
+    height: 40px;
+    border: 2px solid grey;
+    border-radius: 10px;
+    padding-left: 8px;
+    background-color: white;
+    margin: 10px 0px;
+}
+
+#createAccountForm label {
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+#createAccountForm button {
+    width: 100px;
+    height: 30px;
+    font-size: 1em;
+    margin-top: 15px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    background-color: #3f5d8b;
+}
+
+#createAccountForm button:hover {
+    cursor: pointer;
+    background-color: #2f486d;
 }
