@@ -53,7 +53,7 @@ function setUpDataTasksToDo(obj){
         {
             id: taskItem.id,
             name: taskItem.name,
-            assignees: getAssignnesNames(taskItem),
+            assignees: getAssignnesNames(taskItem).join(' '),
             status: taskItem.status,
             priority: taskItem.priority,
             dueDate: taskItem.dueDate,
@@ -78,7 +78,7 @@ function setUpDataComplete(obj){
          {
             id: taskItem.id,
             name: taskItem.name,
-            assignees: getAssignnesNames(taskItem),
+            assignees: getAssignnesNames(taskItem).join(' '),
             dueDate: taskItem.dueDate,
             dateCompteted: taskItem.dateCompteted
  
