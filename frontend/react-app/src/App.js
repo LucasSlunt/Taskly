@@ -2,8 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 // Import your pages/components
-import Login from './Login';
-import Home from './Home';
+import Login from './pages/Login';
+import Home from './pages/Home';
 import ViewTask from './pages/ViewTask';
 import Profile from './pages/Profile'
 import TeamTasks from './pages/TeamTasks';

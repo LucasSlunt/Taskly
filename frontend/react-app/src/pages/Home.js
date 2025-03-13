@@ -1,8 +1,8 @@
 import {useEffect, useState} from 'react';
-import './home.css';
+import '../css/home.css';
 
 
-import Task from './Task';
+import Task from '../Task';
 
 
 const testTask = [
