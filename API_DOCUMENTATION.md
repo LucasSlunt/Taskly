@@ -180,8 +180,38 @@ All API requests should be made to the following base URL (Spring Boot's default
 **Base URL:** `/api/auth-info`
 
 ### Endpoints
-- (Currently no documented endpoints)
+- **Login:** `POST /login`
+    - **Description:** Logs a user in.
+    - **Request Body:** 
+    ```json
+    {
+        "teamMemberId": 1, 
+        "password": "password"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "id": 1,
+        "name": "Test User",
+        "isAdmin": true
+    }
+    ```
 
+- **IsAdmin:** `POST /is-admin`
+    - **Description:** Checks if a user is an admin.
+    - **Request Body:**
+    ```json
+    {
+        "teamMemberId": 1
+    }
+    ```
+    - **Response Body:***
+    ```json
+    {
+        "isAdmin": true
+    }   
+    ```
 ---
 
 ## **IsAssignedController**

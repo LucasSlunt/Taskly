@@ -1,9 +1,148 @@
 package com.example.task_manager.controller_tests;
 
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import com.example.task_manager.entity.AuthInfo;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-@WebMvcTest(AuthInfo.class)
+import com.example.task_manager.DTO.AuthInfoDTO;
+import com.example.task_manager.controller.AuthController;
+import com.example.task_manager.service.AuthInfoService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
+ 
+
+@WebMvcTest(AuthController.class)
 public class AuthInfoControllerTest {
-    //to be implemented with the AuthInfoController
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private AuthInfoService authInfoService;
+
+    @InjectMocks
+    private AuthController authController;
+
+    private AuthInfoDTO mockUser;
+    private AuthInfoDTO mockAdmin;
+
+    @BeforeEach
+    void setUp() {
+        mockUser = new AuthInfoDTO(1, "John Doe", false);
+        mockAdmin = new AuthInfoDTO(2, "Admin User", true);
+    }
+
+    // Test Successful Login
+    @Test
+    void testLogin_Success() throws Exception {
+        AuthInfoDTO loginRequest = new AuthInfoDTO(1, "correctpassword", false);
+
+        when(authInfoService.authenticateUser(1, "correctpassword")).thenReturn(mockUser);
+
+        mockMvc.perform(post("/auth-info/login")
+                .contentType("application/json")
+                .content("{\"accountId\":1, \"password\":\"correctpassword\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accountId").value(1))
+                .andExpect(jsonPath("$.userName").value("John Doe"))
+                .andExpect(jsonPath("$.isAdmin").value(false));
+
+        verify(authInfoService, times(1)).authenticateUser(1, "correctpassword");
+    }
+
+    //  Test Login as Admin
+    @Test
+    void testLogin_AdminSuccess() throws Exception {
+        AuthInfoDTO loginRequest = new AuthInfoDTO(2, "adminpassword", true);
+
+        when(authInfoService.authenticateUser(2, "adminpassword")).thenReturn(mockAdmin);
+
+        mockMvc.perform(post("/auth-info/login")
+                .contentType("application/json")
+                .content("{\"accountId\":2, \"password\":\"adminpassword\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accountId").value(2))
+                .andExpect(jsonPath("$.userName").value("Admin User"))
+                .andExpect(jsonPath("$.isAdmin").value(true));
+
+        verify(authInfoService, times(1)).authenticateUser(2, "adminpassword");
+    }
+
+    // Test Login with Incorrect Password
+    @Test
+    void testLogin_Failure_InvalidCredentials() throws Exception {
+        when(authInfoService.authenticateUser(1, "wrongpassword"))
+                .thenThrow(new RuntimeException("Invalid Credentials"));
+
+        mockMvc.perform(post("/auth-info/login")
+                .contentType("application/json")
+                .content("{\"accountId\":1, \"password\":\"wrongpassword\"}"))
+                .andExpect(status().isUnauthorized()) // Expect HTTP 401
+                .andExpect(content().string(""));
+
+        verify(authInfoService, times(1)).authenticateUser(1, "wrongpassword");
+    }
+
+    // Test Login with Nonexistent User
+    @Test
+    void testLogin_Failure_NonExistentUser() throws Exception {
+        when(authInfoService.authenticateUser(9999, "somepassword"))
+                .thenThrow(new RuntimeException("Team Member not found"));
+
+        mockMvc.perform(post("/auth-info/login")
+                .contentType("application/json")
+                .content("{\"accountId\":9999, \"password\":\"somepassword\"}"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string(""));
+
+        verify(authInfoService, times(1)).authenticateUser(9999, "somepassword");
+    }
+
+    /**
+     * Test `isAdmin` when the user is an admin so should return true
+     */
+    @Test
+    void testIsAdmin_Success_AdminUser() throws Exception {
+        when(authInfoService.isAdmin(2)).thenReturn(true);
+
+        mockMvc.perform(get("/auth-info/2/is-admin"))
+                .andExpect(status().isOk()) // Expect HTTP 200
+                .andExpect(content().string("true"));
+
+        verify(authInfoService, times(1)).isAdmin(2);
+    }
+
+    /**
+     * Test `isAdmin` when the user is NOT an admin so should return false
+     */
+    @Test
+    void testIsAdmin_Success_NonAdminUser() throws Exception {
+        when(authInfoService.isAdmin(1)).thenReturn(false);
+
+        mockMvc.perform(get("/auth-info/1/is-admin"))
+                .andExpect(status().isOk()) // Expect HTTP 200
+                .andExpect(content().string("false"));
+
+        verify(authInfoService, times(1)).isAdmin(1);
+    }
+
+    /**
+     * Test `isAdmin` when the user does NOT exist so should return 404
+     */
+    @Test
+    void testIsAdmin_Failure_UserNotFound() throws Exception {
+        when(authInfoService.isAdmin(9999))
+                .thenThrow(new RuntimeException("Team Member not found"));
+
+        mockMvc.perform(get("/auth-info/9999/is-admin"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(""));
+
+        verify(authInfoService, times(1)).isAdmin(9999);
+    }
 }

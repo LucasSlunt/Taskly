@@ -3,12 +3,16 @@ package com.example.task_manager.service_tests;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import jakarta.transaction.Transactional;
 
+import com.example.task_manager.DTO.AuthInfoDTO;
+import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.repository.AdminRepository;
 import com.example.task_manager.repository.AuthInfoRepository;
@@ -48,11 +52,16 @@ public class AuthInfoServiceTest {
 	@Autowired
 	private AuthInfoRepository authInfoRepository;
 
+    @Autowired
+    private IsMemberOfRepository isMemberOfRepository;
+        
+    @Autowired
+    private AuthInfoRepository authInfoRepository;
 
+    private TeamMember teamMember;
+    private Admin admin;
 
-private TeamMember teamMember;
-
-@BeforeEach
+    @BeforeEach
 	void setUp() {
         isAssignedRepository.deleteAll();
 		isMemberOfRepository.deleteAll();
@@ -63,9 +72,11 @@ private TeamMember teamMember;
 		teamRepository.deleteAll();
 
         teamMember = new TeamMember("Authentication Tester", "auth_test" + System.nanoTime() + "@secure.com","defaultpw");
-		teamMember = teamMemberRepository.save(teamMember);
+        teamMember = teamMemberRepository.save(teamMember);
+         
+        admin = new Admin("Admin User", "admin" + System.nanoTime() + "@secure.com", "adminpw");
+        admin = teamMemberRepository.save(admin);
     }
-
 
     @Test
     void testHashPassword() {
@@ -98,5 +109,60 @@ private TeamMember teamMember;
     void testApproveLoginWithIncorrectPassword() {
         int teamMemberId = teamMember.getAccountId();
         assertFalse(authInfoService.approveLogin(teamMemberId,"wrongpw"));
+    }
+
+    //team member is not an admin
+    @Test
+    void testAuthenticateUserWithSuccess() {
+        List<TeamMember> allMembers = teamMemberRepository.findAll();
+
+        AuthInfoDTO response = authInfoService.authenticateUser(teamMember.getAccountId(), "defaultpw");
+
+        assertNotNull(response);
+        assertEquals(teamMember.getAccountId(), response.getAccountId());
+        assertEquals(teamMember.getUserName(), response.getUserName());
+        assertFalse(response.getIsAdmin()); // Regular member, not admin
+    }
+
+    //wrong password put in
+    @Test
+    void testAuthenticateUser_Fail_WrongPassword() {
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            authInfoService.authenticateUser(teamMember.getAccountId(), "wrongpw");
+        });
+
+        assertTrue(exception.getMessage().contains("Invalid Credentials"));
+    }
+
+    //non existent user
+    @Test
+    void testAuthenticateUser_Fail_NonExistentUser() {
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            authInfoService.authenticateUser(999999, "somepassword");
+        });
+
+        assertTrue(exception.getMessage().contains("Team Member not found"));
+    }
+
+    //should return true with a real admin
+    @Test
+    void testAuthenticateUser_Admin() {
+        AuthInfoDTO response = authInfoService.authenticateUser(admin.getAccountId(), "adminpw");
+
+        assertNotNull(response);
+        assertEquals(admin.getAccountId(), response.getAccountId());
+        assertEquals(admin.getUserName(), response.getUserName());
+        assertTrue(response.getIsAdmin());
+    }
+
+    //should return false with a member that is not an admin
+    @Test
+    void testAuthenticateUser_NonAdmin() {
+        AuthInfoDTO response = authInfoService.authenticateUser(teamMember.getAccountId(), "defaultpw");
+
+        assertNotNull(response);
+        assertEquals(teamMember.getAccountId(), response.getAccountId());
+        assertEquals(teamMember.getUserName(), response.getUserName());
+        assertFalse(response.getIsAdmin());
     }
 }
