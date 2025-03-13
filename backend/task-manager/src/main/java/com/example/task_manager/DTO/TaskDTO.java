@@ -6,14 +6,14 @@ public class TaskDTO {
     private int taskId;
     private String title;
     private String description;
-    private Boolean isLocked;
+    private boolean isLocked;
     private String status;
     private LocalDate dueDate;
     private int teamId;
 
     public TaskDTO() {}
 
-    public TaskDTO(int taskId, String title, String description, Boolean isLocked, String status, LocalDate dueDate, int teamId) {
+    public TaskDTO(int taskId, String title, String description, boolean isLocked, String status, LocalDate dueDate, int teamId) {
         this.taskId = taskId;
         this.title = title;
         this.description = description;
@@ -48,11 +48,11 @@ public class TaskDTO {
         this.description = description;
     }
 
-    public Boolean getIsLocked() {
+    public boolean getIsLocked() {
         return isLocked;
     }
 
-    public void setLocked(Boolean isLocked) {
+    public void setLocked(boolean isLocked) {
         this.isLocked = isLocked;
     }
 

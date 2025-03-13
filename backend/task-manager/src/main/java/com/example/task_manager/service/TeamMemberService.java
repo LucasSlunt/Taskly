@@ -134,9 +134,9 @@ public class TeamMemberService {
 		if (taskDTO.getDescription() != null && !taskDTO.getDescription().isEmpty()) {
 			task.setDescription(taskDTO.getDescription());
 		}
-		if (taskDTO.getIsLocked() != null) {
-			task.setIsLocked(taskDTO.getIsLocked());
-		}
+		
+		task.setIsLocked(taskDTO.getIsLocked());
+		
 		if (taskDTO.getStatus() != null && !taskDTO.getStatus().isEmpty()) {
 			task.setStatus(taskDTO.getStatus());
 		}
