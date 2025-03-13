@@ -9,6 +9,7 @@ import Profile from './pages/Profile'
 import TeamTasks from './pages/TeamTasks';
 import MyTasks from './pages/MyTasks';
 import RequireAuth from '@auth-kit/react-router/RequireAuth'
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
           <Route path="/view-task" element={<RequireAuth fallbackPath={'/login'}><ViewTask/></RequireAuth>}/>
           <Route path="/profile" element={<RequireAuth fallbackPath={'/login'}><Profile/></RequireAuth>}/>
           <Route path="/team-tasks" element={<RequireAuth fallbackPath={'/login'}><TeamTasks/></RequireAuth>}/>
-          <Route path="/my-tasks" element={<RequireAuth fallbackPath={'/login'}><MyTasks/></RequireAuth>}/>
+          <Route path="/my-tasks" element={<RequireAuth fallbackPath={'/login'}><ProtectedRoute allowedRoles={"admin"}><MyTasks/></ProtectedRoute></RequireAuth>}/>
 
           {/*Default path should be login, unless specified */}
           <Route path="/" exact element={<Login/>} />
