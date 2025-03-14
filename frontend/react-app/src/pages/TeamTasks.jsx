@@ -1,15 +1,28 @@
-import SearchFilterSort from "../components/SearchFilterSort";
+import { Link } from "react-router-dom";
 import TaskList from "../components/TaskList";
 import Header from "../components/Header";
 import "../css/TeamTasks.css";
 import TeamMember from "../components/TeamMember";
 import fakeData from "../FakeData/fakeTaskData.json"
 
-
+function getAssignnesNames(task){
+  let returnArr = []
+  task.assignees.map((assigne)=>{
+      returnArr = [...returnArr, assigne.name]
+  })
+  return returnArr
+}
 const headerAndAccessors = [
       {
-          Header: "Task Name",
-          accessor: "name",
+        Header: "Task Name",
+        accessor: "name",
+        Cell: (original) => (
+            <Link to="/view-task" state={{taskToSee: original.cell.row.values.id}}>{original.value}</Link>
+          )
+      },
+      {
+        Header: "ID",
+        accessor:"id",
       },
       {
           Header: "Assignee(s)",
@@ -38,8 +51,9 @@ function setUpDataTasksToDo(obj){
   if(taskItem.status !== "done"){
     ansArr = [ ...ansArr,
         {
+            id: taskItem.id,
             name: taskItem.name,
-            assignees: taskItem.assignees,
+            assignees: getAssignnesNames(taskItem).join(' '),
             status: taskItem.status,
             priority: taskItem.priority,
             dueDate: taskItem.dueDate,
@@ -62,10 +76,11 @@ function setUpDataComplete(obj){
     if(taskItem.status === "done"){
      ansArr = [...ansArr,
          {
-             name: taskItem.name,
-             assignees: taskItem.assignees,
-             dueDate: taskItem.dueDate,
-             dateCompteted: taskItem.dateCompteted
+            id: taskItem.id,
+            name: taskItem.name,
+            assignees: getAssignnesNames(taskItem).join(' '),
+            dueDate: taskItem.dueDate,
+            dateCompteted: taskItem.dateCompteted
  
  
          }]
@@ -80,8 +95,15 @@ function setUpDataComplete(obj){
 }
 const headerAndAccessorsComplete = [
   {
-      Header: "Task Name",
-      accessor: "name",
+    Header: "Task Name",
+    accessor: "name",
+    Cell: (original) => (
+        <Link to="/view-task" state={{taskToSee: original.cell.row.values.id}}>{original.value}</Link>
+      )
+  },
+  {
+    Header: "ID",
+    accessor:"id",
   },
   {
       Header: "Assignee(s)",
