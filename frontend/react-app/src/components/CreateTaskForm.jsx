@@ -6,7 +6,6 @@ function CreateTaskForm({team}){
     let teamId = 9384;
     const { register, handleSubmit, formState: {errors}} = useForm();
     const onSubmit =  async (data)=> {
-        console.log(data)
         try {
             const responseCreateTask = await createTask(
                 data.title,
@@ -17,7 +16,6 @@ function CreateTaskForm({team}){
                 teamId
     
             );
-            //console.log(responseCreateTask);
         } catch (error) {
             console.log(error)
         }
