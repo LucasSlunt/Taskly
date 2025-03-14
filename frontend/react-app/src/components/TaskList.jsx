@@ -5,14 +5,15 @@ import SearchFilterSort from './SearchFilterSort';
 import { useState} from 'react';
 
 
+
 function TaskList({dataToUse, headersAndAccessors}){
     let  defaultSearch = headersAndAccessors[0].accessor
     const [searchForThis, setSearch] = useState({value: defaultSearch})
     const [searchQuery, setSearchQuery] = useState(""); //creates a state variable "searchQuery" and function "setSearchQuery" to update it
     //whenever the searchQuery changes, runs the useMemo and filters through the fakeData data to only the task names that contain the searchQuery 
+
+
     const filteredData = React.useMemo(()=> {return dataToUse.filter((task) =>{
-        console.log("task")
-        console.log(task)
             switch(searchForThis.value){
             case "name":
                 return task.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -30,6 +31,8 @@ function TaskList({dataToUse, headersAndAccessors}){
                 return task.dateCompteted.toLowerCase().includes(searchQuery.toLowerCase())
             case "isLocked":
                 return task.isLocked.toLowerCase().includes(searchQuery.toLowerCase())
+            case "id":
+                return task.id.toLowerCase().includes(searchQuery.toLowerCase())
         }}
     );}, [searchQuery],((searchForThis),[setSearch])) ;
     
