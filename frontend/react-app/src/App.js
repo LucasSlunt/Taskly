@@ -10,6 +10,7 @@ import TeamTasks from './pages/TeamTasks';
 import AdminAllUsers from './pages/AdminAllUsers';
 import EditTask from './pages/EditTask';
 import MyTasks from './pages/MyTasks';
+import CreateTask from './pages/CreateTask';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/admin-all-users" element={<AdminAllUsers/>}/>
           <Route path="/edit-task" element={<EditTask/>}/>
           <Route path="/my-tasks" element={<MyTasks/>}/>
+          <Route path="/create-task" element={<CreateTask/>}/>
 
           {/*Default path should be login, unless specified */}
           <Route path="/" exact element={<Login/>} />
