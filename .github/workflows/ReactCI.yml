@@ -3,9 +3,9 @@ name: ReactCI
 #I want to run test on our main front end branch
 on:
   push:
-    branches: [main, real-react]
+    branches: main
   pull_request: 
-    branches: [main, real-react]
+    branches: main
     
 jobs:
   build:
