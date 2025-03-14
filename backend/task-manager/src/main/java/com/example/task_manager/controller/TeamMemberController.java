@@ -4,7 +4,11 @@ import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.DTO.PasswordChangeRequestDTO;
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
+import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.service.TeamMemberService;
+
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,7 +71,7 @@ public class TeamMemberController {
     // Change Password (Placeholder)
     @PostMapping("/team-members/{teamMemberId}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable int teamMemberId,
-                                            @RequestBody PasswordChangeRequestDTO request) {
+            @RequestBody PasswordChangeRequestDTO request) {
         try {
             teamMemberService.changePassword(teamMemberId, request.getOldPassword(), request.getNewPassword());
             return ResponseEntity.noContent().build();
@@ -75,4 +79,24 @@ public class TeamMemberController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    
+    @GetMapping("/{teamMemberId}/teams")
+    public ResponseEntity<?> getTeamsForMember(@PathVariable int teamMemberId) {
+        try {
+            List<TeamDTO> teams = teamMemberService.getTeamsForMember(teamMemberId);
+            return ResponseEntity.ok(teams);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{teamMemberId}/tasks")
+    public ResponseEntity<?> getAssignedTasks(@PathVariable int teamMemberId) {
+        try {
+            List<TaskDTO> tasks = teamMemberService.getAssignedTasks(teamMemberId);
+            return ResponseEntity.ok(tasks);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }    
 }

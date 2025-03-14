@@ -1,10 +1,13 @@
 package com.example.task_manager.service;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.example.task_manager.DTO.AdminDTO;
+import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.*;
 import com.example.task_manager.repository.*;
@@ -147,10 +150,46 @@ public class AdminService extends TeamMemberService {
 	// Unlocks a Task by setting its isLocked property to false
 	public void unlockTask(int taskId) {
 		Task task = taskRepository.findById(taskId)
-			.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
-		
+				.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+
 		task.setIsLocked(false);
 		taskRepository.save(task);
+	}
+
+	//get all admins
+	public List<AdminDTO> getAllAdmins() {
+		return adminRepository.findAll().stream()
+				.map(admin -> new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail()))
+				.collect(Collectors.toList());
+	}
+
+	//get all team members
+	public List<TeamMemberDTO> getAllTeamMembers() {
+		return adminRepository.findAll().stream()
+				.map(teamMember -> new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(),
+						teamMember.getUserEmail()))
+				.collect(Collectors.toList());
+	}
+
+	//get all teams
+	public List<TeamDTO> getAllTeams() {
+		return teamRepository.findAll().stream()
+				.map(team -> new TeamDTO(team.getTeamId(), team.getTeamName(), team.getTeamLead().getAccountId()))
+				.collect(Collectors.toList());
+	}
+
+	//get a single admin
+	public AdminDTO getAdminById(int adminId) {
+		Admin admin = adminRepository.findById(adminId)
+				.orElseThrow(() -> new RuntimeException("Admin not found"));
+		return new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail());
+	}
+
+	//get a single team member
+	public TeamMemberDTO getTeamMemberById(int teamMemberId) {
+		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+			.orElseThrow(() -> new RuntimeException("Team Member not found"));
+		return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail());
 	}
 
 	private AdminDTO convertToDTO(Admin admin) {

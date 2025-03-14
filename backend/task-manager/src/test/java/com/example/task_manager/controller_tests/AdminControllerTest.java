@@ -2,18 +2,27 @@ package com.example.task_manager.controller_tests;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.AdminRequestDTO;
+import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.controller.AdminController;
+import com.example.task_manager.repository.AdminRepository;
+import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.service.AdminService;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,7 +31,8 @@ import com.example.task_manager.DTO.UpdateEmailRequestDTO;
 import com.example.task_manager.DTO.UpdateNameRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebMvcTest(AdminController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class AdminControllerTest {
 
     @Autowired
@@ -31,8 +41,11 @@ public class AdminControllerTest {
     @MockBean
     private AdminService adminService;
 
-    @InjectMocks
-    private AdminController adminController;
+    @MockBean
+    private AdminRepository adminRepository;
+
+    @MockBean
+    private TeamMemberRepository teamMemberRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -206,4 +219,77 @@ public class AdminControllerTest {
         mockMvc.perform(put("/api/admin/tasks/1/unlock"))
                 .andExpect(status().isOk());
     }
+
+    // Getting all admins
+    @Test
+    void testGetAllAdmins() throws Exception {
+        List<AdminDTO> mockAdmins = Arrays.asList(
+                        new AdminDTO(1, "Alice Johnson", "alice@example.com"),
+                        new AdminDTO(2, "Bob Smith", "bob@example.com"));
+
+        when(adminService.getAllAdmins()).thenReturn(mockAdmins);
+
+        mockMvc.perform(get("/api/admin/admins"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.size()").value(2))
+                        .andExpect(jsonPath("$[0].accountId").value(1))
+                        .andExpect(jsonPath("$[0].userName").value("Alice Johnson"))
+                        .andExpect(jsonPath("$[1].userEmail").value("bob@example.com"));
+    }
+
+    // Getting all admins
+    @Test
+    void getAllTeamMembers() throws Exception {
+        List<TeamMemberDTO> mockTMs = Arrays.asList(
+                        new TeamMemberDTO(1, "Alice Johnson", "alice@example.com"),
+                        new TeamMemberDTO(2, "Bob Smith", "bob@example.com"));
+
+        when(adminService.getAllTeamMembers()).thenReturn(mockTMs);
+
+        mockMvc.perform(get("/api/admin/team-members"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.size()").value(2))
+                        .andExpect(jsonPath("$[0].accountId").value(1))
+                        .andExpect(jsonPath("$[0].userName").value("Alice Johnson"))
+                        .andExpect(jsonPath("$[1].userEmail").value("bob@example.com"));
+    }
+
+    // Getting all teams
+    @Test
+    void getAllTeams() throws Exception {
+        List<TeamDTO> mockTeams = Arrays.asList(
+                        new TeamDTO(1, "Team 1", 1),
+                        new TeamDTO(2, "Team 2", 2));
+
+        when(adminService.getAllTeams()).thenReturn(mockTeams);
+
+        mockMvc.perform(get("/api/admin/all-teams"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.size()").value(2))
+                        .andExpect(jsonPath("$[0].teamId").value(1))
+                        .andExpect(jsonPath("$[0].teamName").value("Team 1"))
+                        .andExpect(jsonPath("$[1].teamLeadId").value("2"));
+    }
+
+    @Test
+    void testGetAdminById() throws Exception {
+        AdminDTO mockAdmin = new AdminDTO(1, "Admin Sandler", "adam_sandler@example.com");
+
+        when(adminService.getAdminById(1)).thenReturn(mockAdmin);
+
+        mockMvc.perform(get("/api/admin/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accountId").value(1))
+                .andExpect(jsonPath("$.userName").value("Admin Sandler"))
+                .andExpect(jsonPath("$.userEmail").value("adam_sandler@example.com"));
+    }
+
+    @Test
+    void testGetAdminById_NotFound() throws Exception {
+        when(adminService.getAdminById(999)).thenThrow(new RuntimeException("Admin not found"));
+
+        mockMvc.perform(get("/api/admin/999"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Admin not found"));
+    }    
 }

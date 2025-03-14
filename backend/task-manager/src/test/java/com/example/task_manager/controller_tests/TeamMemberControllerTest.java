@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
+import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.controller.TeamMemberController;
 import com.example.task_manager.service.TeamMemberService;
@@ -19,9 +20,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
 @WebMvcTest(TeamMemberController.class)
 public class TeamMemberControllerTest {
@@ -136,5 +139,34 @@ public class TeamMemberControllerTest {
     @Test
     void testChangePassword() throws Exception {
         // TODO: Implement Change Password Test
+    }
+
+     @Test
+    void testGetTeamsForMember() throws Exception {
+        List<TeamDTO> mockTeams = Arrays.asList(
+                new TeamDTO(1, "Team 1", 1),
+                new TeamDTO(2, "Team 2", 1));
+
+        when(teamMemberService.getTeamsForMember(1)).thenReturn(mockTeams);
+
+        MvcResult result = mockMvc.perform(get("/api/tasks/1/teams"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // System.out.println("Response: " + result.getResponse().getContentAsString());
+    }
+
+    @Test
+    void testGetAssignedTasks() throws Exception {
+        List<TaskDTO> mockTasks = Arrays.asList(
+                new TaskDTO(1, "Task Title 1", "Task 1 description", false, "Open", LocalDate.now(), 1),
+                new TaskDTO(2, "Task Title 2", "Task 2 description", true, "Closed", LocalDate.now(), 1));
+
+        when(teamMemberService.getAssignedTasks(1)).thenReturn(mockTasks);
+
+        MvcResult result = mockMvc.perform(get("/api/tasks/1/tasks"))
+                .andExpect(status().isOk())
+                .andReturn();
+
     }
 }
