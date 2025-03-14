@@ -18,6 +18,8 @@ import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.repository.IsMemberOfRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
+import com.example.task_manager.repository.AdminRepository;
+
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
