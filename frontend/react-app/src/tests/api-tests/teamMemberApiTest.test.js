@@ -15,12 +15,13 @@ describe('Team Member API', () => {
             description: "Task description",
             isLocked: false,
             status: "To-Do",
+            dueDate: "4-14-2025",
             teamId: 2
         };
 
         fetch.mockResponseOnce(JSON.stringify(mockTask), {status: 201});
 
-        const result = await createTask("New Task", "Task description", false, "To-Do", 2);
+        const result = await createTask("New Task", "Task description", false, "To-Do", "4-14-2025",2);
 
         expect(fetch).toHaveBeenCalledWith(`${BASE_URL}`, {
             method: 'POST',
@@ -30,6 +31,7 @@ describe('Team Member API', () => {
                 description: "Task description",
                 isLocked: false,
                 status: "To-Do",
+                dueDate: "4-14-2025",
                 teamId: 2
             })
         });
