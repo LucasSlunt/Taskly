@@ -19,5 +19,5 @@ jobs:
       - name: npm ci, build and test
         working-directory: ./frontend/react-app
         run: |
-          npm install --legacy-peer-deps
+          npm ci --legacy-peer-deps
           npm test      
