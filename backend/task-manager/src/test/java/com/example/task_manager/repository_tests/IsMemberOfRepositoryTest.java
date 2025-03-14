@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import com.example.task_manager.entity.IsMemberOf;
 import com.example.task_manager.entity.Team;
@@ -24,6 +24,9 @@ import com.example.task_manager.repository.TeamRepository;
 public class IsMemberOfRepositoryTest {
 
     @Autowired
+    private TestEntityManager entityManager;
+
+    @Autowired
     private IsMemberOfRepository isMemberOfRepository;
 
     @Autowired
@@ -35,35 +38,38 @@ public class IsMemberOfRepositoryTest {
     @Autowired
     private AuthInfoRepository authInfoRepository;
 
-    private Team testTeam;
-    private TeamMember testMember;
-    private IsMemberOf isMemberOf;
+    /**
+     * Creates and persists a unique Team.
+     */
+    private Team createUniqueTeam() {
+        Team team = new Team();
+        team.setTeamName("Test Team " + System.nanoTime());
+        entityManager.persist(team);
+        entityManager.flush();
+        return team;
+    }
 
     /**
-     * Sets up test data before each test method execution.
-     * Ensures a clean database and inserts fresh data for consistent tests.
+     * Creates and persists a unique TeamMember.
      */
-    @BeforeEach
-    void setUp() {
-        isMemberOfRepository.deleteAllInBatch();
-        teamRepository.deleteAllInBatch();
-        authInfoRepository.deleteAllInBatch();
-        teamMemberRepository.deleteAllInBatch();
+    private TeamMember createUniqueTeamMember() {
+        TeamMember teamMember = new TeamMember("TestUser" + System.nanoTime(),
+                "test" + System.nanoTime() + "@example.com", "defaultpw");
+        entityManager.persist(teamMember);
+        entityManager.flush();
+        return teamMember;
+    }
 
-        // Create and save a test Team
-        testTeam = new Team();
-        testTeam.setTeamName("Test Team " + System.nanoTime());
-        testTeam = teamRepository.save(testTeam);
-
-        // Create and save a test TeamMember
-        testMember = new TeamMember("TestUser" + System.nanoTime(), "test" + System.nanoTime() + "@example.com","defaultpw");
-        testMember = teamMemberRepository.save(testMember);
-
-        // Create and save an IsMemberOf entry to associate the team member with the team
-        isMemberOf = new IsMemberOf();
-        isMemberOf.setTeam(testTeam);
-        isMemberOf.setTeamMember(testMember);
-        isMemberOf = isMemberOfRepository.save(isMemberOf);
+    /**
+     * Creates and persists a unique IsMemberOf relationship.
+     */
+    private IsMemberOf createUniqueMembership(Team team, TeamMember teamMember) {
+        IsMemberOf isMemberOf = new IsMemberOf();
+        isMemberOf.setTeam(team);
+        isMemberOf.setTeamMember(teamMember);
+        entityManager.persist(isMemberOf);
+        entityManager.flush();
+        return isMemberOf;
     }
 
     /**
@@ -71,11 +77,15 @@ public class IsMemberOfRepositoryTest {
      */
     @Test
     void testFindMembersByTeamId() {
-        List<IsMemberOf> members = isMemberOfRepository.findMembersByTeamId(testTeam.getTeamId());
+        Team team = createUniqueTeam();
+        TeamMember teamMember = createUniqueTeamMember();
+        createUniqueMembership(team, teamMember);
+
+        List<IsMemberOf> members = isMemberOfRepository.findMembersByTeamId(team.getTeamId());
 
         assertNotNull(members);
         assertEquals(1, members.size());
-        assertEquals(testMember.getAccountId(), members.get(0).getTeamMember().getAccountId());
+        assertEquals(teamMember.getAccountId(), members.get(0).getTeamMember().getAccountId());
     }
 
     /**
@@ -93,8 +103,12 @@ public class IsMemberOfRepositoryTest {
      */
     @Test
     void testExistsByTeamMemberAndTeam() {
+        Team team = createUniqueTeam();
+        TeamMember teamMember = createUniqueTeamMember();
+        createUniqueMembership(team, teamMember);
+
         boolean exists = isMemberOfRepository.existsByTeamMemberAccountIdAndTeamTeamId(
-            testMember.getAccountId(), testTeam.getTeamId());
+                teamMember.getAccountId(), team.getTeamId());
         assertTrue(exists);
     }
 
@@ -112,7 +126,11 @@ public class IsMemberOfRepositoryTest {
      */
     @Test
     void testFindByTeamMemberAndTeam() {
-        Optional<IsMemberOf> foundMembership = isMemberOfRepository.findByTeamMemberAndTeam(testMember, testTeam);
+        Team team = createUniqueTeam();
+        TeamMember teamMember = createUniqueTeamMember();
+        IsMemberOf isMemberOf = createUniqueMembership(team, teamMember);
+
+        Optional<IsMemberOf> foundMembership = isMemberOfRepository.findByTeamMemberAndTeam(teamMember, team);
         assertTrue(foundMembership.isPresent());
         assertEquals(isMemberOf.getId(), foundMembership.get().getId());
     }
@@ -122,13 +140,18 @@ public class IsMemberOfRepositoryTest {
      */
     @Test
     void testDeleteMembership() {
-        isMemberOfRepository.delete(isMemberOf);
+        Team team = createUniqueTeam();
+        TeamMember teamMember = createUniqueTeamMember();
+        IsMemberOf isMemberOf = createUniqueMembership(team, teamMember);
 
-        Optional<IsMemberOf> deletedMembership = isMemberOfRepository.findByTeamMemberAndTeam(testMember, testTeam);
+        isMemberOfRepository.delete(isMemberOf);
+        entityManager.flush();
+
+        Optional<IsMemberOf> deletedMembership = isMemberOfRepository.findByTeamMemberAndTeam(teamMember, team);
         assertFalse(deletedMembership.isPresent());
 
         boolean exists = isMemberOfRepository.existsByTeamMemberAccountIdAndTeamTeamId(
-            testMember.getAccountId(), testTeam.getTeamId());
+                teamMember.getAccountId(), team.getTeamId());
         assertFalse(exists);
     }
 }
