@@ -146,8 +146,7 @@ function TeamTasks(){
             dataToUse={setUpDataComplete(fakeData)}
             headersAndAccessors={headerAndAccessorsComplete}
             />
-            <h2>Team 1 Name</h2>
-            <p>Description of what the team is working on. idk?</p>
+            
 
             <h2>Team Members</h2>
             <div className="team-list">
