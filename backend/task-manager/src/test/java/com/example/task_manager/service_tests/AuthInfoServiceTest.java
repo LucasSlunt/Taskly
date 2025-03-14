@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,11 +15,7 @@ import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.repository.AdminRepository;
 import com.example.task_manager.repository.AuthInfoRepository;
-import com.example.task_manager.repository.IsAssignedRepository;
-import com.example.task_manager.repository.IsMemberOfRepository;
-import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
-import com.example.task_manager.repository.TeamRepository;
 import com.example.task_manager.service.AuthInfoService;
 
 @SpringBootTest
@@ -32,115 +27,95 @@ public class AuthInfoServiceTest {
     private AuthInfoService authInfoService;
 
     @Autowired
-	private AdminRepository adminRepository;
+    private AdminRepository adminRepository;
 
-	@Autowired
-	private TeamMemberRepository teamMemberRepository;
+    @Autowired
+    private TeamMemberRepository teamMemberRepository;
 
-	@Autowired
-	private TaskRepository taskRepository;
+    @Autowired
+    private AuthInfoRepository authInfoRepository;
 
-	@Autowired
-	private TeamRepository teamRepository;
+    private TeamMember createUniqueTeamMember() {
+        return teamMemberRepository.save(new TeamMember(
+            "TeamMember_" + System.nanoTime(),
+            "team_member" + System.nanoTime() + "@secure.com",
+            "defaultpw"
+        ));
+    }
 
-	@Autowired
-	private IsAssignedRepository isAssignedRepository;
-
-	@Autowired
-	private IsMemberOfRepository isMemberOfRepository;
-	
-	@Autowired
-	private AuthInfoRepository authInfoRepository;
-
-    private TeamMember teamMember;
-    private Admin admin;
-
-    @BeforeEach
-	void setUp() {
-        isAssignedRepository.deleteAll();
-		isMemberOfRepository.deleteAll();
-		taskRepository.deleteAll();
-		teamMemberRepository.deleteAll();
-		authInfoRepository.deleteAll();
-		adminRepository.deleteAll();
-		teamRepository.deleteAll();
-
-        teamMember = new TeamMember("Authentication Tester", "auth_test" + System.nanoTime() + "@secure.com","defaultpw");
-        teamMember = teamMemberRepository.save(teamMember);
-         
-        admin = new Admin("Admin User", "admin" + System.nanoTime() + "@secure.com", "adminpw");
-        admin = teamMemberRepository.save(admin);
+    private Admin createUniqueAdmin() {
+        return adminRepository.save(new Admin(
+            "Admin_" + System.nanoTime(),
+            "admin_" + System.nanoTime() + "@secure.com",
+            "adminpw"
+        ));
     }
 
     @Test
     void testHashPassword() {
-        //check to see if the password is hashed correctly
         String expectedHash = "B0F900221C7BA3474D782D4FE34FC165CE98414F66F2AC74DAEAA08A1D80B5C6";
-        String generatedHash = AuthInfoService.hashPassword("awesomeSecurePassword123","sixteenByteSalt!");
-        assertEquals(expectedHash,generatedHash);
+        String generatedHash = AuthInfoService.hashPassword("awesomeSecurePassword123", "sixteenByteSalt!");
+        assertEquals(expectedHash, generatedHash);
     }
 
     @Test
     void testGenerateSalt() {
         String salt = AuthInfoService.generateSalt();
-        assertTrue(salt.length() == 16);
+        assertEquals(16, salt.length());
     }
 
-    @Test 
-    void testSaltsAreUnique(){
+    @Test
+    void testSaltsAreUnique() {
         String salt1 = AuthInfoService.generateSalt();
         String salt2 = AuthInfoService.generateSalt();
-        assertFalse(salt1.equals(salt2));
+        assertNotEquals(salt1, salt2);
     }
 
     @Test
     void testApproveLogin() {
-        int teamMemberId = teamMember.getAccountId();
-        assertTrue(authInfoService.approveLogin(teamMemberId,"defaultpw"));
+        TeamMember teamMember = createUniqueTeamMember();
+        assertTrue(authInfoService.approveLogin(teamMember.getAccountId(), "defaultpw"));
     }
 
     @Test
     void testApproveLoginWithIncorrectPassword() {
-        int teamMemberId = teamMember.getAccountId();
-        assertFalse(authInfoService.approveLogin(teamMemberId,"wrongpw"));
+        TeamMember teamMember = createUniqueTeamMember();
+        assertFalse(authInfoService.approveLogin(teamMember.getAccountId(), "wrongpw"));
     }
 
-    //team member is not an admin
     @Test
     void testAuthenticateUserWithSuccess() {
-        List<TeamMember> allMembers = teamMemberRepository.findAll();
-
+        TeamMember teamMember = createUniqueTeamMember();
         AuthInfoDTO response = authInfoService.authenticateUser(teamMember.getAccountId(), "defaultpw");
 
         assertNotNull(response);
         assertEquals(teamMember.getAccountId(), response.getAccountId());
         assertEquals(teamMember.getUserName(), response.getUserName());
-        assertFalse(response.getIsAdmin()); // Regular member, not admin
+        assertFalse(response.getIsAdmin());
     }
 
-    //wrong password put in
     @Test
     void testAuthenticateUser_Fail_WrongPassword() {
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            authInfoService.authenticateUser(teamMember.getAccountId(), "wrongpw");
-        });
+        TeamMember teamMember = createUniqueTeamMember();
+        Exception exception = assertThrows(RuntimeException.class, () -> 
+            authInfoService.authenticateUser(teamMember.getAccountId(), "wrongpw")
+        );
 
         assertTrue(exception.getMessage().contains("Invalid Credentials"));
     }
 
-    //non existent user
     @Test
     void testAuthenticateUser_Fail_NonExistentUser() {
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            authInfoService.authenticateUser(999999, "somepassword");
-        });
+        Exception exception = assertThrows(RuntimeException.class, () -> 
+            authInfoService.authenticateUser(999999, "somepassword")
+        );
 
         assertTrue(exception.getMessage().contains("Team Member not found"));
     }
 
-    //should return true with a real admin
     @Test
     void testAuthenticateUser_Admin() {
+        Admin admin = createUniqueAdmin();
         AuthInfoDTO response = authInfoService.authenticateUser(admin.getAccountId(), "adminpw");
 
         assertNotNull(response);
@@ -149,9 +124,9 @@ public class AuthInfoServiceTest {
         assertTrue(response.getIsAdmin());
     }
 
-    //should return false with a member that is not an admin
     @Test
     void testAuthenticateUser_NonAdmin() {
+        TeamMember teamMember = createUniqueTeamMember();
         AuthInfoDTO response = authInfoService.authenticateUser(teamMember.getAccountId(), "defaultpw");
 
         assertNotNull(response);

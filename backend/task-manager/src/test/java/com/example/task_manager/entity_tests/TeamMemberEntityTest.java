@@ -1,7 +1,6 @@
 package com.example.task_manager.entity_tests;
 
 import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -20,234 +19,202 @@ import com.example.task_manager.entity.TeamMember;
 import jakarta.persistence.PersistenceException;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) //tells spring to NOT use the database in memory (so we can test with h2)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class TeamMemberEntityTest {
 
-	@Autowired
-	private TestEntityManager entityManager;
+    @Autowired
+    private TestEntityManager entityManager;
 
-	/**
-     * Tests if a TeamMember entity can be persisted and retrieved correctly.
-     * Ensures that the saved member retains the correct name and email.
-     */
-	@Test
-	void testTeamMemberPersistence() {
-		TeamMember teamMember = new TeamMember("John Doe", "john.doe@example.com","defaultpw"); //creating team member object which will be saved to the database
+    private TeamMember createUniqueTeamMember() {
+        return new TeamMember("User_" + System.nanoTime(), "user_" + System.nanoTime() + "@example.com", "defaultpw");
+    }
 
-		TeamMember savedMember = entityManager.persistFlushFind(teamMember); //saves teamMember entity to the database, flushes changes, then checks if it was saved to database properly
+    private Team createUniqueTeam() {
+        return new Team("Team_" + System.nanoTime(), null);
+    }
 
-		assertNotNull(savedMember.getAccountId());
-		assertEquals("John Doe", savedMember.getUserName());
-		assertEquals("john.doe@example.com", savedMember.getUserEmail());
-	}
+    private Task createUniqueTask(Team team) {
+        return new Task("Task_" + System.nanoTime(), "Description", team, false, "Open", LocalDate.now());
+    }
 
-	/**
-     * Tests whether the unique constraint on the user name is enforced.
-     * Ensures that attempting to save two TeamMembers with the same name results in a PersistenceException.
-     */
-	@Test
-	void testUniqueNameConstraint() {
-		TeamMember teamMember_1 = new TeamMember("Unique Name", "unique_1@example.com","defaultpw");
-		entityManager.persist(teamMember_1);
-		entityManager.flush();
+    @Test
+    void testTeamMemberPersistence() {
+        TeamMember teamMember = createUniqueTeamMember();
+        TeamMember savedMember = entityManager.persistFlushFind(teamMember);
 
-		TeamMember teamMember_2 = new TeamMember("Unique Name", "unique_2@example.com","defaultpw");
+        assertNotNull(savedMember.getAccountId());
+        assertEquals(teamMember.getUserName(), savedMember.getUserName());
+        assertEquals(teamMember.getUserEmail(), savedMember.getUserEmail());
+    }
 
-		Exception e = assertThrows(PersistenceException.class, () -> {
-			entityManager.persist(teamMember_2);
-			entityManager.flush();
-		});
+    @Test
+    void testUniqueNameConstraint() {
+        TeamMember member1 = createUniqueTeamMember();
+        entityManager.persist(member1);
+        entityManager.flush();
 
-		assertNotNull(e);
-	}
+        TeamMember member2 = new TeamMember(member1.getUserName(), "unique_" + System.nanoTime() + "@example.com", "defaultpw");
 
-	/**
-     * Tests whether the unique constraint on the user email is enforced.
-     * Ensures that attempting to save two TeamMembers with the same email results in a PersistenceException.
-     */
-	@Test
-	void testUniqueEmailConstraint() {
-		TeamMember member_1 = new TeamMember("Unique One", "unique@example.com","defaultpw");
-		entityManager.persist(member_1);
-		entityManager.flush();
+        Exception e = assertThrows(PersistenceException.class, () -> {
+            entityManager.persist(member2);
+            entityManager.flush();
+        });
 
-		TeamMember member_2 = new TeamMember("Unique Two", "unique@example.com","defaultpw");
+        assertNotNull(e);
+    }
 
-		Exception e = assertThrows(PersistenceException.class, () -> {
-			entityManager.persist(member_2);
-			entityManager.flush();
-		});
+    @Test
+    void testUniqueEmailConstraint() {
+        TeamMember member1 = createUniqueTeamMember();
+        entityManager.persist(member1);
+        entityManager.flush();
 
-		assertNotNull(e);
-	}
+        TeamMember member2 = new TeamMember("Different_" + System.nanoTime(), member1.getUserEmail(), "defaultpw");
 
-	/**
-     * Tests the relationship between TeamMember and AuthInfo.
-     * Ensures that when a TeamMember is persisted, its associated AuthInfo is also persisted correctly.
-     */
-	@Test
-	void testAuthInfoRelation() {
-		TeamMember teamMember = new TeamMember("Auth User", "auth@example.com","defaultpw");
-		AuthInfo authInfo = new AuthInfo();
+        Exception e = assertThrows(PersistenceException.class, () -> {
+            entityManager.persist(member2);
+            entityManager.flush();
+        });
 
-		authInfo.setHashedPassword("secure_password");
-		authInfo.setSalt("random_salt");
-		authInfo.setTeamMember(teamMember);
+        assertNotNull(e);
+    }
 
-		teamMember.setAuthInfo(authInfo);
+    @Test
+    void testAuthInfoRelation() {
+        TeamMember teamMember = createUniqueTeamMember();
+        AuthInfo authInfo = new AuthInfo("hashed_password", "random_salt", teamMember);
+        teamMember.setAuthInfo(authInfo);
 
-		TeamMember savedMember = entityManager.persistFlushFind(teamMember);
+        TeamMember savedMember = entityManager.persistFlushFind(teamMember);
 
-		assertNotNull(savedMember.getAuthInfo());
-		assertEquals("secure_password", savedMember.getAuthInfo().getHashedPassword());
-	}
+        assertNotNull(savedMember.getAuthInfo());
+        assertEquals("hashed_password", savedMember.getAuthInfo().getHashedPassword());
+    }
 
-	/**
-     * Tests the relationship between TeamMember and IsMemberOf.
-     * Ensures that when a TeamMember joins a Team, the association is correctly established.
-     */
-	@Test
-	void testIsMemberOfRelation() {
-		Team team = new Team();
-		team.setTeamName("Test Team Name");
-		entityManager.persist(team);
-		entityManager.flush();
+    @Test
+    void testIsMemberOfRelation() {
+        Team team = createUniqueTeam();
+        entityManager.persist(team);
+        entityManager.flush();
 
-		TeamMember teamMember = new TeamMember("John Doe", "john@example.com","defaultpw");
-		entityManager.persist(teamMember);
-		entityManager.flush();
+        TeamMember teamMember = createUniqueTeamMember();
+        entityManager.persist(teamMember);
+        entityManager.flush();
 
-		IsMemberOf isMemberOf = new IsMemberOf();
-		isMemberOf.setTeamMember(teamMember);
-		isMemberOf.setTeam(team);
+        IsMemberOf isMemberOf = new IsMemberOf(teamMember, team);
+        entityManager.persist(isMemberOf);
+        entityManager.flush();
 
-		entityManager.persist(isMemberOf);
-		entityManager.flush();
+        teamMember.getTeams().add(isMemberOf);
 
-		teamMember.getTeams().add(isMemberOf);
+        TeamMember savedMember = entityManager.persistFlushFind(teamMember);
+        assertEquals(1, savedMember.getTeams().size());
+    }
 
-		TeamMember savedMember = entityManager.persistFlushFind(teamMember);
-		assertEquals(1, savedMember.getTeams().size());
-	}
+    @Test
+    void testIsAssignedTasksRelation() {
+        Team team = createUniqueTeam();
+        entityManager.persist(team);
+        entityManager.flush();
 
-	/**
-     * Tests the relationship between TeamMember and IsAssigned.
-     * Ensures that when a task is assigned to a TeamMember, the assignment is properly stored and retrieved.
-     */
-	@Test
-	void testIsAssignedTasksRelation() {
-		TeamMember teamMember = new TeamMember("User Task", "user@example.com","defaultpw");
-		entityManager.persist(teamMember);
-		entityManager.flush();
+        Task task = createUniqueTask(team);
+        entityManager.persist(task);
+        entityManager.flush();
 
-		Team team = new Team();
-		team.setTeamName("Test Team");
-		entityManager.persist(team);
-		entityManager.flush();
-		
-		Task task = new Task("Test Task Title", "Test Description", team, false, "Open", LocalDate.now());
-		entityManager.persist(task);
-		entityManager.flush();
+        TeamMember teamMember = createUniqueTeamMember();
+        entityManager.persist(teamMember);
+        entityManager.flush();
 
-		IsAssigned assignedTask = new IsAssigned();
-		assignedTask.setTeamMember(teamMember);
-		assignedTask.setTeam(team);
-		assignedTask.setTask(task);
+        IsAssigned assignedTask = new IsAssigned(task, teamMember, team);
+        entityManager.persist(assignedTask);
+        entityManager.flush();
 
-		entityManager.persist(assignedTask);
-		entityManager.flush();
+        teamMember.getAssignedTasks().add(assignedTask);
+        TeamMember savedMember = entityManager.persistFlushFind(teamMember);
 
-		teamMember.getAssignedTasks().add(assignedTask);
+        assertEquals(1, savedMember.getAssignedTasks().size());
+    }
 
-		TeamMember savedMember = entityManager.persistFlushFind(teamMember);
+    @Test
+    void testDeleteTeamMemberRemovesAuthInfoButNotTeamsOrTasks() {
+        Team team = new Team("Team_" + System.nanoTime(), null);
+        entityManager.persist(team);
+        entityManager.flush();
 
-		assertEquals(1, savedMember.getAssignedTasks().size());
-	}
+        Task task = new Task("Task_" + System.nanoTime(), "Description", team, false, "Open", LocalDate.now());
+        entityManager.persist(task);
+        entityManager.flush();
 
-	/*
-	 * Deleting TeamMember removes associated AuthInfo but not Team or Tasks
-	 */
-	@Test
-	void testDeleteTeamMemberRemovesAuthInfoButNotTeamsOrTasks() {
-		Team team = new Team("Test Team", null);
-		entityManager.persist(team);
-		entityManager.flush();
+        TeamMember teamMember = new TeamMember(
+            "User_" + System.nanoTime(),
+            "user_" + System.nanoTime() + "@example.com",
+            "defaultpw"
+        );
+        entityManager.persist(teamMember);
+        entityManager.flush();
 
-		Task task = new Task("Test Task", "Description", team, false, "Open", LocalDate.now());
-		entityManager.persist(task);
-		entityManager.flush();
+        AuthInfo authInfo = teamMember.getAuthInfo();
+        assertNotNull(authInfo);
+        assertEquals(teamMember.getAccountId(), authInfo.getAccountId());
 
-		TeamMember teamMember = new TeamMember("Removable Member", "removable@example.com","defaultpw");
-		AuthInfo authInfo = new AuthInfo("hashed_password", "random_salt", teamMember);
-		teamMember.setAuthInfo(authInfo);
+        IsMemberOf isMember = new IsMemberOf(teamMember, team);
+        IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
 
-		entityManager.persist(teamMember);
-		entityManager.flush();
+        entityManager.persist(isMember);
+        entityManager.persist(isAssigned);
+        entityManager.flush();
 
-		IsMemberOf isMember = new IsMemberOf(teamMember, team);
-		IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
-		
-		entityManager.persist(isMember);
-		entityManager.persist(isAssigned);
-		entityManager.flush();
+        entityManager.remove(teamMember);
 
-		entityManager.remove(teamMember);
+        assertNull(entityManager.find(AuthInfo.class, teamMember.getAccountId()));
+        assertNotNull(entityManager.find(Task.class, task.getTaskId()));
+        assertNotNull(entityManager.find(Team.class, team.getTeamId()));
+    }
 
-		assertNull(entityManager.find(AuthInfo.class, authInfo.getAccountId())); // AuthInfo should be removed
-		assertNotNull(entityManager.find(Task.class, task.getTaskId())); // Task should remain
-		assertNotNull(entityManager.find(Team.class, team.getTeamId())); // Team should remain
-	}
+    @Test
+    void testTeamMemberLeavesTeamWithoutDeletion() {
+        Team team = createUniqueTeam();
+        entityManager.persist(team);
+        entityManager.flush();
 
-	/*
-	 * TeamMember can be removed from Team without deleting Team
-	 */
-	@Test
-	void testTeamMemberLeavesTeamWithoutDeletion() {
-		Team team = new Team("Leave Test Team", null);
-		entityManager.persist(team);
-		entityManager.flush();
+        TeamMember teamMember = createUniqueTeamMember();
+        entityManager.persist(teamMember);
+        entityManager.flush();
 
-		TeamMember teamMember = new TeamMember("Leaving Member", "leave@example.com","defaultpw");
-		entityManager.persist(teamMember);
-		entityManager.flush();
+        IsMemberOf isMember = new IsMemberOf(teamMember, team);
+        entityManager.persist(isMember);
+        entityManager.flush();
 
-		IsMemberOf isMember = new IsMemberOf(teamMember, team);
-		entityManager.persist(isMember);
-		entityManager.flush();
+        entityManager.remove(isMember);
+        entityManager.flush();
 
-		entityManager.remove(isMember);
-		entityManager.flush();
+        assertNull(entityManager.find(IsMemberOf.class, isMember.getId()));
+        assertNotNull(entityManager.find(TeamMember.class, teamMember.getAccountId()));
+    }
 
-		assertNull(entityManager.find(IsMemberOf.class, isMember.getId())); // Membership should be removed
-		assertNotNull(entityManager.find(TeamMember.class, teamMember.getAccountId())); // TeamMember should remain
-	}
+    @Test
+    void testDeletingTeamMemberRemovesAssignedTasks() {
+        Team team = createUniqueTeam();
+        entityManager.persist(team);
+        entityManager.flush();
 
-	/*
-	 * Deleting TeamMember removes all IsAssigned associations, but does not delete the tasks
-	 */
-	@Test
-	void testDeletingTeamMemberRemovesAssignedTasks() {
-		Team team = new Team("Assignment Test Team", null);
-		entityManager.persist(team);
-		entityManager.flush();
+        Task task = createUniqueTask(team);
+        entityManager.persist(task);
+        entityManager.flush();
 
-		Task task = new Task("Test Task", "Description", team, false, "Open", LocalDate.now());
-		entityManager.persist(task);
-		entityManager.flush();
+        TeamMember teamMember = createUniqueTeamMember();
+        entityManager.persist(teamMember);
+        entityManager.flush();
 
-		TeamMember teamMember = new TeamMember("Assigned Member", "assigned@example.com","defaultpw");
-		entityManager.persist(teamMember);
-		entityManager.flush();
+        IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
+        teamMember.getAssignedTasks().add(isAssigned);
+        
+        entityManager.persist(isAssigned);
+        entityManager.flush();
 
-		IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
+        entityManager.remove(teamMember);
+        entityManager.flush();
 
-		teamMember.getAssignedTasks().add(isAssigned);
-		entityManager.persist(isAssigned);
-		entityManager.flush();
-
-		entityManager.remove(teamMember);
-		entityManager.flush();
-
-		assertNull(entityManager.find(IsAssigned.class, isAssigned.getId()));
-	}
+        assertNull(entityManager.find(IsAssigned.class, isAssigned.getId()));
+    }
 }

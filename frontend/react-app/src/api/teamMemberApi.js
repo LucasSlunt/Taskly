@@ -1,12 +1,13 @@
 const BASE_URL = "http://localhost:8080/api/tasks";
 
 //Create a task
-export const createTask = async (title, description, isLocked, status, teamId) => {
+export const createTask = async (title, description, isLocked, status, dueDate, teamId) => {
     try {
+        console.log("Sending this: ", JSON.stringify({title, description, isLocked, status, dueDate, teamId}))
         const response = await fetch(`${BASE_URL}`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({title, description, isLocked, status, teamId})
+            body: JSON.stringify({title, description, isLocked, status, dueDate, teamId})
         });
 
         if (!response.ok) {

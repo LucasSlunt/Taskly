@@ -2,7 +2,6 @@ package com.example.task_manager.entity_tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -21,38 +20,24 @@ import jakarta.transaction.Transactional;
 public class AuthInfoEntityTest {
 
     @Autowired
-    private TestEntityManager entMan;
+    private TestEntityManager entityManager;
 
-    @BeforeEach
-	void cleanDatabase() {
-        entMan.getEntityManager().createQuery("DELETE FROM AuthInfo").executeUpdate();
-		entMan.getEntityManager().createQuery("DELETE FROM IsAssigned").executeUpdate();
-		entMan.getEntityManager().createQuery("DELETE FROM Task").executeUpdate();
-		entMan.getEntityManager().createQuery("DELETE FROM Team").executeUpdate();
-		entMan.getEntityManager().createQuery("DELETE FROM TeamMember").executeUpdate();
-		entMan.flush();
-	}
+    private TeamMember createUniqueTeamMember() {
+        return new TeamMember("User_" + System.nanoTime(), 
+            "user_" + System.nanoTime() + "@example.com", "password123");
+    }
 
     /**
-    * Tests if an AuthInfo entity can be persisted and retrieved correctly.
-    * Ensures that the saved AuthInfo retains the correct account ID, hashed password, and salt.
-    */
+     * Tests if an AuthInfo entity can be persisted and retrieved correctly.
+     * Ensures that the saved AuthInfo retains the correct account ID, hashed password, and salt.
+     */
     @Test
     void testAuthInfoPersistence() {
-        TeamMember teamMember = new TeamMember(
-            "TeamMember" + System.nanoTime(), 
-            "team_member" + System.nanoTime() + "@example.com",
-            "passwordplease"
-        );
-        //teamMember.setAccountId(1);
-        entMan.persist(teamMember);
-        entMan.flush();
+        TeamMember teamMember = createUniqueTeamMember();
+        entityManager.persist(teamMember);
+        entityManager.flush();
 
-        AuthInfo authInfo = teamMember.getAuthInfo();
-        entMan.persist(authInfo);
-        entMan.flush();
-
-        AuthInfo savedAuthInfo = entMan.find(AuthInfo.class, teamMember.getAccountId());
+        AuthInfo savedAuthInfo = entityManager.find(AuthInfo.class, teamMember.getAccountId());
 
         assertNotNull(savedAuthInfo);
         assertEquals(teamMember.getAccountId(), savedAuthInfo.getAccountId());
@@ -66,11 +51,11 @@ public class AuthInfoEntityTest {
      */
     @Test
     void testAuthInfoFailsWithoutTeamMember() {
-        AuthInfo authInfo = new AuthInfo("hashed_password2", "random_salt", null);
+        AuthInfo authInfo = new AuthInfo("hashed_password_" + System.nanoTime(), "random_salt", null);
 
         Exception e = assertThrows(PersistenceException.class, () -> {
-            entMan.persist(authInfo);
-            entMan.flush();
+            entityManager.persist(authInfo);
+            entityManager.flush();
         });
 
         assertNotNull(e);
@@ -82,19 +67,18 @@ public class AuthInfoEntityTest {
      */
     @Test
     void testAuthInfoIsDeletedWithTeamMember() {
-        TeamMember teamMember = new TeamMember("Auth User", "auth@example.com","password2");
-        entMan.persist(teamMember);
-        entMan.flush();
+        TeamMember teamMember = createUniqueTeamMember();
+        entityManager.persist(teamMember);
+        entityManager.flush();
 
         AuthInfo authInfo = teamMember.getAuthInfo();
-        teamMember.setAuthInfo(authInfo);
-        entMan.persist(authInfo);
-        entMan.flush();
+        entityManager.persist(authInfo);
+        entityManager.flush();
         
-        entMan.remove(teamMember);
-        entMan.flush();
+        entityManager.remove(teamMember);
+        entityManager.flush();
 
-        AuthInfo deletedAuthInfo = entMan.find(AuthInfo.class, authInfo.getAccountId());
+        AuthInfo deletedAuthInfo = entityManager.find(AuthInfo.class, authInfo.getAccountId());
         assertNull(deletedAuthInfo);
     }
 
@@ -103,22 +87,15 @@ public class AuthInfoEntityTest {
      */
     @Test
     void testAuthInfoBelongsToCorrectTeamMember() {
-        TeamMember member1 = new TeamMember("User1", "user1@example.com","user1pw");
-        TeamMember member2 = new TeamMember("User2", "user2@example.com","user2pw");
+        TeamMember member1 = createUniqueTeamMember();
+        TeamMember member2 = createUniqueTeamMember();
 
-        entMan.persist(member1);
-        entMan.persist(member2);
-        entMan.flush();
+        entityManager.persist(member1);
+        entityManager.persist(member2);
+        entityManager.flush();
 
-        AuthInfo authInfo1 = member1.getAuthInfo();
-        AuthInfo authInfo2 = member2.getAuthInfo();
-
-        entMan.persist(authInfo1);
-        entMan.persist(authInfo2);
-        entMan.flush();
-
-        AuthInfo retrievedAuthInfo1 = entMan.find(AuthInfo.class, member1.getAccountId());
-        AuthInfo retrievedAuthInfo2 = entMan.find(AuthInfo.class, member2.getAccountId());
+        AuthInfo retrievedAuthInfo1 = entityManager.find(AuthInfo.class, member1.getAccountId());
+        AuthInfo retrievedAuthInfo2 = entityManager.find(AuthInfo.class, member2.getAccountId());
 
         assertNotNull(retrievedAuthInfo1);
         assertNotNull(retrievedAuthInfo2);

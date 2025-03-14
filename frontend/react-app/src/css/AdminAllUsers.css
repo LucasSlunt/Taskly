@@ -1,0 +1,9 @@
+.page{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: #5d5d81;
+    margin: 0 0;
+    top: 0;
+    left: 0;
+}

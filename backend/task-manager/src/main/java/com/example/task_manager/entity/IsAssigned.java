@@ -8,16 +8,16 @@ public class IsAssigned {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "taskId", nullable = true)
     private Task task;
 
-    @ManyToOne
-    @JoinColumn(name = "accountId")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "accountId", nullable = false)
     private TeamMember teamMember;
 
-    @ManyToOne
-    @JoinColumn(name = "teamId")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "teamId", nullable = false)
     private Team team;
 
     public IsAssigned() {}
