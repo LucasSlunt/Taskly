@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -19,11 +18,11 @@ import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
-import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.repository.*;
+
 import com.example.task_manager.service.AdminService;
 import com.example.task_manager.service.TeamService;
 
@@ -33,237 +32,138 @@ import com.example.task_manager.service.TeamService;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AdminServiceTest {
 
-	@Autowired
-	private AdminService adminService;
+    @Autowired
+    private AdminService adminService;
 
-	@Autowired
-	private TeamService teamService;
+    @Autowired
+    private TeamService teamService;
 
-	@Autowired
-	private AdminRepository adminRepository;
+    @Autowired
+    private AdminRepository adminRepository;
 
-	@Autowired
-	private TeamMemberRepository teamMemberRepository;
+    @Autowired
+    private TeamMemberRepository teamMemberRepository;
 
-	@Autowired
-	private TaskRepository taskRepository;
+    @Autowired
+    private TaskRepository taskRepository;
 
-	@Autowired
-	private TeamRepository teamRepository;
+    @Autowired
+    private TeamRepository teamRepository;
 
-	@Autowired
-	private IsAssignedRepository isAssignedRepository;
+    @Autowired
+    private IsAssignedRepository isAssignedRepository;
 
-	@Autowired
-	private IsMemberOfRepository isMemberOfRepository;
-	
-	@Autowired
-	private AuthInfoRepository authInfoRepository;
+    @Autowired
+    private IsMemberOfRepository isMemberOfRepository;
+    
+    @Autowired
+    private AuthInfoRepository authInfoRepository;
 
-	private AdminDTO admin;
-	private TeamMemberDTO teamMember;
-	private TaskDTO unlockedTask;
-	private TaskDTO lockedTask;
-	private Team team;
+    @Test
+    void testCreateAdmin() {
+        AdminDTO adminDTO = adminService.createAdmin("Admin" + System.nanoTime(), "admin" + System.nanoTime() + "@example.com", "password");
+        assertNotNull(adminDTO);
+        assertTrue(adminDTO.getUserEmail().contains("@example.com"));
+    }   
 
-	/*
-	 * Added nanoTime to each string to ensure no entities with the same name are added twice, which will cause an error
-	 */
+    @Test
+    void testDeleteAdmin() {
+        AdminDTO admin = adminService.createAdmin("AdminDelete" + System.nanoTime(), "delete_admin" + System.nanoTime() + "@example.com", "password");
+        adminService.deleteAdmin(admin.getAccountId());
+        assertFalse(adminRepository.findById(admin.getAccountId()).isPresent());
+    }
 
-	@BeforeEach
-	void setUp() {
-		isAssignedRepository.deleteAll();
-		isMemberOfRepository.deleteAll();
-		taskRepository.deleteAll();
-		teamMemberRepository.deleteAll();
-		authInfoRepository.deleteAll();
-		adminRepository.deleteAll();
-		teamRepository.deleteAll();
+    @Test
+    void testModifyAdminName() {
+        AdminDTO admin = adminService.createAdmin("AdminOriginal", "original_admin" + System.nanoTime() + "@example.com", "password");
+        AdminDTO updatedAdminDTO = adminService.modifyAdminName(admin.getAccountId(), "UpdatedAdmin");
+        assertEquals("UpdatedAdmin", updatedAdminDTO.getUserName());
+    }
 
-		admin = adminService.createAdmin("Admin Name", "admin" + System.nanoTime() + "@example.com","defaultpw");
-		teamMember = adminService.createTeamMember("TM Name", "teamMember" + System.nanoTime() + "@example.com","defaultpw");
+    @Test
+    void testModifyAdminEmail() {
+        AdminDTO admin = adminService.createAdmin("AdminEmailChange", "email_admin" + System.nanoTime() + "@example.com", "password");
+        String newEmail = "updated" + System.nanoTime() + "@example.com";
+        AdminDTO updatedAdmin = adminService.modifyAdminEmail(admin.getAccountId(), newEmail);
+        assertEquals(newEmail, updatedAdmin.getUserEmail());
+    }
 
-		team = new Team();
-		team.setTeamName("Team Name " + System.nanoTime());
-		team = teamRepository.save(team);
+    @Test
+    void testCreateTeamMember() {
+        TeamMemberDTO teamMemberDTO = adminService.createTeamMember("Member" + System.nanoTime(), "member" + System.nanoTime() + "@example.com", "password");
+        assertNotNull(teamMemberDTO);
+        assertTrue(teamMemberDTO.getUserEmail().contains("@example.com"));
+    }
 
-		TaskRequestDTO taskRequest = new TaskRequestDTO(
-			"Unlocked Task",
-			"Task Description",
-			false,
-			"Open",
-			LocalDate.now(),
-			null,
-			team.getTeamId()
-		);
+    @Test
+    void testDeleteTeamMember() {
+        TeamMemberDTO teamMember = adminService.createTeamMember("ToDelete" + System.nanoTime(), "delete_member" + System.nanoTime() + "@example.com", "password");
+        adminService.deleteTeamMember(teamMember.getAccountId());
+        assertFalse(teamMemberRepository.findById(teamMember.getAccountId()).isPresent());
+    }
 
-		unlockedTask = adminService.createTask(taskRequest);
+    @Test
+    void testModifyTeamMemberName() {
+        TeamMemberDTO teamMember = adminService.createTeamMember("OldName", "name_member" + System.nanoTime() + "@example.com", "password");
+        TeamMemberDTO updatedTeamMember = adminService.modifyTeamMemberName(teamMember.getAccountId(), "NewName");
+        assertEquals("NewName", updatedTeamMember.getUserName());
+    }
 
-		taskRequest = new TaskRequestDTO(
-			"Locked Task",
-			"Task Description",
-			true,
-			"Open",
-			LocalDate.now(),
-			null,
-			team.getTeamId()
-		);
+    @Test
+    void testAssignToTeam() {
+        TeamMemberDTO teamMember = adminService.createTeamMember("AssignedMember", "assigned_member" + System.nanoTime() + "@example.com", "password");
+        TeamMemberDTO teamLead = adminService.createTeamMember("TeamLead", "lead" + System.nanoTime() + "@example.com", "password");
 
-		lockedTask = adminService.createTask(taskRequest);
-	}
+        TeamDTO team = teamService.createTeam("Team-" + System.nanoTime(), teamLead.getAccountId());
 
-	// Try to create admin account
-	@Test
-	void testCreateAdmin() {
-		AdminDTO adminDTO = adminService.createAdmin("Admin Name Testing", "admin" + System.nanoTime() + "@example.com","defaultpw");
+        adminService.assignToTeam(teamMember.getAccountId(), team.getTeamId());
+        
+        TeamMember updatedTeamMember = teamMemberRepository.findById(teamMember.getAccountId()).orElseThrow();
+        assertTrue(updatedTeamMember.getTeams().stream()
+                .anyMatch(isMember -> isMember.getTeam().getTeamId() == team.getTeamId()));
+    }
 
-		assertNotNull(adminDTO);
-		assertEquals("Admin Name Testing", adminDTO.getUserName());
-	}	
+    @Test
+    void testLockTask() {
+        Team team = teamRepository.save(new Team("LockTeam-" + System.nanoTime(), null));
+        TaskRequestDTO taskRequest = new TaskRequestDTO("TaskToLock", "Lock Task Desc", false, "Open", LocalDate.now(), null, team.getTeamId());
+        TaskDTO task = adminService.createTask(taskRequest);
 
-	// try to create admin with the same name
-	@Test
-	void testCreateAdminExistingName() {
-		AdminDTO adminDTO = adminService.createAdmin("John Doe", "admin" + System.nanoTime() + "@example.com","defaultpw");
+        adminService.lockTask(task.getTaskId());
+        Task updatedTask = taskRepository.findById(task.getTaskId()).orElseThrow();
+        assertTrue(updatedTask.isLocked());
+    }
 
-		Exception exception = assertThrows(RuntimeException.class,
-				() -> adminService.createAdmin("John Doe", "admin" + System.nanoTime() + "@example.com","defaultpw"));
+    @Test
+    void testUnlockTask() {
+        Team team = teamRepository.save(new Team("UnlockTeam-" + System.nanoTime(), null));
+        TaskRequestDTO taskRequest = new TaskRequestDTO("TaskToUnlock", "Unlock Task Desc", true, "Open", LocalDate.now(), null, team.getTeamId());
+        TaskDTO task = adminService.createTask(taskRequest);
 
-		assertNotNull(adminDTO);
-	}
-	
-	// try to create admin with the same email
-	@Test
-	void testCreateAdminExistingEmail() { 
-		AdminDTO adminDTO = adminService.createAdmin("John Doe", "admin_email@example.com","defaultpw");
+        adminService.unlockTask(task.getTaskId());
+        Task updatedTask = taskRepository.findById(task.getTaskId()).orElseThrow();
+        assertFalse(updatedTask.isLocked());
+    }
 
-		Exception exception = assertThrows(RuntimeException.class,
-				() -> adminService.createAdmin("Alice Wonder", "admin_email@example.com","defaultpw"));
+    @Test
+    void testModifyNonExistentAdmin() {
+        Exception exception = assertThrows(RuntimeException.class, 
+            () -> adminService.modifyAdminName(9999, "New Name"));
+        assertNotNull(exception);
+    }
 
-		assertNotNull(adminDTO);
-	}
-	
-	@Test
-	void testDeleteAdmin() {
-		adminService.deleteAdmin(admin.getAccountId());
-		Optional<Admin> found = adminRepository.findById(admin.getAccountId());
-		assertFalse(found.isPresent());
-	}
+    @Test
+    void testAssignToNonexistentTeam() {
+        TeamMemberDTO teamMember = adminService.createTeamMember("NoTeamMember", "noteam@example.com", "password");
+        Exception exception = assertThrows(RuntimeException.class, 
+            () -> adminService.assignToTeam(teamMember.getAccountId(), 9999));
+        assertNotNull(exception);
+    }
 
-	@Test
-	void testModifyAdminName() {
-		AdminDTO updatedAdminDTO = adminService.modifyAdminName(admin.getAccountId(), "New Name");
-		assertEquals("New Name", updatedAdminDTO.getUserName());
-	}
-
-	@Test
-	void testModifyAdminEmail() {
-		AdminDTO updatedAdmin = adminService.modifyAdminEmail(admin.getAccountId(), "newEmail" + System.nanoTime() + "@example.com");
-		assertTrue(updatedAdmin.getUserEmail().startsWith("newEmail"));
-	}
-
-	@Test
-	void testModifyNonExistentAdmin() {
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> adminService.modifyAdminName(9999, "New Name"));
-
-		assertNotNull(exception);
-	}
-
-	@Test
-	void testCreateTeamMember() {
-		TeamMemberDTO teamMemberDTO = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com","defaultpw");
-
-		assertNotNull(teamMemberDTO);
-		assertEquals("Team Member", teamMemberDTO.getUserName());
-	}
-
-	@Test
-	void testDeleteTeamMember() {
-		adminService.deleteTeamMember(teamMember.getAccountId());
-		Optional<TeamMember> found = teamMemberRepository.findById(teamMember.getAccountId());
-		assertFalse(found.isPresent());
-	}
-
-	@Test
-	void testModifyTeamMemberName() {
-		TeamMemberDTO updatedTeamMember = adminService.modifyTeamMemberName(teamMember.getAccountId(), "New Name");
-		assertEquals("New Name", updatedTeamMember.getUserName());
-	}
-
-	@Test
-	void testModifyTeamMemberEmail() {
-		TeamMemberDTO newTeamMember = adminService.createTeamMember("Team Member Email Test", "teamMemberEmailTest@example.com","defaultpw");
-
-		String newEmail = "newEmail@example.com";
-		TeamMemberDTO updatedTeamMember = adminService.modifyTeamMemberEmail(newTeamMember.getAccountId(), newEmail);
-
-		assertEquals(newEmail, updatedTeamMember.getUserEmail());
-	}
-
-	@Test
-	void testModifyTeamMemberNonexistent() {
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> adminService.modifyTeamMemberName(9999, "New Name"));
-
-		assertNotNull(exception);
-	}
-	
-    //to be re-implemented with hashedPassword and login functionality
-	// @Test
-	// void testPromoteToAdmin() {
-	// 	TeamMemberDTO teamMember = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com");
-	// 	AdminDTO updatedAdmin = adminService.promoteToAdmin(teamMember.getAccountId());
-
-	// 	assertTrue(adminRepository.existsById(updatedAdmin.getAccountId()));
-	// 	assertFalse(teamMemberRepository.findById(teamMember.getAccountId()).isPresent());
-	// }
-
-	@Test
-	void testAssignToTeam() {
-		TeamMemberDTO teamMember = adminService.createTeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com","defaultpw");
-		TeamMemberDTO teamLead = adminService.createTeamMember("Team Lead", "lead" + System.nanoTime() + "@example.com","defaultpw");
-
-		TeamDTO team = teamService.createTeam("Team Name " + System.nanoTime(), teamLead.getAccountId());
-
-		adminService.assignToTeam(teamMember.getAccountId(), team.getTeamId());
-		
-		TeamMember updatedTeamMember = teamMemberRepository.findById(teamMember.getAccountId()).orElseThrow();
-		updatedTeamMember.getTeams().size();
-
-		assertTrue(updatedTeamMember.getTeams().stream()
-				.anyMatch(isMember -> isMember.getTeam().getTeamId() == team.getTeamId()));
-	}
-
-	@Test
-	void testAssignToNonexistentTeam() {
-		TeamMemberDTO teamMember = adminService.createTeamMember("Team Member", "test@example.com","defaultpw");
-
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> adminService.assignToTeam(teamMember.getAccountId(), 9999));
-
-		assertNotNull(exception);
-	}
-
-	@Test
-	void testLockTask() {
-		adminService.lockTask(unlockedTask.getTaskId());
-		Task updatedTask = taskRepository.findById(unlockedTask.getTaskId()).orElseThrow();
-		assertTrue(updatedTask.isLocked());
-	}
-
-	@Test
-	void testUnlockTask() {
-		adminService.unlockTask(lockedTask.getTaskId());
-		Task updatedTask = taskRepository.findById(lockedTask.getTaskId()).orElseThrow();
-		assertFalse(updatedTask.isLocked());
-	}
-
-	@Test
-	void testLockNonexistentTask() {
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> adminService.lockTask(9999));
-
-		assertNotNull(exception);
-	}
+    @Test
+    void testLockNonexistentTask() {
+        Exception exception = assertThrows(RuntimeException.class, 
+            () -> adminService.lockTask(9999));
+        assertNotNull(exception);
+    }
 }

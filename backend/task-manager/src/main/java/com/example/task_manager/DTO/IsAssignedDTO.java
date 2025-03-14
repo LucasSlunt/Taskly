@@ -13,6 +13,17 @@ public class IsAssignedDTO {
         this.teamId = teamId;
     }
 
+    @Override
+    public String toString() {
+        return "IsAssignedDTO{" +
+                "isAssignedId=" + isAssignedId +
+                ", taskId=" + taskId +
+                ", teamMemberId=" + teamMemberId +
+                ", teamId=" + teamId +
+                '}';
+    }
+
+
     public int getIsAssignedId() {
         return isAssignedId;
     }

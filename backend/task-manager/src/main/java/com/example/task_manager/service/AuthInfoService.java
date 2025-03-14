@@ -12,21 +12,16 @@ import com.example.task_manager.DTO.AuthInfoDTO;
 import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.repository.TeamMemberRepository;
-import com.example.task_manager.service.TeamService;
 
 
 @Service
 public class AuthInfoService {
 
     protected final TeamMemberRepository teamMemberRepository;
-    private TeamService teamService;
     
     // Constructor for required repositories
-    public AuthInfoService(TeamMemberRepository teamMemberRepository, TeamService teamService){
+    public AuthInfoService(TeamMemberRepository teamMemberRepository){
         this.teamMemberRepository = teamMemberRepository;
-        this.teamService = teamService;
-
-
     }
 
     public boolean approveLogin(int teamMemberId, String enteredPassword) {

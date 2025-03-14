@@ -5,14 +5,13 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.controller.TeamMemberController;
 import com.example.task_manager.service.TeamMemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,89 +36,105 @@ public class TeamMemberControllerTest {
     private TeamMemberController teamMemberController;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
-    private TaskDTO mockTask;
-
-    @BeforeEach
-    void setUp() {
-        mockTask = new TaskDTO(1, "Task Title", "Description", false, "Open", LocalDate.now(), 1);
-    }
-
+    /**
+     * Test Create Task
+     */
     @Test
     void testCreateTask() throws Exception {
-        // Given: Creating a mock request DTO
+        int uniqueId = (int) System.nanoTime();
+        int teamId = uniqueId + 1;
+        TaskDTO mockTask = new TaskDTO(uniqueId, "Task Title " + uniqueId, "Description", false, "Open", LocalDate.now(), teamId);
+
         TaskRequestDTO requestDTO = new TaskRequestDTO(
-            "Task Title",
-            "Description",
-            false,
-            "Open",
-            LocalDate.of(2025, 3, 11),
-            Arrays.asList(1, 2, 3),
-            1
+                "Task Title " + uniqueId,
+                "Description",
+                false,
+                "Open",
+                LocalDate.of(2025, 3, 11),
+                Arrays.asList(1, 2, 3),
+                teamId
         );
 
         when(teamMemberService.createTask(any(TaskRequestDTO.class))).thenReturn(mockTask);
 
         mockMvc.perform(post("/api/tasks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDTO)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("Task Title"))
+                .andExpect(jsonPath("$.title").value("Task Title " + uniqueId))
                 .andExpect(jsonPath("$.description").value("Description"))
                 .andExpect(jsonPath("$.isLocked").value(false))
                 .andExpect(jsonPath("$.status").value("Open"))
-                .andExpect(jsonPath("$.teamId").value(1));
+                .andExpect(jsonPath("$.teamId").value(teamId));
     }
 
-    // Delete Task
+    /**
+     * Test Delete Task
+     */
     @Test
     void testDeleteTask() throws Exception {
-        doNothing().when(teamMemberService).deleteTask(1);
+        int uniqueId = (int) System.nanoTime();
+        doNothing().when(teamMemberService).deleteTask(uniqueId);
 
-        mockMvc.perform(delete("/api/tasks/1"))
+        mockMvc.perform(delete("/api/tasks/" + uniqueId))
                 .andExpect(status().isNoContent());
     }
 
+    /**
+     * Test Edit Task
+     */
     @Test
     void testEditTask() throws Exception {
+        int uniqueId = (int) System.nanoTime();
+        int teamId = uniqueId + 1;
+
         TaskDTO requestDTO = new TaskDTO(
-                1,
-                "Updated Title",
+                uniqueId,
+                "Updated Title " + uniqueId,
                 "Updated Description",
                 false,
                 "In Progress",
                 LocalDate.now().plusDays(3),
-                1
+                teamId
         );
 
-        when(teamMemberService.editTask(eq(1), any(TaskDTO.class))).thenReturn(requestDTO);
+        when(teamMemberService.editTask(eq(uniqueId), any(TaskDTO.class))).thenReturn(requestDTO);
 
-        mockMvc.perform(put("/api/tasks/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDTO)))
+        mockMvc.perform(put("/api/tasks/" + uniqueId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("Updated Title"))
+                .andExpect(jsonPath("$.title").value("Updated Title " + uniqueId))
                 .andExpect(jsonPath("$.description").value("Updated Description"))
                 .andExpect(jsonPath("$.isLocked").value(false))
                 .andExpect(jsonPath("$.status").value("In Progress"))
-                .andExpect(jsonPath("$.teamId").value(1));
+                .andExpect(jsonPath("$.teamId").value(teamId));
     }
 
-    // Assign Member to Task
+    /**
+     * Test Assign Member to Task
+     */
     @Test
     void testAssignToTask() throws Exception {
-        IsAssignedDTO assignedDTO = new IsAssignedDTO(1, 1, 1, 1);
-        when(teamMemberService.assignToTask(1, 1)).thenReturn(assignedDTO);
+        int uniqueId = (int) System.nanoTime();
+        int taskId = uniqueId + 1;
+        int teamMemberId = uniqueId + 2;
 
-        mockMvc.perform(post("/api/tasks/1/assign/1"))
+        IsAssignedDTO assignedDTO = new IsAssignedDTO(uniqueId, taskId, teamMemberId, uniqueId);
+        when(teamMemberService.assignToTask(taskId, teamMemberId)).thenReturn(assignedDTO);
+
+        mockMvc.perform(post("/api/tasks/" + taskId + "/assign/" + teamMemberId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.taskId").value(1));
+                .andExpect(jsonPath("$.taskId").value(taskId));
     }
 
-    // Change Password (Placeholder)
+    /**
+     * Placeholder: Change Password
+     */
     @Test
     void testChangePassword() throws Exception {
-        
+        // TODO: Implement Change Password Test
     }
 }
