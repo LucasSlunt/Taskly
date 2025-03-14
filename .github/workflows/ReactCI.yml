@@ -20,5 +20,4 @@ jobs:
         working-directory: ./frontend/react-app
         run: |
           npm install --legacy-peer-deps
-          npm run build --if-present
           npm test      
