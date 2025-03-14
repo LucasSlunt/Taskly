@@ -8,6 +8,7 @@ const CreateAccount = () => {
     const { register, handleSubmit, formState: {errors}} = useForm();
     const onSubmit = data => {
         console.log(data);
+        window.location.href="/home";
     }
 
     return (
