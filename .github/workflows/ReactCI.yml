@@ -20,4 +20,5 @@ jobs:
         working-directory: ./frontend/react-app
         run: |
           npm ci --legacy-peer-deps
+          npm install react-router-dom --save
           npm test      
