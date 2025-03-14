@@ -1,0 +1,112 @@
+[
+    {
+        "id": "99",
+        "name": "make frontend",
+        "team": "Team 1",
+        "assignees": [
+            {
+                "name":"James",
+                "email": "jksarfawe@hhl.com",
+                "role": "Admin",
+                "teamMemberId": "201"
+            },
+            {
+                "name":"Jordan",
+                "email": "jksarfawe@hhl.com",
+                "role": "Admin",
+                "teamMemberId": "204"
+            }
+        ],
+        "status": "done",
+        "priority": "Low",
+        "dueDate": "2/28/2025",
+        "dateCompteted": "3/10/2025",
+        "isLocked" : "false",
+        "discription": "This is a task that does stuff"
+         
+    },
+    {
+        "id": "1",
+        "name": "make backend",
+        "team": "Team 2",
+        "assignees": [
+            {
+                "name":"James",
+                "email": "jksarfawe@hhl.com",
+                "role": "Admin",
+                "teamMemberId": "201"
+            },
+            {
+                "name":"Elli",
+                "email": "jksarfawe@hhl.com",
+                "role": "Admin",
+                "teamMemberId": "203"
+            }
+        ],
+        "status": "inProgress",
+        "priority": "Low",
+        "dueDate": "2/28/2025",
+        "dateCompteted": "",
+        "isLocked" : "false",
+        "discription": "This is a task that does stuff"
+         
+    },
+    {
+        "id": "2",
+        "name": "Make Table",
+        "team": "BIRNIE TEAM",
+        "assignees": [
+            {
+                "name":"Ivona",
+                "email": "jksarfawe@hhl.com",
+                "role": "Admin",
+                "teamMemberId": "202"
+            }
+        ],
+        "status": "notStarted",
+        "priority": "High",
+        "dueDate": "3/4/2002",
+        "isLocked" : "false",
+        "discription": "This is a task that does stuff"
+         
+    },
+    {
+        "id": "3",
+        "name": "Make Search Function",
+        "team": "Lucy Eats The Computer",
+        "assignees": [
+            {
+                "name":"Ivona",
+                "email": "jksarfawe@hhl.com",
+                "role": "Admin",
+                "teamMemberId": "202"
+            }
+        ],
+        "status": "inProgress",
+        "priority": "High",
+        "dueDate": "3/9/2025",
+        "dateCompteted": "",
+        "isLocked" : "false",
+        "discription": "This is a task that does stuff"
+    },
+    {
+        "id": "4",
+        "name": "Make Drop down for search",
+        "team": "Lucy Eats The Computer",
+        "assignees": [
+            {
+                "name":"James",
+                "email": "jksarfawe@hhl.com",
+                "role": "Admin",
+                "teamMemberId": "201"
+            }
+        ],
+        "status": "done",
+        "priority": "High",
+        "dueDate": "3/9/2025",
+        "dateCompteted": "3/9/2025",
+        "isLocked" : "false",
+        "discription": "This is a task that does stuff"
+         
+    }
+]

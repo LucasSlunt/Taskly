@@ -62,7 +62,7 @@ public class TeamEntityTest {
         entMan.flush();
 
         TeamMember member_1 = new TeamMember("John Doe", "john@example.com","defaultpw");
-        TeamMember member_2 = new TeamMember("Alice Wonder", "alice@example.com","defaultpw");
+        TeamMember member_2 = new TeamMember("Alice Chains", "alice_chains@example.com","defaultpw");
         entMan.persist(member_1);
         entMan.persist(member_2);
         entMan.flush();

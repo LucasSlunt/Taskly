@@ -13,14 +13,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import jakarta.transaction.Transactional;
 
 import com.example.task_manager.DTO.TaskDTO;
+import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
+import com.example.task_manager.repository.AdminRepository;
+import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.repository.IsAssignedRepository;
+import com.example.task_manager.repository.IsMemberOfRepository;
 import com.example.task_manager.service.AuthInfoService;
 import com.example.task_manager.service.TeamMemberService;
 
@@ -36,10 +41,13 @@ public class TeamMemberServiceTest {
 	private TeamMemberService teamMemberService;
 
 	@Autowired
-	private TaskRepository taskRepository;
+	private AdminRepository adminRepository;
 
 	@Autowired
 	private TeamMemberRepository teamMemberRepository;
+
+	@Autowired
+	private TaskRepository taskRepository;
 
 	@Autowired
 	private TeamRepository teamRepository;
@@ -47,16 +55,25 @@ public class TeamMemberServiceTest {
 	@Autowired
 	private IsAssignedRepository isAssignedRepository;
 
+	@Autowired
+	private IsMemberOfRepository isMemberOfRepository;
+	
+	@Autowired
+	private AuthInfoRepository authInfoRepository;
+
 	private Task task;
 	private TeamMember teamMember;
 	private Team team;
 
 	@BeforeEach
 	void setUp() {
-		isAssignedRepository.deleteAllInBatch();
-		taskRepository.deleteAllInBatch();
-		teamRepository.deleteAllInBatch();
-		teamMemberRepository.deleteAllInBatch();
+		isAssignedRepository.deleteAll();
+		isMemberOfRepository.deleteAll();
+		taskRepository.deleteAll();
+		teamMemberRepository.deleteAll();
+		authInfoRepository.deleteAll();
+		adminRepository.deleteAll();
+		teamRepository.deleteAll();
 
 		teamMember = new TeamMember("Team Member", "teamMember" + System.nanoTime() + "@example.com","defaultpw");
 		teamMember = teamMemberRepository.save(teamMember);
@@ -70,7 +87,17 @@ public class TeamMemberServiceTest {
 
 	@Test
 	void testCreateTask() {
-		TaskDTO newTaskDTO = teamMemberService.createTask("New Task", "Task Description", false, "Open", LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), team, null);
+		TaskRequestDTO taskRequestDTO = new TaskRequestDTO(
+			"New Task",
+			"Task Description",
+			false,
+			"Open",
+			LocalDate.now().plusDays(5),
+			null,
+			team.getTeamId()
+		);
+
+		TaskDTO newTaskDTO = teamMemberService.createTask(taskRequestDTO);
 
 		assertNotNull(newTaskDTO);
 		assertEquals("New Task", newTaskDTO.getTitle());
@@ -80,27 +107,28 @@ public class TeamMemberServiceTest {
 
 	@Test
 	void testCreateTaskWithNullTitle() {
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> teamMemberService.createTask(null, "Task Description", false, "Open", 
-				LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), team, null));
+		TaskRequestDTO taskRequestDTO = new TaskRequestDTO(
+				null, "Task Description", false, "Open", LocalDate.now(), null, team.getTeamId());
 
-		assertTrue(exception.getMessage().contains("Task title cannot be null"));
+		Exception exception = assertThrows(RuntimeException.class, () -> teamMemberService.createTask(taskRequestDTO));
+
+		assertTrue(exception.getMessage().contains("Task title cannot be null or empty"));
 	}
 
 	@Test
 	void testCreateTaskWithEmptyTitle() {
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> teamMemberService.createTask("", "Task Description", false, "Open", 
-				LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), team, null));
+		TaskRequestDTO taskRequestDTO = new TaskRequestDTO("", "Task Description", false, "Open", LocalDate.now(), null, team.getTeamId());
+
+        Exception exception = assertThrows(RuntimeException.class, () -> teamMemberService.createTask(taskRequestDTO));
 
 		assertTrue(exception.getMessage().contains("Task title cannot be null or empty"));
 	}
 
 	@Test
 	void testCreateTaskWithNullTeam() {
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> teamMemberService.createTask("New Task", "Task Description", false, "Open", 
-				LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), null, null));
+		TaskRequestDTO taskRequestDTO = new TaskRequestDTO("New Task", "Task Description", false, "Open", LocalDate.now(), null, null);
+
+        Exception exception = assertThrows(RuntimeException.class, () -> teamMemberService.createTask(taskRequestDTO));
 
 		assertTrue(exception.getMessage().contains("Task must be assigned to a team"));
 	}
@@ -123,19 +151,37 @@ public class TeamMemberServiceTest {
 
 	@Test
 	void testEditTask() {
-		TaskDTO updatedTask = teamMemberService.editTask(task.getTaskId(), "Updated Task Title", "Updated Description", true, "In Progress", LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
+		TaskDTO taskDTO = new TaskDTO(
+			task.getTaskId(),
+			"Updated Task Title",
+			"Updated Description",
+			true,
+			"In Progress",
+			LocalDate.now(),
+			team.getTeamId()
+		);
+
+		TaskDTO updatedTask = teamMemberService.editTask(task.getTaskId(), taskDTO);
 
 		assertEquals("Updated Task Title", updatedTask.getTitle());
 		assertEquals("Updated Description", updatedTask.getDescription());
 		assertEquals("In Progress", updatedTask.getStatus());
-		assertTrue(updatedTask.isLocked());
+		assertTrue(updatedTask.getIsLocked());
 	}
 
 	@Test
 	void testEditNonExistentTask() {
-		Exception exception = assertThrows(RuntimeException.class, 
-			() -> teamMemberService.editTask(9999, "Updated Title", "Updated Description", true, 
-				"In Progress", LocalDate.now().plusDays(7), LocalDate.now().plusDays(10)));
+		TaskDTO taskDTO = new TaskDTO(
+			9999,
+			"Updated Title",
+			"Updated Description",
+			true,
+			"In Progress",
+			LocalDate.now(),
+			team.getTeamId()
+		);
+
+		Exception exception = assertThrows(RuntimeException.class, () -> teamMemberService.editTask(9999, taskDTO));
 
 		assertTrue(exception.getMessage().contains("Task not found"));
 	}
@@ -196,4 +242,35 @@ public class TeamMemberServiceTest {
 		assertFalse(authInfoService.approveLogin(teamMemberId,"coolnewpassword"));
 	}
 
+    @Test
+ 	void testIsAdmin() {
+ 		Admin admin = new Admin("Admin Name" + System.nanoTime(), "admin_email_" + System.nanoTime(), "admin_password");
+ 		admin = teamMemberRepository.save(admin);
+ 		boolean isAdmin = authInfoService.isAdmin(admin.getAccountId());
+ 
+ 		assertTrue(isAdmin);
+ 	}
+ 
+ 	//testing a team member is not an admin, should be false
+ 	@Test
+ 	void testIsNotAdmin() {
+ 		TeamMember teamMember = new TeamMember("Team Member " + System.nanoTime(),
+ 				"team_member_email_" + System.nanoTime(), "password");
+ 		teamMember = teamMemberRepository.save(teamMember);
+ 
+ 		boolean isAdmin = authInfoService.isAdmin(teamMember.getAccountId());
+ 
+ 		assertFalse(isAdmin);
+ 	}
+ 	
+ 	@Test
+ 	void testIsAdminForNonExistentMember() {
+ 		int fakeId = 999999; // Assuming this ID does not exist
+ 
+ 		Exception exception = assertThrows(RuntimeException.class, () -> {
+            authInfoService.isAdmin(fakeId);
+ 		});
+ 
+ 		assertTrue(exception.getMessage().contains("Team Member not found"));
+ 	}
 }

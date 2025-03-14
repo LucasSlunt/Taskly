@@ -8,6 +8,9 @@ import ViewTask from './pages/ViewTask';
 import Profile from './pages/Profile'
 import TeamTasks from './pages/TeamTasks';
 import AdminAllUsers from './pages/AdminAllUsers';
+import EditTask from './pages/EditTask';
+import MyTasks from './pages/MyTasks';
+
 
 function App() {
   return (
@@ -20,6 +23,8 @@ function App() {
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/team-tasks" element={<TeamTasks/>}/>
           <Route path="/admin-all-users" element={<AdminAllUsers/>}/>
+          <Route path="/edit-task" element={<EditTask/>}/>
+          <Route path="/my-tasks" element={<MyTasks/>}/>
 
           {/*Default path should be login, unless specified */}
           <Route path="/" exact element={<Login/>} />

@@ -1,11 +1,12 @@
 package com.example.task_manager.controller;
 
 import com.example.task_manager.DTO.IsAssignedDTO;
+import com.example.task_manager.DTO.PasswordChangeRequestDTO;
 import com.example.task_manager.DTO.TaskDTO;
+import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.service.TeamMemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -19,13 +20,9 @@ public class TeamMemberController {
 
     // Create a Task
     @PostMapping
-    public ResponseEntity<?> createTask(@RequestParam String title,
-                                        @RequestParam String description,
-                                        @RequestParam Boolean isLocked,
-                                        @RequestParam String status,
-                                        @RequestParam int teamId) {
+    public ResponseEntity<?> createTask(@RequestBody TaskRequestDTO request) {
         try {
-            TaskDTO task = teamMemberService.createTask(title, description, isLocked, status, LocalDate.now(), LocalDate.now(), null, null);
+            TaskDTO task = teamMemberService.createTask(request);
             return ResponseEntity.ok(task);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -48,16 +45,8 @@ public class TeamMemberController {
     public ResponseEntity<?> editTask(@PathVariable int taskId,
                                     @RequestBody TaskDTO taskDTO) {
         try {
-            TaskDTO task = teamMemberService.editTask(
-                taskId,
-                taskDTO.getTitle(),
-                taskDTO.getDescription(),
-                taskDTO.isLocked(),
-                taskDTO.getStatus(),
-                null,
-                taskDTO.getDueDate()
-            );
-            return ResponseEntity.ok(task);
+            TaskDTO updatedTask = teamMemberService.editTask(taskId, taskDTO);
+            return ResponseEntity.ok(updatedTask);
         } 
         catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -78,10 +67,9 @@ public class TeamMemberController {
     // Change Password (Placeholder)
     @PostMapping("/team-members/{teamMemberId}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable int teamMemberId,
-                                            @RequestParam String oldPassword,
-                                            @RequestParam String newPassword) {
+                                            @RequestBody PasswordChangeRequestDTO request) {
         try {
-            teamMemberService.changePassword(teamMemberId, oldPassword, newPassword);
+            teamMemberService.changePassword(teamMemberId, request.getOldPassword(), request.getNewPassword());
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
