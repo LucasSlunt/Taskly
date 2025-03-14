@@ -16,8 +16,10 @@ function CreateTaskForm({team}){
                 teamId
     
             );
+            window.location.href="/home";
         } catch (error) {
             console.log(error)
+            alert("FAILED IN MAKING TASK");
         }
     };
     return(
