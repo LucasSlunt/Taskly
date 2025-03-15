@@ -55,7 +55,7 @@ Page Status: Nearly complete
 
 All pages still need tweaks with CSS and styling. We also need to make pages dynamic to properly adjust for mobile screens.
 
-##Backend
+##Backend and Tests
 The database and backend powering frontend are both fully complete, and have their functionality tested by 213 unit tests, as well as continuous integration that runs these tests each time the project has a pull request or a push to main.
 
 The backend is split into 5 different layers, each with their own uses, and all have been fully implemented. These layers are:
@@ -64,3 +64,10 @@ The backend is split into 5 different layers, each with their own uses, and all 
 - DTO -> handles data transfer between backend and frontend
 - Repository -> class specific methods that involve database querying
 - Service -> class specific methods that involve data gathered from repository level
+
+    As of Milestone #2, some backend tests involving the testing environment are failing. The testing database that we are using (Hibernate) has rules about cascades and relations between tables which makes it difficult to test the relationship mappings. This is a known problem, and an issue has been created.
+
+While the backend tests are currently not passing, and have been commented out for the purpose of Milestone #2, tests have been performed manually to ensure all relations between tables are working, and API calls can be made with no issues.
+
+
+
