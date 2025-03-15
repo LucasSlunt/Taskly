@@ -143,7 +143,7 @@ function MyTasks(){
                         headersAndAccessors={headerAndAccessors}
                         />
                     </span>
-                    <button className="create-task-btn">Create Task</button>
+                    <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
                     
                     <h2>My Completed Tasks</h2>
                     <span class ="taskBox">
