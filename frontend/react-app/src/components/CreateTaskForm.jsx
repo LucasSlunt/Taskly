@@ -5,19 +5,20 @@ import {assignMemberToTask, createTask, getTeamsForMember} from '../api/teamMemb
 import { useCookies } from 'react-cookie';
 function CreateTaskForm(){
     const [cookies] = useCookies(['userInfo'])
+    const userId = cookies.userInfo.accountId
     const [team, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const { register, handleSubmit, formState: {errors}} = useForm();
     useEffect(()=>{
         try {
-            console.log(cookies.userInfo.accountId)
-            setData(()=>getTeamsForMember(cookies.userInfo.accountId))
+            console.log("gets back", getTeamsForMember(userId));
+            getTeamsForMember(userId).then(setData)
         } catch (error) {
             console.log("error while getting teams")
         }finally{
             setLoading(false)
         }
-    })
+    },[]);
     const onSubmit =  async (data)=> {
         try {
             /*const responseCreateTask = await createTask(
