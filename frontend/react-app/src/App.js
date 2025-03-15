@@ -10,6 +10,7 @@ import TeamTasks from './pages/TeamTasks';
 import AdminAllUsers from './pages/AdminAllUsers';
 import EditTask from './pages/EditTask';
 import MyTasks from './pages/MyTasks';
+import ProtectedRoute from './components/ProtectedRoute';
 
 import CreateAccount from './pages/CreateAccount';
 
@@ -23,13 +24,11 @@ function App() {
       <div>
         <Routes>
           <Route path="/login" element={<Login/>} />
-          <Route path="/home" element={<Home/>}/>
-          <Route path="/view-task" element={<ViewTask/>}/>
-          <Route path="/profile" element={<Profile/>}/>
-          <Route path="/team-tasks" element={<TeamTasks/>}/>
-          <Route path="/admin-all-users" element={<AdminAllUsers/>}/>
-          <Route path="/edit-task" element={<EditTask/>}/>
-          <Route path="/my-tasks" element={<MyTasks/>}/>
+          <Route path="/home" element={<ProtectedRoute allowedRoles={['admin', 'teamMember']} protectedContent={<Home/>} urlReirect={"/login"}></ProtectedRoute>}/>
+          <Route path="/view-task" element={<ProtectedRoute allowedRoles={['admin', 'teamMember']} protectedContent={<ViewTask/>} urlReirect={"/login"}></ProtectedRoute>}/>
+          <Route path="/profile" element={<ProtectedRoute allowedRoles={['admin', 'teamMember']} protectedContent={<Profile/>} urlReirect={"/login"}></ProtectedRoute>}/>
+          <Route path="/team-tasks" element={<ProtectedRoute allowedRoles={['admin', 'teamMember']} protectedContent={<TeamTasks/>} urlReirect={"/login"}></ProtectedRoute>}/>
+          <Route path="/my-tasks" element={<ProtectedRoute allowedRoles={['admin', 'teamMember']} protectedContent={<MyTasks/>} urlReirect={"/login"}></ProtectedRoute>}/>
 
           <Route path="/create-account" element={<CreateAccount/>}/>
 

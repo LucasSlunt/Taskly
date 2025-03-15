@@ -1,6 +1,7 @@
 import "../css/Profile.css"
 import UserInfo from "../components/UserInfo"
 import Teams from "../components/Teams"
+import SignOut from '../components/SignOut'
 
 function Profile(){
     //mock data
@@ -19,9 +20,7 @@ function Profile(){
                 <Teams team={team} key={team.id}/> 
             ))}
         </div> 
-        <button className="logout-btn">
-            Logout
-        </button>
+        <SignOut/>
     </div>
     
     );
