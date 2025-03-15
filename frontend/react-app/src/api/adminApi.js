@@ -243,3 +243,98 @@ export const unlockTask = async (taskId) => {
         throw error;
     }
 };
+
+//Get all admins
+export const getAdmins = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/admins`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve admins: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve all admins: `, error);
+        throw error;
+    } 
+};
+
+//Get all team ememebrs
+export const getTeamMembers = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/team-members`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve team members: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve all team members: `, error);
+        throw error;
+    } 
+};
+
+//Get all teams
+export const getTeams = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/all-teams`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve teams: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve all teams: `, error);
+        throw error;
+    } 
+};
+
+//Get an admin with their ID
+export const getAdminById = async (adminId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/${adminId}`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve admin: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve admin: `, error);
+        throw error;
+    } 
+};
+
+//Get a team member with their ID
+export const getTeamMemberById = async (teamMemberId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve team member: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve team member: `, error);
+        throw error;
+    } 
+};

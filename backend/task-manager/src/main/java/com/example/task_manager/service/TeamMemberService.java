@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
+import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
@@ -205,8 +206,21 @@ public class TeamMemberService {
 
 	public List<TaskDTO> getAssignedTasks(int teamMemberId) {
 		return isAssignedRepository.findByTeamMember_AccountId(teamMemberId).stream()
-			.map(isAssigned -> convertToDTO(isAssigned.getTask()))
-						.collect(Collectors.toList());
+				.map(isAssigned -> convertToDTO(isAssigned.getTask()))
+				.collect(Collectors.toList());
+	}
+
+	public List<TeamDTO> getTeamsForMember(int teamMemberId) {
+		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+            .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+
+		return teamMember.getTeams().stream()
+			.map(isMemberOf -> new TeamDTO(
+				isMemberOf.getTeam().getTeamId(),
+				isMemberOf.getTeam().getTeamName(),
+				isMemberOf.getTeam().getTeamLead().getAccountId()
+			))
+			.collect(Collectors.toList());
 	}
 			
 	/*

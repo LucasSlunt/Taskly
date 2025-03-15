@@ -1,4 +1,4 @@
-import { createAdmin, deleteAdmin, modifyAdminName, createTeamMember, deleteTeamMember, modifyTeamMemberName, modifyTeamMemberEmail, modifyAdminEmail, assignTeamMemberToTeam, lockTask, promoteTeamMemberToAdmin, unlockTask } from '../../api/adminApi';
+import { createAdmin, deleteAdmin, modifyAdminName, createTeamMember, deleteTeamMember, modifyTeamMemberName, modifyTeamMemberEmail, modifyAdminEmail, assignTeamMemberToTeam, lockTask, promoteTeamMemberToAdmin, unlockTask, getTeamMembers, getAdmins, getTeams, getAdminById, getTeamMemberById } from '../../api/adminApi';
 
 const BASE_URL = "http://localhost:8080/api/admin";
 
@@ -224,5 +224,82 @@ describe('Admin API', () => {
         });
 
         expect(result).toBe(true);
+    });
+
+    //test: getting all admins
+    test('getAdmins should return list of admins on success', async () => {
+        const mockAdmins = [
+            { accountId: 1, userName: "Admin One", userEmail: "admin1@example.com" },
+            { accountId: 2, userName: "Admin Two", userEmail: "admin2@example.com" }
+        ];
+
+        fetch.mockResponseOnce(JSON.stringify(mockAdmins), { status: 200 });
+
+        const result = await getAdmins();
+
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/admins`, { method: 'GET' });
+        expect(result).toEqual(mockAdmins);
+    });
+
+    //test: getting all team members
+    test('getAllTeamMembers should return list of team members on success', async () => {
+        const mockTeamMembers = [
+            { accountId: 3, userName: "TeamMember One", userEmail: "tm1@example.com" },
+            { accountId: 4, userName: "TeamMember Two", userEmail: "tm2@example.com" }
+        ];
+
+        fetch.mockResponseOnce(JSON.stringify(mockTeamMembers), { status: 200 });
+
+        const result = await getTeamMembers();
+
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/team-members`, { method: 'GET' });
+        expect(result).toEqual(mockTeamMembers);
+    });
+
+    //test: getting all teams
+    test('getTeams should return list of team members on success', async () => {
+        const mockTeams = [
+            { teamId: 1, teamName: "Team Alpha", teamLeadId: 3 },
+            { teamId: 2, teamName: "Team Beta", teamLeadId: 4 }
+        ];
+
+        fetch.mockResponseOnce(JSON.stringify(mockTeams), { status: 200 });
+
+        const result = await getTeams();
+
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/all-teams`, { method: 'GET' });
+        expect(result).toEqual(mockTeams);
+    });
+
+    //test: retrieving admin info with their ID
+    test('getAdminById should return admin data on success', async () => {
+        const mockAdmin = {
+            accountId: 1,
+            userName: "Admin User",
+            userEmail: "admin@example.com"
+        };
+
+        fetch.mockResponseOnce(JSON.stringify(mockAdmin), { status: 200 });
+
+        const result = await getAdminById(1);
+
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/1`, { method: 'GET' });
+        expect(result).toEqual(mockAdmin);
+    });
+
+    //test: retrieving team emember info with ID
+    test('getTeamMemberById should return team member data on success', async () => {
+        const mockTeamMember = {
+            accountId: 2,
+            userName: "John Doe",
+            userEmail: "john.doe@example.com"
+        };
+
+        fetch.mockResponseOnce(JSON.stringify(mockTeamMember), { status: 200 });
+
+        const result = await getTeamMemberById(2);
+
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/team-member/2`, { method: 'GET' });
+        expect(result).toEqual(mockTeamMember);
     });
 });
