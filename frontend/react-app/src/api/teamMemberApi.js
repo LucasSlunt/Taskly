@@ -109,9 +109,9 @@ export const changePassword = async (teamMemberId, oldPassword, newPassword) => 
 };
 
 //getting all teams for a specific team member
-export const getTeamsForMember = async (teamMemberId) => {
+export const getTeamsForMember = async (accountId) => {
     try {
-        const response = await fetch(`${BASE_URL}/${teamMemberId}/teams`, {
+        const response = await fetch(`${BASE_URL}/${accountId}/teams`, {
             method: 'GET'
         });
 

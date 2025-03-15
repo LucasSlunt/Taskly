@@ -1,23 +1,21 @@
 import {getTeamsForMember} from '../api/teamMemberApi'
 import '../css/home.css';
 import Header from '../components/Header'
-
-import Task from '../Task';
 import { useCookies } from 'react-cookie';
+import Task from '../Task';
 
-const [cookies] = useCookies(['userInfo'])
-const teams = getTeamsForMember(cookies.userInfo.id)
-console.log(teams)
 const testTask = [
     { taskName: "Create wireframe", taskTeam: "Team 1", dueDate: "11/05/25" },
     { taskName: "Plan things", taskTeam: "Team 2", dueDate: "10/04/25" }
 ]
-
-
 /**/
 
 
 const Home = () => {
+    const [cookies] = useCookies(['userInfo'])
+    console.log(cookies.userInfo.accountId)
+    const teams = getTeamsForMember(cookies.userInfo.accountId)
+    console.log(teams)
     return (
 
 
