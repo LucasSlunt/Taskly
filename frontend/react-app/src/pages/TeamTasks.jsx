@@ -142,7 +142,7 @@ function TeamTasks(){
             dataToUse={setUpDataTasksToDo(fakeData)}
             headersAndAccessors={headerAndAccessors}
             />
-            <button className="create-task-btn">Create Task</button>
+            <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
             <h2>Completed Tasks</h2>
             <TaskList
             dataToUse={setUpDataComplete(fakeData)}

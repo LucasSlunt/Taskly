@@ -11,7 +11,8 @@ function AdminAllUsers(){
             <div>
                 <UserTable/>
             </div>
-            <button >Create New Account</button>
+
+            <a href="create-account"><button >Create New Account</button></a>
         </div>
     )
 }

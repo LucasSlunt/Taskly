@@ -2,6 +2,7 @@
 import {useForm} from 'react-hook-form';
 import React from 'react';
 import '../css/CreateAccount.css';
+import Header from '../components/Header';
 
 const CreateAccount = () => {
     
@@ -13,6 +14,7 @@ const CreateAccount = () => {
 
     return (
         <div id="createAccountContainer">
+            <Header/>
             <form id="createAccountForm" onSubmit={handleSubmit(onSubmit)} className="form">
                     <label>Create Account</label>
                     

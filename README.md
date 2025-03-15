@@ -1,4 +1,4 @@
-# COSC310_GroupProject Progress Documentation
+# COSC310_GroupProject
 
 ## Frontend
 This project has 8 different pages, each on varying degrees of completeness.
@@ -68,6 +68,7 @@ The backend is split into 5 different layers, each with their own uses, and all 
     As of Milestone #2, some backend tests involving the testing environment are failing. The testing database that we are using (Hibernate) has rules about cascades and relations between tables which makes it difficult to test the relationship mappings. This is a known problem, and an issue has been created.
 
 While the backend tests are currently not passing, and have been commented out for the purpose of Milestone #2, tests have been performed manually to ensure all relations between tables are working, and API calls can be made with no issues.
+
 
 
 
