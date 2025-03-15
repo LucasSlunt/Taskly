@@ -10,7 +10,7 @@ function Header(){
                             <li><span><a href="/home">Home</a></span></li>
                             <li><span><a href="/my-tasks">Tasks</a></span></li>
                             <li><span><a href="/profile">Profile</a></span></li>
-                            {cookies.userInfo.role === 'admin' && (<li><span><a href="#">Admin Controls</a></span></li>)}
+                            {cookies.userInfo.role === 'admin' && (<li><span><a href="/admin-panel">Admin Controls</a></span></li>)}
                         </ul>
                 </h1>
             </header>
