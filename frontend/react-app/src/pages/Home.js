@@ -1,31 +1,41 @@
-import {useEffect, useState} from 'react';
+import {getTeamsForMember} from '../api/teamMemberApi'
 import '../css/home.css';
-
-
+import Header from '../components/Header'
+import { useCookies } from 'react-cookie';
 import Task from '../Task';
-
+import { useEffect, useState } from 'react';
+import {Link} from 'react-router-dom'
 
 const testTask = [
     { taskName: "Create wireframe", taskTeam: "Team 1", dueDate: "11/05/25" },
     { taskName: "Plan things", taskTeam: "Team 2", dueDate: "10/04/25" }
 ]
-
-
 /**/
 
 
 const Home = () => {
+    const [cookies] = useCookies(['userInfo'])
+    const [teams, setTeams] = useState([])
+    const [loading, setLoading] = useState(true);
+    useEffect(()=>{
+        try {
+            getTeamsForMember(cookies.userInfo.accountId).then((response)=>setTeams(response))
+        } catch (error) {
+            console.log(error)
+        }finally{
+            setLoading(false)
+        }
+    },[])
+    if(loading){
+        return (<div>Loading...</div>)
+    }
     return (
 
 
         <body>
 
 
-        <div id="topBar">
-            <a href="https://www.ubc.ca/">Notifications </a>
-            <a href="https://www.ubc.ca/">Messages </a>
-            <a href="https://www.ubc.ca/">Profile</a>
-        </div>
+        <Header/>
        
 
 
@@ -34,8 +44,12 @@ const Home = () => {
                 <h2>My Teams</h2>
                
                 <div id="teamButtons">
-                    <button className="teamButton">Team 1 Name</button>
-                    <button className="teamButton">Team 2 Name</button>
+                    {teams.map((team)=>(
+                        <Link to='/team-tasks' >
+                        <button className="teamButton" key={team.teamId}>{team.teamName}</button>
+                        </Link>
+                        
+                    ))}
                 </div>
             </div>
 

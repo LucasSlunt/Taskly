@@ -173,6 +173,84 @@ All API requests should be made to the following base URL (Spring Boot's default
         - `taskId` (integer, required): The ID of the task to unlock.  
     - **Description:** Unlocks a task, allowing updates and modifications.
 
+- **Get All Admins:** `GET /admins`
+    - **Response Body:** 
+    ```json
+    [
+        {
+            "accountId": 1,
+            "userName": "Admin Name",
+            "userEmail": "admin@example.com"
+        },
+        {
+            "accountId": 2,
+            "userName": "Admin 2",
+            "userEmail": "admin_2@example.com"
+        }
+    ]
+    ```
+    - **Description:** Returns a list of every admin in the database.
+
+ **Get All Team Members:** `GET /team-members`
+    - **Response Body:** 
+    ```json
+    [
+        {
+            "accountId": 2,
+            "userName": "Team Member",
+            "userEmail": "teammember@example.com"
+        },
+        {
+            "accountId": 3,
+            "userName": "Team Member3",
+            "userEmail": "teammember3@example.com"
+        }
+    ]
+    ```
+    - **Description:** Returns a list of every team member in the database.
+
+**Get All Teams:** `GET /all-teams`
+    - **Response Body:**
+    ```json
+    [
+        {
+            "teamId": 1,
+            "teamName": "Development Team"
+        },
+        {
+            "teamId": 2,
+            "teamName": "Marketing Team"
+        }
+    ]
+    ```
+    - **Description:** Returns a list of every team in the database.
+
+**Get Admin by ID** `GET /{adminId}`
+    - **Parameters:** 
+        - `adminId` (integer, required): The ID of the admin being retrieved.
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 1,
+        "userName": "Admin Name",
+        "userEmail": "admin@example.com"
+    }
+    ```
+    - **Description:** Returns the id, name, and email of the requested admin.
+
+**Get Team Member by ID** `GET /team-member/{teamMemberId}`
+    - **Parameters:** 
+        - `teamMemberId` (integer, required): The ID of the team member being retrieved.
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 1,
+        "userName": "Team Member Name",
+        "userEmail": "teamMember@example.com"
+    }
+    ```
+    - **Description:** Returns the id, name, and email of the requested team member.
+
 ---
 
 ## **AuthInfoController**
