@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import '../css/home.css';
-
+import Header from '../components/Header'
 
 import Task from '../Task';
 
@@ -21,11 +21,7 @@ const Home = () => {
         <body>
 
 
-        <div id="topBar">
-            <a href="https://www.ubc.ca/">Notifications </a>
-            <a href="https://www.ubc.ca/">Messages </a>
-            <a href="https://www.ubc.ca/">Profile</a>
-        </div>
+        <Header/>
        
 
 
