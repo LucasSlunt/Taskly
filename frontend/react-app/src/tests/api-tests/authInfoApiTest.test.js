@@ -1,6 +1,6 @@
 import {login, isAdmin} from '../../api/authInfo'; 
 
-const BASE_URL = "http://localhost:8080/api/auth-info";
+const BASE_URL = "http://localhost:8080/auth-info";
 
 beforeEach(() => {
     fetchMock.resetMocks();
@@ -22,7 +22,7 @@ describe('AuthInfo API', () => {
         expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/login`, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({teamMemberId: 1, password: "password"})
+            body: JSON.stringify({accountId: 1, password: "password"})
         });
 
         expect(response).toEqual(mockUser);
