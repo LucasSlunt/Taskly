@@ -483,6 +483,48 @@ All API requests should be made to the following base URL (Spring Boot's default
     ```
     - **Description:** Updates the password field for a team member.
 
+- **Get All Teams for a Team Member:** `GET /{teamMemberId}/teams`
+    - **Response Body:**
+    ```json
+    [
+        {
+            "teamId": 1,
+            "teamName": "Development Team"
+        },
+        {
+            "teamId": 2,
+            "teamName": "Marketing Team"
+        }
+    ]
+    ```
+    - **Description:** Returns a list of all the teams a team member is a part of.
+
+- **Get Assigned Tasks For a Team Member:** `GET /{teamMemberId}/tasks`
+    - **Response Body:**
+    ```json
+    [
+        {
+            "taskId": 101,
+            "title": "Implement Login API",
+            "description": "Develop the login functionality for the app",
+            "isLocked": false,
+            "status": "In Progress",
+            "dueDate": "2024-04-01",
+            "teamId": 1
+        },
+        {
+            "taskId": 102,
+            "title": "Design Homepage",
+            "description": "Create a wireframe for the homepage",
+            "isLocked": true,
+            "status": "Pending",
+            "dueDate": "2024-04-05",
+            "teamId": 2
+        }
+    ]
+    ```
+    - **Description:** Returns a list of every task a team member is assigned to.
+
 ---
 
 ## **Path Variables**
