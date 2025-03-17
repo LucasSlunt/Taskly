@@ -2,10 +2,12 @@ package com.example.task_manager.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.task_manager.DTO.NotificationDTO;
 import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Notification;
 import com.example.task_manager.entity.Task;
@@ -32,9 +34,10 @@ public class NotificationService {
     }
 
     //helper method for creating notifications
-    private void createNotification(TeamMember teamMember, Task task, NotificationType type, String message) {
+    private NotificationDTO createNotification(TeamMember teamMember, Task task, NotificationType type, String message) {
         Notification notif = new Notification(type, message, task, teamMember);
         notifRepository.save(notif);
+        return convertToDTO(notif);
     }
 
     //notify assigned members when a task is edited
@@ -107,16 +110,24 @@ public class NotificationService {
     }
 
     //get unread notifications for a team member
-    public List<Notification> getUnreadNotifications(int teamMemberId) {
-        return notifRepository.findByTeamMemberIdAndIsReadFalse(teamMemberId);
+    public List<NotificationDTO> getUnreadNotifications(int teamMemberId) {
+        return notifRepository.findByTeamMemberIdAndIsReadFalse(teamMemberId)
+            .stream()
+            .map(this::convertToDTO)
+            .collect(Collectors.toList()
+        );
     }
 
     //get read notifications for a team member
-    public List<Notification> getReadNotifications(int teamMemberId) {
-        return notifRepository.findByTeamMemberIdAndIsReadTrue(teamMemberId);
+    public List<NotificationDTO> getReadNotifications(int teamMemberId) {
+        return notifRepository.findByTeamMemberIdAndIsReadTrue(teamMemberId)
+            .stream()
+            .map(this::convertToDTO)
+            .collect(Collectors.toList()
+        );
     }
 
-    //mark notifications as read
+    //mark notification as read
     public void markAsRead(int notificationId) {
         Notification notif = notifRepository.findById(notificationId)
                 .orElseThrow(() -> new RuntimeException("Notification not found."));
@@ -125,10 +136,29 @@ public class NotificationService {
         notifRepository.save(notif);
     }
 
+    //mark notification as unread
+    public void markAsUnread(int notificationId) {
+        Notification notif = notifRepository.findById(notificationId)
+                .orElseThrow(() -> new RuntimeException("Notification not found."));
+
+        notif.setIsRead(false);
+        notifRepository.save(notif);
+    }
+
     //delete a notification
     public void deleteNotification(int notificationId) {
         notifRepository.deleteById(notificationId);
     }
 
-
+    private NotificationDTO convertToDTO(Notification notification) {
+        return new NotificationDTO(
+            notification.getNotificationId(),
+            notification.getMessage(),
+            notification.getType(),
+            notification.getIsRead(),
+            notification.getCreatedAt(),
+            notification.getTeamMember().getAccountId(),
+            notification.getTask() != null ? notification.getTask().getTaskId() : null
+        );
+    }
 }

@@ -70,7 +70,7 @@ public class Notification {
         this.createdAt = createdAt;
     }
 
-    public boolean isIsRead() {
+    public boolean getIsRead() {
         return isRead;
     }
 
