@@ -1,15 +1,11 @@
 package com.example.task_manager.repository_tests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -19,7 +15,6 @@ import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
-import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.repository.IsAssignedRepository;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
@@ -28,6 +23,7 @@ import com.example.task_manager.repository.TeamRepository;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class IsAssignedRepositoryTest {
+
     @Autowired
     private IsAssignedRepository isAssignedRepository;
 
@@ -40,48 +36,27 @@ public class IsAssignedRepositoryTest {
     @Autowired
     private TeamRepository teamRepository;
 
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
+    private Team createUniqueTeam() {
+        return teamRepository.save(new Team("Team_" + System.nanoTime(), null));
+    }
 
-    private Task task;
-    private TeamMember teamMember;
-    private Team team;
-    private IsAssigned assignment;
+    private TeamMember createUniqueTeamMember() {
+        return teamMemberRepository.save(new TeamMember("User_" + System.nanoTime(), "user_" + System.nanoTime() + "@example.com", "defaultpw"));
+    }
 
-    @BeforeEach
-    void setUp() {
-        // Clear all previous data
-        isAssignedRepository.deleteAllInBatch();
-        taskRepository.deleteAllInBatch();
-        teamRepository.deleteAllInBatch();
-        authInfoRepository.deleteAllInBatch();
-        teamMemberRepository.deleteAllInBatch();
-        
-
-        // Create and save a Team
-        team = new Team();
-        team.setTeamName("Development Team");
-        team = teamRepository.save(team);
-
-        // Create and save a Team Member
-        teamMember = new TeamMember("John Doe", "john" + System.nanoTime() + "@example.com","defaultpw");
-        teamMember = teamMemberRepository.save(teamMember);
-
-        // Create and save a Task
-        task = new Task();
-        task.setTitle("Implement Feature X");
-        task.setStatus("Open");
-        task.setTeam(team);
-        task.setDateCreated(LocalDate.now());
-        task = taskRepository.save(task);
-
-        // Create and save an assignment
-        assignment = new IsAssigned(task, teamMember, team);
-        assignment = isAssignedRepository.save(assignment);
+    private Task createUniqueTask(Team team) {
+        return taskRepository.save(new Task("Task_" + System.nanoTime(), "Task description", team, false, "Open", LocalDate.now()));
     }
 
     @Test
     void testSaveAssignment() {
+        Team team = createUniqueTeam();
+        TeamMember teamMember = createUniqueTeamMember();
+        Task task = createUniqueTask(team);
+
+        IsAssigned assignment = new IsAssigned(task, teamMember, team);
+        assignment = isAssignedRepository.save(assignment);
+
         assertNotNull(assignment);
         assertEquals(task.getTaskId(), assignment.getTask().getTaskId());
         assertEquals(teamMember.getAccountId(), assignment.getTeamMember().getAccountId());
@@ -89,6 +64,13 @@ public class IsAssignedRepositoryTest {
 
     @Test
     void testFindByTeamMemberAndTask() {
+        Team team = createUniqueTeam();
+        TeamMember teamMember = createUniqueTeamMember();
+        Task task = createUniqueTask(team);
+
+        IsAssigned assignment = new IsAssigned(task, teamMember, team);
+        isAssignedRepository.save(assignment);
+
         Optional<IsAssigned> foundAssignment = isAssignedRepository.findByTeamMemberAndTask(teamMember, task);
         assertTrue(foundAssignment.isPresent());
         assertEquals(assignment.getId(), foundAssignment.get().getId());
@@ -96,12 +78,26 @@ public class IsAssignedRepositoryTest {
 
     @Test
     void testExistsByTeamMemberAndTask() {
+        Team team = createUniqueTeam();
+        TeamMember teamMember = createUniqueTeamMember();
+        Task task = createUniqueTask(team);
+
+        IsAssigned assignment = new IsAssigned(task, teamMember, team);
+        isAssignedRepository.save(assignment);
+
         boolean exists = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMember.getAccountId(), task.getTaskId());
         assertTrue(exists);
     }
 
     @Test
     void testFindAssignmentsByTeamMember() {
+        Team team = createUniqueTeam();
+        TeamMember teamMember = createUniqueTeamMember();
+        Task task = createUniqueTask(team);
+
+        IsAssigned assignment = new IsAssigned(task, teamMember, team);
+        isAssignedRepository.save(assignment);
+
         Collection<IsAssigned> assignments = isAssignedRepository.findByTeamMember_AccountId(teamMember.getAccountId());
         assertNotNull(assignments);
         assertEquals(1, assignments.size());
@@ -110,6 +106,13 @@ public class IsAssignedRepositoryTest {
 
     @Test
     void testDeleteAssignment() {
+        Team team = createUniqueTeam();
+        TeamMember teamMember = createUniqueTeamMember();
+        Task task = createUniqueTask(team);
+
+        IsAssigned assignment = new IsAssigned(task, teamMember, team);
+        assignment = isAssignedRepository.save(assignment);
+
         isAssignedRepository.delete(assignment);
         boolean exists = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMember.getAccountId(), task.getTaskId());
         assertFalse(exists);
@@ -131,5 +134,27 @@ public class IsAssignedRepositoryTest {
     void testExistsByNonExistentAssignment() {
         boolean exists = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(9999, 9999);
         assertFalse(exists);
+    }
+
+    @Test
+    void testFindAssignmentsByTask() {
+        Team team = createUniqueTeam();
+        Task task = createUniqueTask(team);
+
+        TeamMember teamMember1 = createUniqueTeamMember();
+        TeamMember teamMember2 = createUniqueTeamMember();
+
+        IsAssigned assignment1 = new IsAssigned(task, teamMember1, team);
+        isAssignedRepository.save(assignment1);
+
+        IsAssigned assignment2 = new IsAssigned(task, teamMember2, team);
+        isAssignedRepository.save(assignment2);
+
+        Collection<IsAssigned> assignmentsForTask = isAssignedRepository.findByTask(task);
+
+        assertNotNull(assignmentsForTask);
+        assertEquals(2, assignmentsForTask.size()); // Since two team members were assigned to the task
+        assertTrue(assignmentsForTask.stream().anyMatch(a -> a.getTeamMember().getAccountId() == teamMember1.getAccountId()));
+        assertTrue(assignmentsForTask.stream().anyMatch(a -> a.getTeamMember().getAccountId() == teamMember2.getAccountId()));
     }
 }
