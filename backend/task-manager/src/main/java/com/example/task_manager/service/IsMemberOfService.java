@@ -19,14 +19,17 @@ public class IsMemberOfService {
 	private final IsMemberOfRepository isMemberOfRepository;
 	private final TeamRepository teamRepository;
 	private final TeamMemberRepository teamMemberRepository;
+	private final NotificationService notifService;
 
 	// Constructor injection for required repositories
 	public IsMemberOfService(IsMemberOfRepository isMemberOfRepository, 
-							 TeamRepository teamRepository, 
-							 TeamMemberRepository teamMemberRepository) {
+							TeamRepository teamRepository, 
+							TeamMemberRepository teamMemberRepository,
+							NotificationService notifService) {
 		this.isMemberOfRepository = isMemberOfRepository;
 		this.teamRepository = teamRepository;
 		this.teamMemberRepository = teamMemberRepository;
+		this.notifService = notifService;
 	}
 
 	/**
@@ -67,6 +70,9 @@ public class IsMemberOfService {
 		team = teamRepository.findById(teamId).orElseThrow(() -> new RuntimeException("RAHHHH can't find it"));
 		System.out.println("bruh");
 
+		//call assigned to team notification method
+		notifService.notifyTeamAssignment(teamMember, team);
+
 		// Return DTO
 		return convertToDTO(isMemberOf);
 	}
@@ -91,6 +97,9 @@ public class IsMemberOfService {
 			.orElseThrow(() -> new RuntimeException("Membership not found."));
 
 		isMemberOfRepository.delete(isMemberOf);
+
+		//call unassigned from team notification method
+		notifService.notifyTeamUnassignment(teamMember, team);
 
 		// Return removed membership as DTO
 		return convertToDTO(isMemberOf);

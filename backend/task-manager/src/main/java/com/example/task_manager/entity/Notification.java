@@ -26,10 +26,11 @@ public class Notification {
     private Task task;
 
     @ManyToOne
-    @JoinColumn(name = "team_member_id", nullable = false)
+    @JoinColumn(name = "team_member_id", referencedColumnName = "accountId", nullable = false)
     private TeamMember teamMember;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
     private NotificationType type; //predefined messages, so the user does not decide what the message says
 
     @PrePersist
