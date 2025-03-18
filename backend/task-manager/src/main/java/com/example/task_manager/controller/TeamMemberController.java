@@ -5,6 +5,7 @@ import com.example.task_manager.DTO.PasswordChangeRequestDTO;
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
+import com.example.task_manager.enums.TaskPriority;
 import com.example.task_manager.service.TeamMemberService;
 
 import java.util.List;

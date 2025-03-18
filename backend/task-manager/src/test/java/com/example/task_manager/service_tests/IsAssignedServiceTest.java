@@ -14,6 +14,7 @@ import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.enums.TaskPriority;
 import com.example.task_manager.repository.IsAssignedRepository;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
@@ -62,6 +63,7 @@ public class IsAssignedServiceTest {
             team,
             false,
             "Open",
+            TaskPriority.LOW,
             LocalDate.now()
         ));
     }

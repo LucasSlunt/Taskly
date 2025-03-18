@@ -416,7 +416,8 @@ All API requests should be made to the following base URL (Spring Boot's default
         "isLocked": false,
         "status": "To-Do",
         "dueDate": "2025-03-01",
-        "teamId": 3
+        "teamId": 3,
+        "priority": "HIGH"
     }
     ```
     - **Response Body:**
@@ -428,7 +429,8 @@ All API requests should be made to the following base URL (Spring Boot's default
         "isLocked": false,
         "status": "To-Do",
         "dueDate": "2025-03-01",
-        "teamId": 3
+        "teamId": 3,
+        "priority": "HIGH"
     }
     ```
     - **Description:** Creates a task in the database.
@@ -444,7 +446,8 @@ All API requests should be made to the following base URL (Spring Boot's default
         "description": "Updated Description",
         "isLocked": false,
         "status": "In Progress",
-        "dueDate": "2025-04-01"
+        "dueDate": "2025-04-01",
+        "priority": "HIGH"
     }
     ```
     - **Response Body:**
@@ -456,7 +459,8 @@ All API requests should be made to the following base URL (Spring Boot's default
         "isLocked": false,
         "status": "In Progress",
         "dueDate": "2025-04-01",
-        "teamId": 3
+        "teamId": 3,
+        "priority": "HIGH"
     }
     ```
     - **Description:** Updates the details of a task.
@@ -510,7 +514,8 @@ All API requests should be made to the following base URL (Spring Boot's default
             "isLocked": false,
             "status": "In Progress",
             "dueDate": "2024-04-01",
-            "teamId": 1
+            "teamId": 1,
+            "priority": "HIGH"
         },
         {
             "taskId": 102,
@@ -519,7 +524,8 @@ All API requests should be made to the following base URL (Spring Boot's default
             "isLocked": true,
             "status": "Pending",
             "dueDate": "2024-04-05",
-            "teamId": 2
+            "teamId": 2,
+            "priority": "MEDIUM"
         }
     ]
     ```
@@ -558,6 +564,7 @@ All API requests should be made to the following base URL (Spring Boot's default
     - `isLocked` (boolean, optional): Whether the task is locked. Defaults to `null` if not provided.
     - `status` (string, optional): The task status (e.g., "To-Do", "In Progress", "Done"). Defaults to `null` if not provided.
     - `dueDate` (string, optional): The due date of the task in `YYYY-MM-DD` format.
+    - `priority` (string, required): The priority of tha task. Must be one of **LOW, MEDIUM, or HIGH**.
 
 ---
 

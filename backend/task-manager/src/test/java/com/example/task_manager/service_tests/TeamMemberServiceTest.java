@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import jakarta.transaction.Transactional;
 
 import com.example.task_manager.DTO.TaskDTO;
@@ -20,6 +21,7 @@ import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.enums.TaskPriority;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
@@ -88,6 +90,7 @@ public class TeamMemberServiceTest {
             team, 
             false, 
             "Open", 
+            TaskPriority.LOW,
             LocalDate.now()
         ));
     }
@@ -103,7 +106,8 @@ public class TeamMemberServiceTest {
             "Open",
             LocalDate.now().plusDays(5),
             null,
-            team.getTeamId()
+            team.getTeamId(), 
+            TaskPriority.LOW
         );
 
         TaskDTO newTaskDTO = teamMemberService.createTask(taskRequestDTO);
@@ -120,7 +124,7 @@ public class TeamMemberServiceTest {
         Team team = createUniqueTeam(teamLead);
 
         TaskRequestDTO taskRequestDTO = new TaskRequestDTO(
-            null, "Task Description", false, "Open", LocalDate.now(), null, team.getTeamId()
+            null, "Task Description", false, "Open", LocalDate.now(), null, team.getTeamId(), TaskPriority.LOW
         );
 
         Exception exception = assertThrows(RuntimeException.class, () -> 
@@ -132,7 +136,7 @@ public class TeamMemberServiceTest {
     @Test
     void testCreateTaskWithNullTeam() {
         TaskRequestDTO taskRequestDTO = new TaskRequestDTO(
-            "New Task", "Task Description", false, "Open", LocalDate.now(), null, null
+            "New Task", "Task Description", false, "Open", LocalDate.now(), null, null, TaskPriority.LOW
         );
 
         Exception exception = assertThrows(RuntimeException.class, () -> 
@@ -174,7 +178,8 @@ public class TeamMemberServiceTest {
             true,
             "In Progress",
             LocalDate.now(),
-            team.getTeamId()
+            team.getTeamId(),
+            TaskPriority.MEDIUM
         );
 
         TaskDTO updatedTask = teamMemberService.editTask(task.getTaskId(), taskDTO);
