@@ -39,6 +39,14 @@ function EditTaskForm({task, team}){
                                     ))}
                                 </div>
                             </label>
+                            <label>
+                                Priority
+                                <select name="" id="" defaultValue={task.priority}{...register("priority")}>
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </label>
                             <label className='majorLabel'>
                             Discription
                             
