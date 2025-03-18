@@ -32,8 +32,8 @@ public class TaskService {
 	 */
 	public void notifyMembers(int taskId, String message) {
 		Task task = taskRepository.findById(taskId)
-			.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
-	
+				.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+
 		Set<IsAssigned> assignedMembers = task.getAssignedMembers();
 
 		if (assignedMembers.isEmpty()) {
@@ -50,6 +50,8 @@ public class TaskService {
 			//should use the DTO's to avoid sharing database info with the frontend
 		}
 	}
+	
+	
 
 	/**
 	 * Converts TeamMember entity to TeamMemberDTO.
