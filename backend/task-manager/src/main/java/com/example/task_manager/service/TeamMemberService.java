@@ -1,6 +1,7 @@
 package com.example.task_manager.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -206,21 +207,32 @@ public class TeamMemberService {
 
 	public List<TaskDTO> getAssignedTasks(int teamMemberId) {
 		return isAssignedRepository.findByTeamMember_AccountId(teamMemberId).stream()
-				.map(isAssigned -> convertToDTO(isAssigned.getTask()))
-				.collect(Collectors.toList());
+            .map(isAssigned -> {
+                Task task = isAssigned.getTask();
+
+				List<TeamMemberDTO> assignedMembers = (task.getAssignedMembers() != null ? task.getAssignedMembers() : new ArrayList<>())
+					.stream()
+					.map(assignment -> convertToDTO(((IsAssigned) assignment).getTeamMember()))
+					.collect(Collectors.toList());
+				
+                TaskDTO taskDTO = convertToDTO(task);
+				taskDTO.setAssignedMembers(assignedMembers);
+				
+                return taskDTO;
+            })
+            .collect(Collectors.toList());
 	}
 
 	public List<TeamDTO> getTeamsForMember(int teamMemberId) {
 		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
-            .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+				.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
 		return teamMember.getTeams().stream()
-			.map(isMemberOf -> new TeamDTO(
-				isMemberOf.getTeam().getTeamId(),
-				isMemberOf.getTeam().getTeamName(),
-				isMemberOf.getTeam().getTeamLead().getAccountId()
-			))
-			.collect(Collectors.toList());
+				.map(isMemberOf -> new TeamDTO(
+						isMemberOf.getTeam().getTeamId(),
+						isMemberOf.getTeam().getTeamName(),
+						isMemberOf.getTeam().getTeamLead().getAccountId()))
+				.collect(Collectors.toList());
 	}
 			
 	/*
@@ -238,6 +250,10 @@ public class TeamMemberService {
 	 * Converts a Task entity to a TaskDTO.
 	 */
 	private TaskDTO convertToDTO(Task task) {
+		List<TeamMemberDTO> assignedMembers = task.getAssignedMembers().stream()
+        .map(assignment -> convertToDTO(assignment.getTeamMember()))
+        .collect(Collectors.toList());
+
 		return new TaskDTO(
 			task.getTaskId(),
 			task.getTitle(),
@@ -245,7 +261,9 @@ public class TeamMemberService {
 			task.isLocked(),
 			task.getStatus(),
 			task.getDateCreated(),
-			task.getTeam() != null ? task.getTeam().getTeamId() : null
+			task.getDueDate(),
+			task.getTeam().getTeamId(),
+			assignedMembers
 		);
 	}
 
