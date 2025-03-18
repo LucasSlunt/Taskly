@@ -507,8 +507,22 @@ All API requests should be made to the following base URL (Spring Boot's default
             "description": "Develop the login functionality for the app",
             "isLocked": false,
             "status": "In Progress",
+            "dateCreated": "2024-03-04",
             "dueDate": "2024-04-01",
-            "teamId": 1
+            "teamId": 1,
+            "assignedMembers": 
+            [
+                {
+                    "accountId": 1,
+                    "userName": "Name",
+                    "userEmail": "email@ex.com"
+                },
+                {
+                    "accountId": 2,
+                    "userName": "Name2",
+                    "userEmail": "email_2@ex.com"
+                }
+            ]
         },
         {
             "taskId": 102,
@@ -516,8 +530,9 @@ All API requests should be made to the following base URL (Spring Boot's default
             "description": "Create a wireframe for the homepage",
             "isLocked": true,
             "status": "Pending",
-            "dueDate": "2024-04-05",
-            "teamId": 2
+            "dueDate": null,
+            "teamId": 2,
+            "assignedMembers": []
         }
     ]
     ```
