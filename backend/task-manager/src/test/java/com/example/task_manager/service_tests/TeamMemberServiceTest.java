@@ -276,27 +276,44 @@ public class TeamMemberServiceTest {
 		assertEquals(team2.getTeamLead().getAccountId(), teamsForMember.get(1).getTeamLeadId());
 	}
 
-// 	@Test
-//     void testGetAllTeams() {
-//         teamRepository.deleteAll();
+	@Test
+    void testGetAllTeams() {
+        TeamMember teamMember = createUniqueTeamMember();
+        Team team = createUniqueTeam(teamMember);
+        Team team2 = createUniqueTeam(teamMember);
 
-//         TeamMember teamMember = createUniqueTeamMember();
-//         Team team = createUniqueTeam(teamMember);
-//         Team team2 = createUniqueTeam(teamMember);
+		List<TeamDTO> teams = adminService.getAllTeams();
 
-// 		List<TeamDTO> teams = adminService.getAllTeams();
+		System.out.println("Found " + teams.size() + " teams in DB");
 
-// 		System.out.println("Found " + teams.size() + " teams in DB");
+        assertTrue(teams.size() >= 2);
 
-// 		assertNotNull(teams);
-// 		assertEquals(2, teams.size());
+        TeamDTO team_one = teams.stream()
+        .filter(t -> t.getTeamId() == team.getTeamId())
+        .findFirst()
+        .orElseThrow(() -> new AssertionError("Team 1 not found in the list"));
 
-// 		assertEquals(team.getTeamId(), teams.get(0).getTeamId());
-// 		assertEquals(team.getTeamName(), teams.get(0).getTeamName());
-// 		assertEquals(team.getTeamLead().getAccountId(), teams.get(0).getTeamLeadId());
+        TeamDTO team_two = teams.stream()
+            .filter(t -> t.getTeamId() == team2.getTeamId())
+            .findFirst()
+            .orElseThrow(() -> new AssertionError("Team 2 not found in the list"));
+        
+        TeamDTO team_one = teams.stream()
+            .filter(t -> t.getTeamId() == team.getTeamId())
+            .findFirst()
+            .orElseThrow(() -> new AssertionError("Team 1 not found in the list"));
 
-// 		assertEquals(team2.getTeamId(), teams.get(1).getTeamId());
-// 		assertEquals(team2.getTeamName(), teams.get(1).getTeamName());
-// 		assertEquals(team2.getTeamLead().getAccountId(), teams.get(1).getTeamLeadId());
-// 	}
- }
+        TeamDTO team_two = teams.stream()
+            .filter(t -> t.getTeamId() == team2.getTeamId())
+            .findFirst()
+            .orElseThrow(() -> new AssertionError("Team 2 not found in the list"));
+
+		assertEquals(team.getTeamId(), team_one.getTeamId());
+		assertEquals(team.getTeamName(), team_one.getTeamName());
+		assertEquals(team.getTeamLead().getAccountId(), team_one.getTeamLeadId());
+
+		assertEquals(team2.getTeamId(), team_two.getTeamId());
+		assertEquals(team2.getTeamName(), team_two.getTeamName());
+		assertEquals(team2.getTeamLead().getAccountId(), team_two.getTeamLeadId());
+	}
+}

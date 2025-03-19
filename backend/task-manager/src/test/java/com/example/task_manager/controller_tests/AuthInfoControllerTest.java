@@ -43,7 +43,7 @@ public class AuthInfoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(1))
                 .andExpect(jsonPath("$.userName").value(mockUser.getUserName()))
-                .andExpect(jsonPath("$.isAdmin").value(false));
+                .andExpect(jsonPath("$.role").value("ADMIN"));
 
         verify(authInfoService, times(1)).authenticateUser(1, "correctpassword");
     }
@@ -63,7 +63,7 @@ public class AuthInfoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(2))
                 .andExpect(jsonPath("$.userName").value(mockAdmin.getUserName()))
-                .andExpect(jsonPath("$.isAdmin").value(true));
+                .andExpect(jsonPath("$.role").value("ADMIN"));
 
         verify(authInfoService, times(1)).authenticateUser(2, "adminpassword");
     }
