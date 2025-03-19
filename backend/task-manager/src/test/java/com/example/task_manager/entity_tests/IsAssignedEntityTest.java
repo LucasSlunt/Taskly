@@ -91,29 +91,10 @@ void testCascadeDeleteWithTask() {
     entityManager.persist(isAssigned);
     entityManager.flush(); 
     entityManager.refresh(task);
-    entityManager.refresh(teamMember);
-    entityManager.refresh(team);
     entityManager.refresh(isAssigned);
 
-    System.out.println("\nbruh isAssigned: " + isAssigned.getTask().getAssignedMembers()+"\n");
-    System.out.println("\nbruh task members: " + task.getAssignedMembers()+"\n");
-    System.out.println("\nbruh task: " +  entityManager.getId(task)+"\n");
-
     // Remove Task and ensure IsAssigned is also deleted
-    entityManager.remove(task);
-    entityManager.flush();
-
-    entityManager.refresh(task);
-    entityManager.refresh(teamMember);
-    entityManager.refresh(team);
-
-    entityManager.remove(task);
-    entityManager.flush();
-
-
-    System.out.println("\nbruh isAssigned 2: " + isAssigned.getTask().getAssignedMembers()+"\n");
-    System.out.println("\nbruh task members 2: " + task.getAssignedMembers()+"\n");
-    System.out.println("\nbruh task 2: " +  entityManager.getId(task)+"\n");
+    entityManager.remove(isAssigned.getTask());
 
     assertNull(entityManager.find(IsAssigned.class, isAssigned.getId()));
 }

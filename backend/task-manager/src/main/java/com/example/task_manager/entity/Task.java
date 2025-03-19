@@ -33,7 +33,7 @@ public class Task {
     @JoinColumn(name = "teamId", nullable = true)
     private Team team;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private Set<IsAssigned> assignedMembers = new HashSet<>();
 
     public Task() {}
