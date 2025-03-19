@@ -273,7 +273,7 @@ All API requests should be made to the following base URL (Spring Boot's default
     {
         "id": 1,
         "name": "Test User",
-        "isAdmin": true
+        "role": "TEAM_MEMBER"
     }
     ```
 
@@ -288,9 +288,22 @@ All API requests should be made to the following base URL (Spring Boot's default
     - **Response Body:***
     ```json
     {
-        "isAdmin": true
+        "role": "TEAM_MEMBER"
     }   
     ```
+    - **Response Body:**
+    ```json
+    {
+        "adminId": 2
+    }
+    ```
+    - **Response Body:***
+    ```json
+    {
+        "role": "ADMIN"
+    }   
+    ```
+
 ---
 
 ## **IsAssignedController**
