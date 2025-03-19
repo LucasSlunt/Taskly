@@ -3,6 +3,7 @@ package com.example.task_manager.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.service.AuthInfoService;
 
 import jakarta.persistence.*;
@@ -21,6 +22,10 @@ public class TeamMember {
     @Column(nullable = false, unique = true)
     private String userEmail;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RoleType role;
+
     @OneToOne(mappedBy = "teamMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private AuthInfo authInfo;
 
@@ -35,6 +40,7 @@ public class TeamMember {
     public TeamMember(String userName, String userEmail, String rawPassword) {
         this.userName = userName;
         this.userEmail = userEmail;
+        this.role = RoleType.TEAM_MEMBER;
         String userSalt = AuthInfoService.generateSalt();
         this.authInfo = new AuthInfo(AuthInfoService.hashPassword(rawPassword,userSalt), userSalt, this);
         this.teams = new HashSet<>();
@@ -104,6 +110,14 @@ public class TeamMember {
     //if assignedTasks is null, an empty set is initialized
     public void setAssignedTasks(Set<IsAssigned> assignedTasks) {
         this.assignedTasks = (assignedTasks != null) ? assignedTasks : new HashSet<>();
+    }
+
+    public RoleType getRole() {
+        return role;
+    }
+
+    public void setRole(RoleType role) {
+        this.role = role;
     }
 
 }

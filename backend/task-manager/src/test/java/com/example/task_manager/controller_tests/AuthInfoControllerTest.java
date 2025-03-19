@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.example.task_manager.DTO.AuthInfoDTO;
 import com.example.task_manager.controller.AuthController;
+import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.service.AuthInfoService;
 
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ public class AuthInfoControllerTest {
      */
     @Test
     void testLogin_Success() throws Exception {
-        AuthInfoDTO mockUser = new AuthInfoDTO(1, "User_" + System.nanoTime(), false);
+        AuthInfoDTO mockUser = new AuthInfoDTO(1, "User_" + System.nanoTime(), RoleType.ADMIN);
 
         when(authInfoService.authenticateUser(1, "correctpassword")).thenReturn(mockUser);
 
@@ -52,7 +53,7 @@ public class AuthInfoControllerTest {
      */
     @Test
     void testLogin_AdminSuccess() throws Exception {
-        AuthInfoDTO mockAdmin = new AuthInfoDTO(2, "Admin_" + System.nanoTime(), true);
+        AuthInfoDTO mockAdmin = new AuthInfoDTO(2, "Admin_" + System.nanoTime(), RoleType.ADMIN);
 
         when(authInfoService.authenticateUser(2, "adminpassword")).thenReturn(mockAdmin);
 
