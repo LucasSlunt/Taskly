@@ -192,7 +192,7 @@ All API requests should be made to the following base URL (Spring Boot's default
     ```
     - **Description:** Returns a list of every admin in the database.
 
- **Get All Team Members:** `GET /team-members`
+- **Get All Team Members:** `GET /team-members`
     - **Response Body:** 
     ```json
     [
@@ -210,7 +210,7 @@ All API requests should be made to the following base URL (Spring Boot's default
     ```
     - **Description:** Returns a list of every team member in the database.
 
-**Get All Teams:** `GET /all-teams`
+- **Get All Teams:** `GET /all-teams`
     - **Response Body:**
     ```json
     [
@@ -226,7 +226,7 @@ All API requests should be made to the following base URL (Spring Boot's default
     ```
     - **Description:** Returns a list of every team in the database.
 
-**Get Admin by ID** `GET /{adminId}`
+- **Get Admin by ID** `GET /{adminId}`
     - **Parameters:** 
         - `adminId` (integer, required): The ID of the admin being retrieved.
     - **Response Body:**
@@ -239,7 +239,7 @@ All API requests should be made to the following base URL (Spring Boot's default
     ```
     - **Description:** Returns the id, name, and email of the requested admin.
 
-**Get Team Member by ID** `GET /team-member/{teamMemberId}`
+- **Get Team Member by ID** `GET /team-member/{teamMemberId}`
     - **Parameters:** 
         - `teamMemberId` (integer, required): The ID of the team member being retrieved.
     - **Response Body:**
