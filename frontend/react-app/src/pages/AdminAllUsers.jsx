@@ -6,9 +6,9 @@ import {useState, useEffect} from 'react'
 
 function AdminAllUsers(){
     return(
-        <div className='page'>
+        <div className='pageContainer'>
             <Header/>
-            <div>
+            <div className='pageBody'>
                 <UserTable/>
             </div>
 

@@ -1,7 +1,4 @@
-*, html {
-    margin:0;
-    padding:0;  
- }
+
 
  body {
     background-color:#BFCDE0;
@@ -59,11 +56,11 @@ td {
 }
 
 .teamButton {
-    width: 400px;
-    height: 75px;
+    width: 70%;
+    height: 100%;
+    padding: 2%;
     border: none;
     border-radius: 15px;
-    font-size: 1.25em;
     background-color:#3B3355;
     color: white;
 }
@@ -82,7 +79,6 @@ td {
 tbody {
     width: 100%;
 }
-
 .miniButton {
     padding: 3px 6px;
     background-color:#3B3355;

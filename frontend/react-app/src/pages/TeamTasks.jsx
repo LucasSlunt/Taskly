@@ -133,10 +133,9 @@ function TeamTasks(){
 
 
     return (
-        <div className="team-tasks-page">
-          <Header/>
-          
-          <div className="content-wrapper">
+      <div className='pageContainer'>
+        <Header/>
+        <div className='pageBody'>
             <h2>Team 1 Tasks</h2>
             <TaskList
             dataToUse={setUpDataTasksToDo(fakeData)}
