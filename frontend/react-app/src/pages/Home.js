@@ -33,7 +33,6 @@ if(ansArr.length > 0){
 
 
 
-
 const Home = () => {
     const headerAndAccessor = [
         {
@@ -63,13 +62,18 @@ const Home = () => {
     const [teams, setTeams] = useState([])
     const [loading, setLoading] = useState(true);
     useEffect(()=>{
-        try {
-            getTeamsForMember(cookies.userInfo.accountId).then((response)=>setTeams(response))
-        } catch (error) {
-            console.log(error)
-        }finally{
-            setLoading(false)
+        async function loadAPIInfo() {
+            try {
+                const data = await getTeamsForMember(cookies.userInfo.accountId)
+                setTeams(data)
+            } catch (error) {
+                console.log(error)
+            }finally{
+                setLoading(false)
+            }
         }
+        loadAPIInfo();
+    
     },[])
     if(loading){
         return (<div>Loading...</div>)
