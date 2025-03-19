@@ -10,9 +10,9 @@ function AdminAllUsers(){
             <Header/>
             <div className='pageBody'>
                 <UserTable/>
+                <a href="create-account"><button >Create New Account</button></a>
             </div>
 
-            <a href="create-account"><button >Create New Account</button></a>
         </div>
     )
 }
