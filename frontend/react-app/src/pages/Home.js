@@ -85,27 +85,29 @@ const Home = () => {
 
 
         <main className='pageBody'>
-            <div id="teamSection">
-                <h2>My Teams</h2>
-               
-                <div id="teamButtons" className='teamButtonContainer'>
-                    {teams.map((team)=>(
-                        <Link className="teamButton" to='/team-tasks' >
-                        <button className="teamButton headerText1"key={team.teamId}>{team.teamName}</button>
-                        </Link>
-                        
-                    ))}
-                </div>
-            </div>
-
-
-            <div id="taskSection">
-                <h2>My Tasks (Preview)</h2>
-                <TaskList
-                dataToUse={setUpDataTasksToDo(fakeData)}
-                headersAndAccessors={headerAndAccessor}
-                />
+            <div className='rowFlexbox'>
+                <div id="teamSection">
+                    <h2>My Teams</h2>
                 
+                    <div id="teamButtons" className='teamButtonContainer'>
+                        {teams.map((team)=>(
+                            <Link className="teamButton headerText1" to='/team-tasks' key={team.teamId} >
+                            {team.teamName}
+                            </Link>
+                            
+                        ))}
+                    </div>
+                </div>
+
+
+                <div id="taskSection">
+                    <h2>My Tasks (Preview)</h2>
+                    <TaskList
+                    dataToUse={setUpDataTasksToDo(fakeData)}
+                    headersAndAccessors={headerAndAccessor}
+                    />
+                    
+                </div>
             </div>
         </main>
 
