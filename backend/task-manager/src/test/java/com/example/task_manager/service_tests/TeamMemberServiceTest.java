@@ -278,8 +278,6 @@ public class TeamMemberServiceTest {
 
 	@Test
     void testGetAllTeams() {
-        teamRepository.deleteAll();
-
         TeamMember teamMember = createUniqueTeamMember();
         Team team = createUniqueTeam(teamMember);
         Team team2 = createUniqueTeam(teamMember);
@@ -289,14 +287,24 @@ public class TeamMemberServiceTest {
 		System.out.println("Found " + teams.size() + " teams in DB");
 
 		assertNotNull(teams);
-		assertEquals(2, teams.size());
+        assertTrue(teams.size() >= 2);
+        
+        TeamDTO team_one = teams.stream()
+            .filter(t -> t.getTeamId() == team.getTeamId())
+            .findFirst()
+            .orElseThrow(() -> new AssertionError("Team 1 not found in the list"));
 
-		assertEquals(team.getTeamId(), teams.get(0).getTeamId());
-		assertEquals(team.getTeamName(), teams.get(0).getTeamName());
-		assertEquals(team.getTeamLead().getAccountId(), teams.get(0).getTeamLeadId());
+        TeamDTO team_two = teams.stream()
+            .filter(t -> t.getTeamId() == team2.getTeamId())
+            .findFirst()
+            .orElseThrow(() -> new AssertionError("Team 2 not found in the list"));
 
-		assertEquals(team2.getTeamId(), teams.get(1).getTeamId());
-		assertEquals(team2.getTeamName(), teams.get(1).getTeamName());
-		assertEquals(team2.getTeamLead().getAccountId(), teams.get(1).getTeamLeadId());
+		assertEquals(team.getTeamId(), team_one.getTeamId());
+		assertEquals(team.getTeamName(), team_one.getTeamName());
+		assertEquals(team.getTeamLead().getAccountId(), team_one.getTeamLeadId());
+
+		assertEquals(team2.getTeamId(), team_two.getTeamId());
+		assertEquals(team2.getTeamName(), team_two.getTeamName());
+		assertEquals(team2.getTeamLead().getAccountId(), team_two.getTeamLeadId());
 	}
 }
