@@ -29,7 +29,7 @@ public class Task {
     private LocalDate expectedCompletionDate;
     private LocalDate dueDate;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "teamId", nullable = true)
     private Team team;
 
