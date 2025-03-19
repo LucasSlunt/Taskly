@@ -10,6 +10,7 @@ import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.DTO.TeamRequestDTO;
 import com.example.task_manager.controller.TeamController;
+import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.service.TeamService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -105,8 +106,9 @@ public class TeamControllerTest {
         int teamMemberId = teamId + 1;
         String memberName = "John Doe " + teamId;
         String memberEmail = "john" + teamId + "@example.com";
+        RoleType role = RoleType.TEAM_MEMBER;
 
-        TeamMemberDTO mockTeamMember = new TeamMemberDTO(teamMemberId, memberName, memberEmail);
+        TeamMemberDTO mockTeamMember = new TeamMemberDTO(teamMemberId, memberName, memberEmail, role);
         List<TeamMemberDTO> teamMembers = Collections.singletonList(mockTeamMember);
 
         when(teamService.getTeamMembers(teamId)).thenReturn(teamMembers);

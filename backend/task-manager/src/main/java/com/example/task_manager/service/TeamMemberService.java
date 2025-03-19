@@ -242,7 +242,8 @@ public class TeamMemberService {
 		return new TeamMemberDTO(
 			teamMember.getAccountId(), 
 			teamMember.getUserName(), 
-			teamMember.getUserEmail()
+			teamMember.getUserEmail(),
+			teamMember.getRole()
 		);
 	}
 

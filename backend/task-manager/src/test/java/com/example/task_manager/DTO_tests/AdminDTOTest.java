@@ -5,11 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import com.example.task_manager.DTO.AdminDTO;
+import com.example.task_manager.enums.RoleType;
 
 public class AdminDTOTest {
     @Test
     void testDTOConstructorAndGetters() {
-        AdminDTO adminDTO = new AdminDTO(1, "John Doe", "john.doe@example.com");
+        AdminDTO adminDTO = new AdminDTO(1, "John Doe", "john.doe@example.com", RoleType.ADMIN);
 
         assertEquals(1, adminDTO.getAccountId());
         assertEquals("John Doe", adminDTO.getUserName());
@@ -18,7 +19,7 @@ public class AdminDTOTest {
 
     @Test
     void testDTOSetters() {
-        AdminDTO adminDTO = new AdminDTO(1, "John Doe", "john.doe@example.com");
+        AdminDTO adminDTO = new AdminDTO(1, "John Doe", "john.doe@example.com", RoleType.ADMIN);
 
         adminDTO.setAccountId(2);
         adminDTO.setUserName("Jane Doe");

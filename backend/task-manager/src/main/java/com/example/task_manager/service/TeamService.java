@@ -118,7 +118,7 @@ public class TeamService {
 	 * Converts a TeamMember entity to a TeamMemberDTO.
 	 */
 	private TeamMemberDTO convertToDTO(TeamMember teamMember) {
-        return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail());
+        return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail(), teamMember.getRole());
     }
 }
 

@@ -9,8 +9,8 @@ import org.bouncycastle.crypto.params.Argon2Parameters;
 import org.springframework.stereotype.Service;
 
 import com.example.task_manager.DTO.AuthInfoDTO;
-import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.repository.TeamMemberRepository;
 
 
@@ -43,12 +43,10 @@ public class AuthInfoService {
             throw new RuntimeException("Invalid Credentials");
         }
 
-        boolean isAdmin = isAdmin(teamMemberId);
-
         return new AuthInfoDTO(
             teamMember.getAccountId(),
             teamMember.getUserName(),
-            isAdmin
+            teamMember.getRole()
         );
     }
 
@@ -56,7 +54,8 @@ public class AuthInfoService {
         TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
                 .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
-        return teamMember instanceof Admin;
+        boolean is_admin = teamMember.getRole() == RoleType.ADMIN;
+        return is_admin;
     }
 
     public static String hashPassword(String plainTextPassword, String saltString){
