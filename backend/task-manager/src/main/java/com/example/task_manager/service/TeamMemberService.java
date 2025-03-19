@@ -16,6 +16,7 @@ import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.enums.TaskPriority;
 import com.example.task_manager.repository.IsAssignedRepository;
 import com.example.task_manager.repository.IsMemberOfRepository;
 import com.example.task_manager.repository.TaskRepository;
@@ -75,15 +76,17 @@ public class TeamMemberService {
 		}
 	
 		Team team = teamRepository.findById(request.getTeamId())
-			.orElseThrow(() -> new RuntimeException("Task must be assigned to a valid team"));
+				.orElseThrow(() -> new RuntimeException("Task must be assigned to a valid team"));
 
-
+		TaskPriority priority = request.getPriority() != null ? request.getPriority() : TaskPriority.LOW;
+			
 		Task task = new Task();
 		task.setTitle(request.getTitle());
 		task.setIsLocked(request.getIsLocked());
 		task.setStatus(request.getStatus());
 		task.setDateCreated(LocalDate.now());
 		task.setTeam(team);
+		task.setPriority(priority);
 
 		if (request.getDescription() != null) {
 			task.setDescription(request.getDescription());
@@ -143,6 +146,14 @@ public class TeamMemberService {
 		}
 		if (taskDTO.getDueDate() != null) {
 			task.setDueDate(taskDTO.getDueDate());
+		}
+
+		if (taskDTO.getPriority() != null) {
+			try {
+				task.setPriority(taskDTO.getPriority());
+			} catch (IllegalArgumentException e) {
+				throw new RuntimeException("Invalid priority value. Use: LOW, MEDIUM, or HIGH.");
+			}
 		}
 
 		task = taskRepository.save(task);
@@ -250,9 +261,10 @@ public class TeamMemberService {
 	 * Converts a Task entity to a TaskDTO.
 	 */
 	private TaskDTO convertToDTO(Task task) {
-		List<TeamMemberDTO> assignedMembers = task.getAssignedMembers().stream()
-        .map(assignment -> convertToDTO(assignment.getTeamMember()))
-        .collect(Collectors.toList());
+		List<TeamMemberDTO> assignedMembers = task.getAssignedMembers()
+			.stream()
+        	.map(assignment -> convertToDTO(assignment.getTeamMember()))
+        	.collect(Collectors.toList());
 
 		return new TaskDTO(
 			task.getTaskId(),
@@ -263,7 +275,8 @@ public class TeamMemberService {
 			task.getDateCreated(),
 			task.getDueDate(),
 			task.getTeam().getTeamId(),
-			assignedMembers
+			assignedMembers,
+			task.getPriority() != null ? task.getPriority() : TaskPriority.LOW
 		);
 	}
 

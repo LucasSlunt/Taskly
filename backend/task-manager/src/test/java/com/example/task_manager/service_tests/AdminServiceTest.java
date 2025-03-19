@@ -10,9 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-
 import jakarta.transaction.Transactional;
-
+import com.example.task_manager.enums.TaskPriority;
 import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
@@ -126,7 +125,7 @@ public class AdminServiceTest {
     @Test
     void testLockTask() {
         Team team = teamRepository.save(new Team("LockTeam-" + System.nanoTime(), null));
-        TaskRequestDTO taskRequest = new TaskRequestDTO("TaskToLock", "Lock Task Desc", false, "Open", LocalDate.now(), null, team.getTeamId());
+        TaskRequestDTO taskRequest = new TaskRequestDTO("TaskToLock", "Lock Task Desc", false, "Open", LocalDate.now(), null, team.getTeamId(), TaskPriority.MEDIUM);
         TaskDTO task = adminService.createTask(taskRequest);
 
         adminService.lockTask(task.getTaskId());
@@ -137,7 +136,7 @@ public class AdminServiceTest {
     @Test
     void testUnlockTask() {
         Team team = teamRepository.save(new Team("UnlockTeam-" + System.nanoTime(), null));
-        TaskRequestDTO taskRequest = new TaskRequestDTO("TaskToUnlock", "Unlock Task Desc", true, "Open", LocalDate.now(), null, team.getTeamId());
+        TaskRequestDTO taskRequest = new TaskRequestDTO("TaskToUnlock", "Unlock Task Desc", true, "Open", LocalDate.now(), null, team.getTeamId(), TaskPriority.MEDIUM);
         TaskDTO task = adminService.createTask(taskRequest);
 
         adminService.unlockTask(task.getTaskId());
