@@ -107,11 +107,11 @@ public class AuthInfoControllerTest {
      */
     @Test
     void testIsAdmin_Success_AdminUser() throws Exception {
-        when(authInfoService.isAdmin(2)).thenReturn(true);
+        when(authInfoService.isAdmin(2)).thenReturn(RoleType.ADMIN);
 
         mockMvc.perform(get("/auth-info/2/is-admin"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"));
+                .andExpect(jsonPath("$").value("ADMIN"));
 
         verify(authInfoService, times(1)).isAdmin(2);
     }
@@ -121,11 +121,11 @@ public class AuthInfoControllerTest {
      */
     @Test
     void testIsAdmin_Success_NonAdminUser() throws Exception {
-        when(authInfoService.isAdmin(1)).thenReturn(false);
+        when(authInfoService.isAdmin(1)).thenReturn(RoleType.ADMIN);
 
         mockMvc.perform(get("/auth-info/1/is-admin"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("false"));
+                .andExpect(jsonPath("$").value("ADMIN"));
 
         verify(authInfoService, times(1)).isAdmin(1);
     }
