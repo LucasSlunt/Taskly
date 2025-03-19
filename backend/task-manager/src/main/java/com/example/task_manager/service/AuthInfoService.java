@@ -50,12 +50,11 @@ public class AuthInfoService {
         );
     }
 
-    public boolean isAdmin(int teamMemberId) {
+    public RoleType isAdmin(int teamMemberId) {
         TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
                 .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
-        boolean is_admin = teamMember.getRole() == RoleType.ADMIN;
-        return is_admin;
+        return teamMember.getRole();
     }
 
     public static String hashPassword(String plainTextPassword, String saltString){

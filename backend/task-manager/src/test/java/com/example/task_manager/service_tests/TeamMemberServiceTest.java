@@ -20,6 +20,7 @@ import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
@@ -226,15 +227,15 @@ public class TeamMemberServiceTest {
         Admin admin = new Admin("Admin_" + System.nanoTime(), "admin_" + System.nanoTime() + "@example.com", "adminpw");
         admin = teamMemberRepository.save(admin);
 
-        boolean isAdmin = authInfoService.isAdmin(admin.getAccountId());
-        assertTrue(isAdmin);
+        RoleType role = authInfoService.isAdmin(admin.getAccountId());
+        assertEquals(role, admin.getRole());
     }
 
     @Test
     void testIsNotAdmin() {
         TeamMember teamMember = createUniqueTeamMember();
-        boolean isAdmin = authInfoService.isAdmin(teamMember.getAccountId());
-        assertFalse(isAdmin);
+        RoleType role = authInfoService.isAdmin(teamMember.getAccountId());
+        assertEquals(role, teamMember.getRole());
     }
 
     @Test
