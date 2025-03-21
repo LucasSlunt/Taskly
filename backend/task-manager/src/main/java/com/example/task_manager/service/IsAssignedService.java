@@ -19,14 +19,17 @@ public class IsAssignedService {
 	private final TaskRepository taskRepository;
 	private final TeamMemberRepository teamMemberRepository;
 	private final IsAssignedRepository isAssignedRepository;
+	private final NotificationService notifService;
 
 	// Constructor injection for required repositories
 	public IsAssignedService(TaskRepository taskRepository, 
-							 TeamMemberRepository teamMemberRepository, 
-							 IsAssignedRepository isAssignedRepository) {
+							TeamMemberRepository teamMemberRepository, 
+							IsAssignedRepository isAssignedRepository,
+							NotificationService notifService) {
 		this.taskRepository = taskRepository;
 		this.teamMemberRepository = teamMemberRepository;
 		this.isAssignedRepository = isAssignedRepository;
+		this.notifService = notifService;
 	}
 
 	/**
@@ -53,6 +56,9 @@ public class IsAssignedService {
 		IsAssigned isAssigned = new IsAssigned(task, teamMember, task.getTeam());
 		isAssigned = isAssignedRepository.save(isAssigned);
 
+		//call notification method
+		notifService.notifyTaskAssignment(teamMember, task);
+
 		// Return assignment details as DTO
 		return convertToDTO(isAssigned);
 	}
@@ -76,6 +82,9 @@ public class IsAssignedService {
 			.orElseThrow(() -> new RuntimeException("Assignment not found."));
 	
 		isAssignedRepository.delete(toRemove);
+
+		//call unassign notification method
+		notifService.notifyTaskUnassignment(teamMember, task);
 
 		return convertToDTO(toRemove);
 	}
