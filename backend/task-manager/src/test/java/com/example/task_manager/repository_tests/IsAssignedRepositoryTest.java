@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
@@ -19,10 +20,14 @@ import com.example.task_manager.repository.IsAssignedRepository;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
+import com.example.task_manager.repository.AuthInfoRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class IsAssignedRepositoryTest {
+
+    @Autowired
+    private TestEntityManager entityManager;
 
     @Autowired
     private IsAssignedRepository isAssignedRepository;
@@ -36,26 +41,57 @@ public class IsAssignedRepositoryTest {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    private AuthInfoRepository authInfoRepository;
+
+    /**
+     * Creates and persists a unique Team.
+     */
     private Team createUniqueTeam() {
-        return teamRepository.save(new Team("Team_" + System.nanoTime(), null));
+        Team team = new Team();
+        team.setTeamName("Test Team " + System.nanoTime());
+        entityManager.persist(team);
+        entityManager.flush();
+        return team;
     }
 
+    /**
+     * Creates and persists a unique TeamMember.
+     */
     private TeamMember createUniqueTeamMember() {
-        return teamMemberRepository.save(new TeamMember("User_" + System.nanoTime(), "user_" + System.nanoTime() + "@example.com", "defaultpw"));
+        TeamMember teamMember = new TeamMember("TestUser" + System.nanoTime(),
+                "test" + System.nanoTime() + "@example.com", "defaultpw");
+        entityManager.persist(teamMember);
+        entityManager.flush();
+        return teamMember;
     }
 
+    /**
+     * Creates and saves a new Task with a unique title.
+     */
     private Task createUniqueTask(Team team) {
-        return taskRepository.save(new Task("Task_" + System.nanoTime(), "Task description", team, false, "Open", LocalDate.now()));
+        Task task = new Task();
+        task.setTitle("Implement Feature X " + System.nanoTime());
+        task.setStatus("Open");
+        task.setTeam(team);
+        task.setDateCreated(LocalDate.now());
+        return taskRepository.save(task);
+    }
+
+    /**
+     * Creates and saves a new IsAssigned entry with a unique identifier.
+     */
+    private IsAssigned createUniqueAssignment(Task task, TeamMember teamMember, Team team) {
+        IsAssigned assignment = new IsAssigned(task, teamMember, team);
+        return isAssignedRepository.save(assignment);
     }
 
     @Test
     void testSaveAssignment() {
         Team team = createUniqueTeam();
-        TeamMember teamMember = createUniqueTeamMember();
         Task task = createUniqueTask(team);
-
-        IsAssigned assignment = new IsAssigned(task, teamMember, team);
-        assignment = isAssignedRepository.save(assignment);
+        TeamMember teamMember = createUniqueTeamMember();
+        IsAssigned assignment = createUniqueAssignment(task, teamMember, team);
 
         assertNotNull(assignment);
         assertEquals(task.getTaskId(), assignment.getTask().getTaskId());
@@ -67,9 +103,8 @@ public class IsAssignedRepositoryTest {
         Team team = createUniqueTeam();
         TeamMember teamMember = createUniqueTeamMember();
         Task task = createUniqueTask(team);
+        IsAssigned assignment = createUniqueAssignment(task, teamMember, team);
 
-        IsAssigned assignment = new IsAssigned(task, teamMember, team);
-        isAssignedRepository.save(assignment);
 
         Optional<IsAssigned> foundAssignment = isAssignedRepository.findByTeamMemberAndTask(teamMember, task);
         assertTrue(foundAssignment.isPresent());
@@ -81,9 +116,8 @@ public class IsAssignedRepositoryTest {
         Team team = createUniqueTeam();
         TeamMember teamMember = createUniqueTeamMember();
         Task task = createUniqueTask(team);
+        IsAssigned assignment = createUniqueAssignment(task, teamMember, team);
 
-        IsAssigned assignment = new IsAssigned(task, teamMember, team);
-        isAssignedRepository.save(assignment);
 
         boolean exists = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMember.getAccountId(), task.getTaskId());
         assertTrue(exists);
@@ -92,11 +126,10 @@ public class IsAssignedRepositoryTest {
     @Test
     void testFindAssignmentsByTeamMember() {
         Team team = createUniqueTeam();
-        TeamMember teamMember = createUniqueTeamMember();
         Task task = createUniqueTask(team);
+        TeamMember teamMember = createUniqueTeamMember();
+        IsAssigned assignment = createUniqueAssignment(task, teamMember, team);
 
-        IsAssigned assignment = new IsAssigned(task, teamMember, team);
-        isAssignedRepository.save(assignment);
 
         Collection<IsAssigned> assignments = isAssignedRepository.findByTeamMember_AccountId(teamMember.getAccountId());
         assertNotNull(assignments);
@@ -109,9 +142,7 @@ public class IsAssignedRepositoryTest {
         Team team = createUniqueTeam();
         TeamMember teamMember = createUniqueTeamMember();
         Task task = createUniqueTask(team);
-
-        IsAssigned assignment = new IsAssigned(task, teamMember, team);
-        assignment = isAssignedRepository.save(assignment);
+        IsAssigned assignment = createUniqueAssignment(task, teamMember, team);
 
         isAssignedRepository.delete(assignment);
         boolean exists = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMember.getAccountId(), task.getTaskId());

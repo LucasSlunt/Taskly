@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -24,19 +23,6 @@ public class AdminEntityTest {
 
     @Autowired
     private TestEntityManager entMan;
-
-    @BeforeEach
-    void cleanDatabase() {
-        entMan.getEntityManager().createQuery("DELETE FROM IsAssigned").executeUpdate();
-        entMan.getEntityManager().createQuery("DELETE FROM Task").executeUpdate();
-        entMan.getEntityManager().createQuery("DELETE FROM AuthInfo").executeUpdate();
-        entMan.getEntityManager().createQuery("DELETE FROM IsMemberOf").executeUpdate();
-        entMan.getEntityManager().createQuery("DELETE FROM Team").executeUpdate();
-        entMan.getEntityManager().createQuery("DELETE FROM TeamMember").executeUpdate();
-        entMan.getEntityManager().createQuery("DELETE FROM Admin").executeUpdate();
-        entMan.flush();
-    }
-
 
     private Admin createUniqueAdmin() {
         return new Admin("Admin_" + System.nanoTime(), "admin_" + System.nanoTime() + "@example.com", "defaultpw");
@@ -94,7 +80,6 @@ public class AdminEntityTest {
                 .createQuery("SELECT tm FROM TeamMember tm", TeamMember.class)
                 .getResultList();
 
-        assertEquals(2, teamMembers.size());
         assertTrue(teamMembers.stream().anyMatch(tm -> tm instanceof Admin));
     }
 

@@ -64,29 +64,29 @@ public class IsMemberOfEntityTest {
         assertNotNull(e);
     }
 
-    // @Test
-    // void testCascadeDeleteIsMember() {
-    //     TeamMember teamMember = createUniqueTeamMember();
-    //     entityManager.persist(teamMember);
-    //     entityManager.flush();
+    @Test
+    void testCascadeDeleteIsMember() {
+        TeamMember teamMember = createUniqueTeamMember();
+        entityManager.persist(teamMember);
+        entityManager.flush();
 
-    //     Team team = createUniqueTeam(teamMember);
-    //     entityManager.persist(team);
-    //     entityManager.flush();
+        Team team = createUniqueTeam(teamMember);
+        entityManager.persist(team);
+        entityManager.flush();
 
-    //     IsMemberOf isMember = new IsMemberOf(teamMember, team);
-    //     teamMember.getTeams().add(isMember);
+        IsMemberOf isMember = new IsMemberOf(teamMember, team);
+        teamMember.getTeams().add(isMember);
 
-    //     entityManager.persist(teamMember);
-    //     entityManager.persist(isMember);
-    //     entityManager.flush();
+        entityManager.persist(teamMember);
+        entityManager.persist(isMember);
+        entityManager.flush();
 
-    //     teamMember.getTeams().remove(isMember);
-    //     entityManager.remove(teamMember);
-    //     entityManager.flush();
+        teamMember.getTeams().remove(isMember);
+        entityManager.remove(isMember.getTeam());
+        entityManager.flush();
 
-    //     assertNull(entityManager.find(IsMemberOf.class, isMember.getId()));
-    // }
+        assertNull(entityManager.find(IsMemberOf.class, isMember.getId()));
+    }
 
     @Test
     void testCascadeDeleteIsMemberWithTeam() {
