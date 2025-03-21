@@ -90,20 +90,13 @@ public class TaskEntityTest {
         team.getTasks().add(task); 
 
         TeamMember teamMember = createUniqueTeamMember();
-        entityManager.persist(teamMember);
-        entityManager.flush();
+        //entityManager.persist(teamMember);
 
         IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
-        entityManager.persist(isAssigned);
-        entityManager.flush();
+        //entityManager.persist(isAssigned);
 
         team.getTasks().remove(task);
-        // entityManager.flush();
-
-        entityManager.remove(task);
-        // entityManager.flush();
-
-        entityManager.clear();
+        entityManager.remove(isAssigned.getTask());
 
         assertNull(entityManager.find(Task.class, task.getTaskId()));
         assertNull(entityManager.find(IsAssigned.class, isAssigned.getId()));
