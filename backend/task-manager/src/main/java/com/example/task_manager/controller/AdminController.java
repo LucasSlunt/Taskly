@@ -2,14 +2,18 @@ package com.example.task_manager.controller;
 
 import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.AdminRequestDTO;
+import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.DTO.UpdateEmailRequestDTO;
 import com.example.task_manager.DTO.UpdateNameRequestDTO;
+import com.example.task_manager.repository.AdminRepository;
+import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.service.AdminService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -21,8 +25,17 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    public AdminController(AdminService adminService) {
+    private final AuthInfoRepository authInfoRepository;
+
+    private final AuthController authController;
+
+    private final AdminRepository adminRepository;
+
+    public AdminController(AdminService adminService, AdminRepository adminRepository, AuthController authController, AuthInfoRepository authInfoRepository) {
         this.adminService = adminService;
+        this.adminRepository = adminRepository;
+        this.authController = authController;
+        this.authInfoRepository = authInfoRepository;
     }
 
     // Create Admin entity
@@ -173,8 +186,59 @@ public class AdminController {
         try {
             adminService.unlockTask(taskId);
             return ResponseEntity.ok().build();
-        } 
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
+    //get all admins
+    @GetMapping("/admins")
+    public ResponseEntity<?> getAdmins() {
+        try {
+            List<AdminDTO> admins = adminService.getAllAdmins();
+            return ResponseEntity.ok(admins);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    //get all team members
+    @GetMapping("/team-members")
+    public ResponseEntity<?> getTeamMembers() {
+        try {
+            List<TeamMemberDTO> teamMembers = adminService.getAllTeamMembers();
+            return ResponseEntity.ok(teamMembers);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/all-teams")
+    public ResponseEntity<?> getAllTeams() {
+        try {
+            List<TeamDTO> teams = adminService.getAllTeams();
+            return ResponseEntity.ok(teams);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{adminId}")
+    public ResponseEntity<?> getAdminById(@PathVariable int adminId) {
+        try {
+            AdminDTO admin = adminService.getAdminById(adminId);
+            return ResponseEntity.ok(admin);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/team-member/{teamMemberId}")
+    public ResponseEntity<?> getTeamMemberById(@PathVariable int teamMemberId) {
+        try {
+            TeamMemberDTO teamMember = adminService.getTeamMemberById(teamMemberId);
+            return ResponseEntity.ok(teamMember);
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

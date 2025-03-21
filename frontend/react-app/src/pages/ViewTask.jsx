@@ -42,9 +42,9 @@ function ViewTask(){
     const taskInfo = getTask()
     
     return(
-        <div class = "viewTask">
+        <div className='pageContainer'>
             <Header/>
-            <div class="page-body">
+            <div className='pageBody'>
                 <div class="flexbox">
                     <div class="header"style={{ whiteSpace: 'pre-line' }}>
                     <strong class ="nameOfTask">{getTask().name + "\n"}</strong> Assigned to: {getTask().assignees}

@@ -10,13 +10,13 @@ function EditTask(){
         console.log("onThisTeam: ", onThisTeam)
 
         return(
-            <div className='page'>
+            <div className='pageContainer'>
                 <Header/>
-                <div>
-                    <EditTaskForm
-                    task={taskToEdit}
-                    team={onThisTeam}
-                    />
+                <div className='pageBody'>
+                        <EditTaskForm
+                        task={taskToEdit}
+                        team={onThisTeam}
+                        />
                 </div>
             </div>
         );

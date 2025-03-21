@@ -1,13 +1,13 @@
-const BASE_URL = "http://localhost:8080/api/auth-info"; 
+const BASE_URL = "http://localhost:8080/auth-info"; 
 
-export const login = async (teamMemberId, password) => {
+export const login = async (accountId, password) => {
     try {
         const response = await fetch(`${BASE_URL}/login`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({teamMemberId, password})
+            body: JSON.stringify({accountId, password})
         });
 
         if (!response.ok) {

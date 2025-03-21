@@ -6,12 +6,13 @@ import {useState, useEffect} from 'react'
 
 function AdminAllUsers(){
     return(
-        <div className='page'>
+        <div className='pageContainer'>
             <Header/>
-            <div>
+            <div className='pageBody'>
                 <UserTable/>
+                <a href="create-account"><button >Create New Account</button></a>
             </div>
-            <button >Create New Account</button>
+
         </div>
     )
 }

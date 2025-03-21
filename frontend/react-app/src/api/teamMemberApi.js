@@ -107,3 +107,41 @@ export const changePassword = async (teamMemberId, oldPassword, newPassword) => 
         throw error;
     }
 };
+
+//getting all teams for a specific team member
+export const getTeamsForMember = async (accountId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/${accountId}/teams`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve teams: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve teams: `, error);
+        throw error;
+    }
+};
+
+//getting all tasks for a team member
+export const getAssignedTasks = async (teamMemberId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/${teamMemberId}/tasks`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve tasks: ${response.status} ${response.statusText}`);    
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve tasks: `, error);
+        throw error;
+    }
+};

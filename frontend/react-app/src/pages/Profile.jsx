@@ -1,6 +1,8 @@
 import "../css/Profile.css"
 import UserInfo from "../components/UserInfo"
 import Teams from "../components/Teams"
+import SignOut from '../components/SignOut'
+import Header from "../components/Header";
 
 function Profile(){
     //mock data
@@ -11,17 +13,18 @@ function Profile(){
     ];
 
     return (
-    <div className="profile-page">
-        <UserInfo />
-        <h1>My teams</h1>
-        <div className="teams-grid">
-            {teams.map((team) => (
-                <Teams team={team} key={team.id}/> 
-            ))}
-        </div> 
-        <button className="logout-btn">
-            Logout
-        </button>
+    <div className='pageContainer'>
+        <Header/>
+        <div className='pageBody'>
+            <UserInfo />
+            <h1>My teams</h1>
+            <div className="teams-grid">
+                {teams.map((team) => (
+                    <Teams team={team} key={team.id}/> 
+                ))}
+            </div> 
+            <SignOut/>
+        </div>
     </div>
     
     );
