@@ -44,3 +44,27 @@
     text-align: left !important;
     padding-left: 10px;
 }
+
+.delete {
+
+}
+
+.delete:hover {
+    cursor: pointer;
+    color: white;
+    background-color: red;
+    border: none;
+}
+
+.smallTeamButton {
+    color: white;
+    background-color: #004080;
+    border: none;
+}
+
+.smallTeamButton:hover {
+    cursor: pointer;
+    border: none;
+    background-color: black;
+
+}
