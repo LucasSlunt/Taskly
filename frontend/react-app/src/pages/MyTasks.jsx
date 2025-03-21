@@ -131,9 +131,9 @@ function MyTasks(){
     ]
 
     return (
-        <div class = "MyTasksPage">
-            <div class="pageFlexbox">
-                <Header/>
+        <div className='pageContainer'>
+            <Header/>
+            <div className='pageBody'>
             <div class="content-wrapper flexbox">
                     
                     <h1>My Tasks</h1>

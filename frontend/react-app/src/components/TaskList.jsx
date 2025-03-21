@@ -48,24 +48,27 @@ function TaskList({dataToUse, headersAndAccessors}){
     return(
         
         <div className='container'>
-            <select name="searchThis" id="searchThis" onChange={changeSearch}>
-                {headersAndAccessors.map((headerAndAccessor) =>(
-                    <option value={headerAndAccessor.accessor} key = {headerAndAccessor.accessor}>{headerAndAccessor.Header}</option>
-                ))}
-            </select>
-            
-            {/* pass searchQuery and setSearchQuery to SearchFilterSort component */}
-            <SearchFilterSort
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                searchForThis={searchForThis}
-            />
-            
+            <div className='Selector-Search'>
+                <select name="searchThis" id="searchThis" className='selector' onChange={changeSearch}>
+                    {headersAndAccessors.map((headerAndAccessor) =>(
+                        <option value={headerAndAccessor.accessor} key = {headerAndAccessor.accessor}>{headerAndAccessor.Header}</option>
+                    ))}
+                </select>
+                
+                {/* pass searchQuery and setSearchQuery to SearchFilterSort component */}
+                <div className='searchContainer'>
+                    <SearchFilterSort
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                        searchForThis={searchForThis}
+                    />
+                </div>
+            </div>
 
-            <table {...getTableProps()}>
+            <table className='taskTable'{...getTableProps()}>
                 <thead>
                     {headerGroups.map((headerGroup) => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
+                        <tr className='tableHeader'{...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map((column) =>(
                                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                             {column.render("Header")}

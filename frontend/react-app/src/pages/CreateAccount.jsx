@@ -7,10 +7,12 @@ const CreateAccount = () => {
     
 
     return (
-        <div id="createAccountContainer">
-            <Header/>
+    <div className='pageContainer'>
+        <Header/>
+        <div className='pageBody'>
             <CreateAccountForm/>
         </div>
+    </div>
     )
 }
 

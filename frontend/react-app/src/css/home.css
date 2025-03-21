@@ -1,7 +1,4 @@
-*, html {
-    margin:0;
-    padding:0;  
- }
+
 
  body {
     background-color:#BFCDE0;
@@ -25,8 +22,6 @@
 }
 
 main {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
     font-family:Arial, Helvetica, sans-serif;
     margin-top: 50px;
 }
@@ -57,13 +52,16 @@ td {
     text-align: left;
     padding: 10px;
 }
-
 .teamButton {
-    width: 400px;
-    height: 75px;
+    width: 70%;
+    height: 100%;
+    min-width:fit-content;
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-bottom: 10px;
+    padding-right: 15px;
     border: none;
     border-radius: 15px;
-    font-size: 1.25em;
     background-color:#3B3355;
     color: white;
 }
@@ -77,12 +75,12 @@ td {
     flex-direction: column;
     gap: 20px;
     margin-top: 20px;
+    margin-bottom:10px;
 }
 
 tbody {
     width: 100%;
 }
-
 .miniButton {
     padding: 3px 6px;
     background-color:#3B3355;
