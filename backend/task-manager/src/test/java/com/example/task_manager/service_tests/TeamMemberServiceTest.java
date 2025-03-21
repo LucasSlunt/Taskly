@@ -299,16 +299,6 @@ public class TeamMemberServiceTest {
             .findFirst()
             .orElseThrow(() -> new AssertionError("Team 2 not found in the list"));
         
-        TeamDTO team_one = teams.stream()
-            .filter(t -> t.getTeamId() == team.getTeamId())
-            .findFirst()
-            .orElseThrow(() -> new AssertionError("Team 1 not found in the list"));
-
-        TeamDTO team_two = teams.stream()
-            .filter(t -> t.getTeamId() == team2.getTeamId())
-            .findFirst()
-            .orElseThrow(() -> new AssertionError("Team 2 not found in the list"));
-
 		assertEquals(team.getTeamId(), team_one.getTeamId());
 		assertEquals(team.getTeamName(), team_one.getTeamName());
 		assertEquals(team.getTeamLead().getAccountId(), team_one.getTeamLeadId());
