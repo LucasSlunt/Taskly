@@ -82,7 +82,7 @@ public class IsMemberOfEntityTest {
         entityManager.flush();
 
         teamMember.getTeams().remove(isMember);
-        entityManager.remove(teamMember);
+        entityManager.remove(isMember.getTeam());
         entityManager.flush();
 
         assertNull(entityManager.find(IsMemberOf.class, isMember.getId()));

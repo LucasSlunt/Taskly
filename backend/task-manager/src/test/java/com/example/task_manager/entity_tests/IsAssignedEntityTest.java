@@ -15,8 +15,6 @@ import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
 
-import jakarta.transaction.Transactional;
-
 @DataJpaTest
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -121,10 +119,11 @@ void testCascadeDeleteWithTeamMember() {
     IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
     entityManager.persist(isAssigned);
     entityManager.flush();
+    entityManager.refresh(teamMember);
+    entityManager.refresh(isAssigned);
 
     // Remove TeamMember and ensure IsAssigned is also deleted
-    entityManager.remove(teamMember);
-    entityManager.flush();
+    entityManager.remove(isAssigned.getTeamMember());
 
     assertNull(entityManager.find(IsAssigned.class, isAssigned.getId()));
 }
@@ -151,10 +150,11 @@ void testCascadeDeleteWithTeamMember() {
         IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
         entityManager.persist(isAssigned);
         entityManager.flush();
+        entityManager.refresh(team);
+        entityManager.refresh(isAssigned);
 
         // Remove Team and ensure IsAssigned is also deleted
-        entityManager.remove(team);
-        entityManager.flush();
+        entityManager.remove(isAssigned.getTeam());
 
         assertNull(entityManager.find(IsAssigned.class, isAssigned.getId()));
     }
