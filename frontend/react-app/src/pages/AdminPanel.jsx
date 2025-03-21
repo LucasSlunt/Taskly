@@ -13,9 +13,9 @@ export default function AdminPanel(){
         navigate('/team-tasks')
     };
     return(
-        <div>
+        <div className='pageContainer'>
             <Header/>
-            <main>
+            <main className='pageBody'>
             <a href="/all-users"><button className="button">See All Users</button></a>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <select name="" id="" {...register("team")}>

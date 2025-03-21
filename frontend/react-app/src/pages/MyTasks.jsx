@@ -186,10 +186,11 @@ useEffect(() => {
         return (<div>Loading...</div>)
     }
     return (
-        <div className = "MyTasksPage">
-            <div className="pageFlexbox">
-                <Header/>
-            <div className="content-wrapper flexbox">
+
+        <div className='pageContainer'>
+            <Header/>
+            <div className='pageBody'>
+            <div class="content-wrapper flexbox">
                     
                     <h1>My Tasks</h1>
                     <span class ="taskBox">

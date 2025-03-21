@@ -2,29 +2,78 @@ import {getTeamsForMember} from '../api/teamMemberApi'
 import '../css/home.css';
 import Header from '../components/Header'
 import { useCookies } from 'react-cookie';
-import Task from '../Task';
 import { useEffect, useState } from 'react';
 import {Link} from 'react-router-dom'
+import fakeData from "../FakeData/fakeTaskData.json"
+import TaskList from '../components/TaskList';
+function setUpDataTasksToDo(obj){
+    let ansArr = []
+    fakeData.map((taskItem) =>{
+   if(taskItem.status !== "done"){
+    ansArr = [ ...ansArr,
+        {
+            id: taskItem.id,
+            name: taskItem.name,
+            team: taskItem.team,
+            dueDate: taskItem.dueDate
+            
 
-const testTask = [
-    { taskName: "Create wireframe", taskTeam: "Team 1", dueDate: "11/05/25" },
-    { taskName: "Plan things", taskTeam: "Team 2", dueDate: "10/04/25" }
-]
-/**/
+
+        }]
+    
+   }
+ }
+)
+if(ansArr.length > 0){
+    return ansArr
+}else{
+    return [" "]
+}
+}
+
 
 
 const Home = () => {
+    const headerAndAccessor = [
+        {
+            Header: "Task Name",
+            accessor: "name",
+            Cell: (original) => (
+                <Link to="/view-task" className = "link" state={{taskToSee: original.cell.row.values.id}}>{original.value}</Link>
+              )
+        },
+        {
+            Header: "ID",
+            accessor: 'id'
+        },
+        {
+            Header: "Team",
+            accessor: "team"
+        },
+        {
+            Header: "DeadLine",
+            accessor: 'dueDate'
+        }
+    ]
+    
+
+
     const [cookies] = useCookies(['userInfo'])
     const [teams, setTeams] = useState([])
     const [loading, setLoading] = useState(true);
     useEffect(()=>{
-        try {
-            getTeamsForMember(cookies.userInfo.accountId).then((response)=>setTeams(response))
-        } catch (error) {
-            console.log(error)
-        }finally{
-            setLoading(false)
+        async function loadAPIInfo() {
+            try {
+                const data = await getTeamsForMember(cookies.userInfo.accountId)
+                setTeams(data)
+            } catch (error) {
+                console.log(error)
+            }finally{
+                setLoading(false)
+            }
         }
+        loadAPIInfo();
+    
     },[])
     if(loading){
         return (<div>Loading...</div>)
@@ -32,49 +81,42 @@ const Home = () => {
     return (
 
 
-        <body>
+        <div className='pageContainer'>
 
 
         <Header/>
        
 
 
-        <main>
-            <div id="teamSection">
-                <h2>My Teams</h2>
-               
-                <div id="teamButtons">
-                    {teams.map((team)=>(
-                        <Link to='/team-tasks' >
-                        <button className="teamButton" key={team.teamId}>{team.teamName}</button>
-                        </Link>
-                        
-                    ))}
+        <main className='pageBody'>
+            <div className='rowFlexbox'>
+                <div id="teamSection">
+                    <h2>My Teams</h2>
+                
+                    <div id="teamButtons" className='teamButtonContainer'>
+                        {teams.map((team)=>(
+                            <Link className="teamButton headerText1" to='/team-tasks' key={team.teamId} >
+                            {team.teamName}
+                            </Link>
+                            
+                        ))}
+                    </div>
                 </div>
-            </div>
 
 
-            <div id="taskSection">
-                <h2>My Tasks (Preview)</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Task Name</th>
-                            <th>Team</th>
-                            <th>Deadline</th>
-                        </tr>
-                    </thead>
-                        <tbody>
-                            {testTask.map((task, index) => (
-                                <Task key={index} {...task}/>
-                            ))}
-                        </tbody>
-                </table>
+                <div id="taskSection">
+                    <h2>My Tasks (Preview)</h2>
+                    <TaskList
+                    dataToUse={setUpDataTasksToDo(fakeData)}
+                    headersAndAccessors={headerAndAccessor}
+                    />
+                    
+                </div>
             </div>
         </main>
 
 
-        </body>
+        </div>
 
 
        

@@ -5,14 +5,13 @@ import "../css/CreateTask.css"
 function CreateTask(){
 
     return (
-        <div className="page">
-            <div className="pageBox">
-                <Header/>
-                <div className="body">
+        <div className='pageContainer'>
+            <Header/>
+            <div className='pageBody'>
+
                     <CreateTaskForm
                     team={fakeTeamData}
                     />
-                </div>
                     
             </div>
         </div>
