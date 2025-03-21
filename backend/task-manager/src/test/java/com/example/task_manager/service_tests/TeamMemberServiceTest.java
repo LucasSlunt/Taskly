@@ -177,9 +177,11 @@ public class TeamMemberServiceTest {
             "Updated Description",
             true,
             "In Progress",
+            TaskPriority.MEDIUM,
             LocalDate.now(),
+            null,
             team.getTeamId(),
-            TaskPriority.MEDIUM
+            null
         );
 
         TaskDTO updatedTask = teamMemberService.editTask(task.getTaskId(), taskDTO);

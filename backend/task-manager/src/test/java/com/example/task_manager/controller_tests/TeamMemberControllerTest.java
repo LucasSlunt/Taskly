@@ -49,7 +49,7 @@ public class TeamMemberControllerTest {
     void testCreateTask() throws Exception {
         int uniqueId = (int) System.nanoTime();
         int teamId = uniqueId + 1;
-        TaskDTO mockTask = new TaskDTO(uniqueId, "Task Title " + uniqueId, "Description", false, "Open", LocalDate.now(), teamId, TaskPriority.LOW);
+        TaskDTO mockTask = new TaskDTO(uniqueId, "Task Title " + uniqueId, "Description", false, "Open", TaskPriority.LOW, LocalDate.now(), null, teamId, null);
 
         TaskRequestDTO requestDTO = new TaskRequestDTO(
                 "Task Title " + uniqueId,
@@ -102,9 +102,11 @@ public class TeamMemberControllerTest {
                 "Updated Description",
                 false,
                 "In Progress",
+                TaskPriority.HIGH,                
                 LocalDate.now().plusDays(3),
+                null,
                 teamId,
-                TaskPriority.HIGH
+                null
         );
 
         when(teamMemberService.editTask(eq(uniqueId), any(TaskDTO.class))).thenReturn(requestDTO);
@@ -164,8 +166,8 @@ public class TeamMemberControllerTest {
     @Test
     void testGetAssignedTasks() throws Exception {
         List<TaskDTO> mockTasks = Arrays.asList(
-                new TaskDTO(1, "Task Title 1", "Task 1 description", false, "Open", LocalDate.now(), 1, TaskPriority.MEDIUM),
-                new TaskDTO(2, "Task Title 2", "Task 2 description", true, "Closed", LocalDate.now(), 1, TaskPriority.MEDIUM));
+                new TaskDTO(1, "Task Title 1", "Task 1 description", false, "Open", TaskPriority.MEDIUM, LocalDate.now(), null, 1, null),
+                new TaskDTO(2, "Task Title 2", "Task 2 description", true, "Closed", TaskPriority.MEDIUM, LocalDate.now(), null, 1, null));
 
         when(teamMemberService.getAssignedTasks(1)).thenReturn(mockTasks);
 

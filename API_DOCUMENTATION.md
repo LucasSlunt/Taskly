@@ -21,12 +21,13 @@ All API requests should be made to the following base URL (Spring Boot's default
 5. [TaskController](#taskcontroller)
 6. [TeamController](#teamcontroller)
 7. [TeamMemberController](#teammembercontroller)
-8. [Path Variables](#path-variables)
-9. [DTO References](#dto-references)
-10. [Request and Response Examples](#request-and-response-examples)
-11. [Best Practices](#best-practices)
-12. [Error Codes](#error-codes)
-13. [Example Error Response](#example-error-response)
+8. [NotificationController](#notificationcontroller)
+9. [Path Variables](#path-variables)
+10. [DTO References](#dto-references)
+11. [Request and Response Examples](#request-and-response-examples)
+12. [Best Practices](#best-practices)
+13. [Error Codes](#error-codes)
+14. [Example Error Response](#example-error-response)
 
 ---
 
@@ -191,7 +192,7 @@ All API requests should be made to the following base URL (Spring Boot's default
     ```
     - **Description:** Returns a list of every admin in the database.
 
- **Get All Team Members:** `GET /team-members`
+- **Get All Team Members:** `GET /team-members`
     - **Response Body:** 
     ```json
     [
@@ -209,7 +210,7 @@ All API requests should be made to the following base URL (Spring Boot's default
     ```
     - **Description:** Returns a list of every team member in the database.
 
-**Get All Teams:** `GET /all-teams`
+- **Get All Teams:** `GET /all-teams`
     - **Response Body:**
     ```json
     [
@@ -225,7 +226,7 @@ All API requests should be made to the following base URL (Spring Boot's default
     ```
     - **Description:** Returns a list of every team in the database.
 
-**Get Admin by ID** `GET /{adminId}`
+- **Get Admin by ID** `GET /{adminId}`
     - **Parameters:** 
         - `adminId` (integer, required): The ID of the admin being retrieved.
     - **Response Body:**
@@ -238,7 +239,7 @@ All API requests should be made to the following base URL (Spring Boot's default
     ```
     - **Description:** Returns the id, name, and email of the requested admin.
 
-**Get Team Member by ID** `GET /team-member/{teamMemberId}`
+- **Get Team Member by ID** `GET /team-member/{teamMemberId}`
     - **Parameters:** 
         - `teamMemberId` (integer, required): The ID of the team member being retrieved.
     - **Response Body:**
@@ -329,10 +330,7 @@ All API requests should be made to the following base URL (Spring Boot's default
 **Base URL:** `/api/tasks`
 
 ### Endpoints
-- **Notify Members of a Task:** `POST /{taskId}/notify`
-    - **Parameters:**:         
-        - `message` (string, required): The message sent to all team members.
-    - **Description:** Not yet implemented in backend. 
+- No implemented endpoints.
 
 ---
 
@@ -513,9 +511,23 @@ All API requests should be made to the following base URL (Spring Boot's default
             "description": "Develop the login functionality for the app",
             "isLocked": false,
             "status": "In Progress",
+            "dateCreated": "2024-03-04",
             "dueDate": "2024-04-01",
             "teamId": 1,
-            "priority": "HIGH"
+            "priority": "HIGH",
+            "assignedMembers": 
+            [
+                {
+                    "accountId": 1,
+                    "userName": "Name",
+                    "userEmail": "email@ex.com"
+                },
+                {
+                    "accountId": 2,
+                    "userName": "Name2",
+                    "userEmail": "email_2@ex.com"
+                }
+            ]
         },
         {
             "taskId": 102,
@@ -525,11 +537,99 @@ All API requests should be made to the following base URL (Spring Boot's default
             "status": "Pending",
             "dueDate": "2024-04-05",
             "teamId": 2,
-            "priority": "MEDIUM"
+            "priority": "MEDIUM",
+            "teamId": 2,
+            "assignedMembers": []
         }
     ]
     ```
     - **Description:** Returns a list of every task a team member is assigned to.
+
+## **NotificationController**
+
+**Base URL:** `/notifs`
+
+### Endpoints
+- **Get Read Notifications:** `GET /{teamMemberId}/read-notifs`
+    - **Response Body:**
+    ```json
+    {
+        [
+            {
+                "notificationId": 1,
+                "message": "Task Updated",
+                "type": "TASK_EDITED",
+                "isRead": true,
+                "createdAt": "2024-03-15T10:30:00",
+                "teamMemberId": 101,
+                "taskId": 5
+            },
+            {
+                "notificationId": 4,
+                "message": "Project Deadline Extended",
+                "type": "TASK_DUE_DATE_EDITED",
+                "isRead": true,
+                "createdAt": "2024-03-16T14:45:00",
+                "teamMemberId": 101,
+                "taskId": 8
+            }
+        ] 
+    }
+    ```
+    - **Description:** Returns a list of all read notifications for a specific team member.
+
+- **Get Unread Notifications:** `GET /{teamMemberId}/unread-notifs`
+    - **Response Body:**
+    ```json
+    {
+        [
+            {
+                "notificationId": 1,
+                "message": "Task Updated",
+                "type": "TASK_EDITED",
+                "isRead": true,
+                "createdAt": "2024-03-15T10:30:00",
+                "teamMemberId": 101,
+                "taskId": 5
+            },
+            {
+                "notificationId": 4,
+                "message": "Project Deadline Extended",
+                "type": "TASK_DUE_DATE_EDITED",
+                "isRead": true,
+                "createdAt": "2024-03-16T14:45:00",
+                "teamMemberId": 101,
+                "taskId": 8
+            }
+        ] 
+    }
+    ```
+    - **Description:** Returns a list of all unread notifications for a specific team member.
+
+- **Mark Notification as Read:** `GET /{notificationId}/mark-as-read`
+    - **Response Body:**
+    ```json
+    {
+        "message": "Notification marked as read."
+    }
+    ```
+    - **Description:** Marks a notification as read.
+
+- **Mark Notification as Unread:** `GET /{notificationId}/mark-as-unread`
+    - **Response Body:**
+    ```json
+    {
+        "message": "Notification marked as unread."
+    }
+    ```
+    - **Description:** Marks a notification as unread.
+
+- **Delete Notification:** `DELETE /{notificationId}`
+    - **Response Status:**
+    ```
+        HTTP/1.1 204 No Content
+    ```
+    - **Description:** Deletes a notification from the database.
 
 ---
 

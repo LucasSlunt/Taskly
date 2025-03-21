@@ -10,7 +10,7 @@ const testTask = [
     { taskName: "Create wireframe", taskTeam: "Team 1", dueDate: "11/05/25" },
     { taskName: "Plan things", taskTeam: "Team 2", dueDate: "10/04/25" }
 ]
-/**/
+
 
 
 const Home = () => {
@@ -18,13 +18,18 @@ const Home = () => {
     const [teams, setTeams] = useState([])
     const [loading, setLoading] = useState(true);
     useEffect(()=>{
-        try {
-            getTeamsForMember(cookies.userInfo.accountId).then((response)=>setTeams(response))
-        } catch (error) {
-            console.log(error)
-        }finally{
-            setLoading(false)
+        async function loadAPIInfo() {
+            try {
+                const data = await getTeamsForMember(cookies.userInfo.accountId)
+                setTeams(data)
+            } catch (error) {
+                console.log(error)
+            }finally{
+                setLoading(false)
+            }
         }
+        loadAPIInfo();
+    
     },[])
     if(loading){
         return (<div>Loading...</div>)
