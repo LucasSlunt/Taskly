@@ -1,9 +1,20 @@
 import React from 'react';
 
-const Task = () => {
+const Notification = ({ notif, toggleRead }) => {
     return (
         <tr>
-            
+            <td className="items">
+                <input type="checkbox" checked={notif.read} onChange={() => toggleRead(notif.id)} />
+            </td>
+            <td className="items">
+                <button className="smallTeamButton">{notif.team}</button>
+            </td>
+            <td className="notifDetails">{notif.message}</td>
+            <td>
+                <button className="delete">Delete</button>
+            </td>
         </tr>
     )
 }
+
+export default Notification;
