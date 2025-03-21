@@ -1,0 +1,30 @@
+version: "3.8" #docker version
+
+services: #each service should be a container managed in the docker-compose.yml file
+  backend:
+    build: ./backend/task-manager
+    container_name: task-manager
+    restart: always
+    ports:
+      - "8080:8080"
+    environment: #basically goes to spring boot and tells it to give docker-compose.yml all the info it has on accessing the database
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-37567e14-timmid999-45da.b.aivencloud.com:14704/defaultdb
+      SPRING_DATASOURCE_USERNAME:
+      SPRING_DATASOURCE_PASSWORD:
+    networks:
+      - app_network
+
+  frontend:
+    build: ./frontend/react-app
+    container_name: react-app
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
+networks:
+  app_network: {}

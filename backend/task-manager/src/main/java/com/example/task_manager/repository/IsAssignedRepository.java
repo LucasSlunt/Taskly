@@ -18,4 +18,6 @@ public interface IsAssignedRepository extends JpaRepository<IsAssigned, Integer>
     boolean existsByTeamMember_AccountIdAndTask_TaskId(int teamMemberId, int taskId);
 
     Collection<IsAssigned> findByTeamMember_AccountId(int teamMemberId);
+
+    Collection<IsAssigned> findByTask(Task task);
 }

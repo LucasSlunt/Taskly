@@ -3,26 +3,22 @@ name: ReactCI
 #I want to run test on our main front end branch
 on:
   push:
-    branches: [main, real-react]
+    branches: main
   pull_request: 
-    branches: [main, real-react]
+    branches: main
     
 jobs:
-  build-test:
-    runs-on: ubuntu-latest
-    strategy:
-    matrix:
-      node-version: [20.x, 21.x, 22.x, 23.x]
-  steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: npm ci, build and test
-      working-directory: ./frontend/react-app
-      run: |
-        npm ci
-        npm install --legacy-peer-deps
-        npm run build --if-present
-        npm test      
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 23
+        uses: actions/setup-node@v4
+        with:
+          node-version: 23
+      - name: npm ci, build and test
+        working-directory: ./frontend/react-app
+        run: |
+          npm ci --legacy-peer-deps
+          npm install react-router-dom --save
+          npm test      

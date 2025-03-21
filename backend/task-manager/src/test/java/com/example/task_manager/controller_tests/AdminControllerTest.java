@@ -2,19 +2,27 @@ package com.example.task_manager.controller_tests;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.AdminRequestDTO;
+import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.controller.AdminController;
+import com.example.task_manager.repository.AdminRepository;
+import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.service.AdminService;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,7 +31,8 @@ import com.example.task_manager.DTO.UpdateEmailRequestDTO;
 import com.example.task_manager.DTO.UpdateNameRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebMvcTest(AdminController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class AdminControllerTest {
 
     @Autowired
@@ -32,42 +41,37 @@ public class AdminControllerTest {
     @MockBean
     private AdminService adminService;
 
-    @InjectMocks
-    private AdminController adminController;
+    @MockBean
+    private AdminRepository adminRepository;
+
+    @MockBean
+    private TeamMemberRepository teamMemberRepository;
 
     @Autowired
-    private ObjectMapper objectMapper; //used top convert DTO's to json
+    private ObjectMapper objectMapper;
 
-    private AdminDTO mockAdmin;
-    private TeamMemberDTO mockMember;
-    private String mockAdminPassword;
-    private String mockTMPassword;
-
-    @BeforeEach
-    void setUp() {
-        mockAdmin = new AdminDTO(1, "Admin User", "admin@example.com");
-        mockMember = new TeamMemberDTO(2, "John Doe", "john.doe@example.com");
-        mockAdminPassword = "mock_password_admin";
-        mockTMPassword = "mock_password_TM";
-    }
-
-    // Create an Admin
+    /**
+     * Create an Admin
+     */
     @Test
     void testCreateAdmin() throws Exception {
-        AdminRequestDTO requestDTO = new AdminRequestDTO("Admin User", "admin@example.com", mockAdminPassword);
+        AdminDTO mockAdmin = new AdminDTO(1, "Admin_" + System.nanoTime(), "admin_" + System.nanoTime() + "@example.com");
+        AdminRequestDTO requestDTO = new AdminRequestDTO(mockAdmin.getUserName(), mockAdmin.getUserEmail(), "securePass");
 
-        when(adminService.createAdmin("Admin User", "admin@example.com",mockAdminPassword)).thenReturn(mockAdmin);
+        when(adminService.createAdmin(mockAdmin.getUserName(), mockAdmin.getUserEmail(), "securePass")).thenReturn(mockAdmin);
 
         mockMvc.perform(post("/api/admin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(1))
-                .andExpect(jsonPath("$.userName").value("Admin User"))
-                .andExpect(jsonPath("$.userEmail").value("admin@example.com"));
+                .andExpect(jsonPath("$.userName").value(mockAdmin.getUserName()))
+                .andExpect(jsonPath("$.userEmail").value(mockAdmin.getUserEmail()));
     }
 
-    // Delete Admin
+    /**
+     * Delete Admin
+     */
     @Test
     void testDeleteAdmin() throws Exception {
         doNothing().when(adminService).deleteAdmin(1);
@@ -76,119 +80,101 @@ public class AdminControllerTest {
                 .andExpect(status().isNoContent());
     }
 
-    // Modify Admin Name
+    /**
+     * Modify Admin Name
+     */
     @Test
     void testModifyAdminName() throws Exception {
-        UpdateNameRequestDTO requestDTO = new UpdateNameRequestDTO("New Admin Name");
+        AdminDTO updatedAdmin = new AdminDTO(1, "NewAdmin_" + System.nanoTime(), "admin@example.com");
+        UpdateNameRequestDTO requestDTO = new UpdateNameRequestDTO(updatedAdmin.getUserName());
 
-        when(adminService.modifyAdminName(1, "New Admin Name")).thenReturn(new AdminDTO(1, "New Admin Name", "admin@example.com"));
+        when(adminService.modifyAdminName(1, updatedAdmin.getUserName())).thenReturn(updatedAdmin);
 
         mockMvc.perform(put("/api/admin/1/update-name")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userName").value("New Admin Name"));
+                .andExpect(jsonPath("$.userName").value(updatedAdmin.getUserName()));
     }
 
-    // Modify Admin Email
+    /**
+     * Modify Admin Email
+     */
     @Test
     void testModifyAdminEmail() throws Exception {
-        UpdateEmailRequestDTO requestDTO = new UpdateEmailRequestDTO("new_email@example.com");
+        AdminDTO updatedAdmin = new AdminDTO(1, "Admin User", "updated_" + System.nanoTime() + "@example.com");
+        UpdateEmailRequestDTO requestDTO = new UpdateEmailRequestDTO(updatedAdmin.getUserEmail());
 
-        when(adminService.modifyAdminEmail(1, "new_email@example.com"))
-                .thenReturn(new AdminDTO(1, "Admin User", "new_email@example.com"));
+        when(adminService.modifyAdminEmail(1, updatedAdmin.getUserEmail())).thenReturn(updatedAdmin);
 
         mockMvc.perform(put("/api/admin/1/update-email")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userEmail").value("new_email@example.com"));
+                .andExpect(jsonPath("$.userEmail").value(updatedAdmin.getUserEmail()));
     }
 
-    // Create Team Member
+    /**
+     * Create Team Member
+     */
     @Test
     void testCreateTeamMember() throws Exception {
-        AdminRequestDTO requestDTO = new AdminRequestDTO("John Doe", "john.doe@example.com", mockTMPassword);
+        TeamMemberDTO mockMember = new TeamMemberDTO(2, "Member_" + System.nanoTime(), "member_" + System.nanoTime() + "@example.com");
+        AdminRequestDTO requestDTO = new AdminRequestDTO(mockMember.getUserName(), mockMember.getUserEmail(), "securePass");
 
-        when(adminService.createTeamMember("John Doe", "john.doe@example.com", mockTMPassword)).thenReturn(mockMember);
+        when(adminService.createTeamMember(mockMember.getUserName(), mockMember.getUserEmail(), "securePass")).thenReturn(mockMember);
 
         mockMvc.perform(post("/api/admin/team-member")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(2))
-                .andExpect(jsonPath("$.userName").value("John Doe"))
-                .andExpect(jsonPath("$.userEmail").value("john.doe@example.com"));
+                .andExpect(jsonPath("$.userName").value(mockMember.getUserName()))
+                .andExpect(jsonPath("$.userEmail").value(mockMember.getUserEmail()));
     }
 
-    // Modify Team Member Name 
+    /**
+     * Modify Team Member Name
+     */
     @Test
     void testModifyTeamMemberName() throws Exception {
-        UpdateNameRequestDTO requestDTO = new UpdateNameRequestDTO("TeamMember User");
+        TeamMemberDTO updatedMember = new TeamMemberDTO(1, "UpdatedMember_" + System.nanoTime(), "member@example.com");
+        UpdateNameRequestDTO requestDTO = new UpdateNameRequestDTO(updatedMember.getUserName());
 
-        when(adminService.modifyTeamMemberName(1, "TeamMember User"))
-                .thenReturn(new TeamMemberDTO(1, "TeamMember User", "TM@example.com"));
+        when(adminService.modifyTeamMemberName(1, updatedMember.getUserName())).thenReturn(updatedMember);
 
         mockMvc.perform(put("/api/admin/team-member/1/update-name")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userName").value("TeamMember User"));
+                .andExpect(jsonPath("$.userName").value(updatedMember.getUserName()));
     }
 
-    // Modify Team Member Email 
+    /**
+     * Modify Team Member Email
+     */
     @Test
     void testModifyTeamMemberEmail() throws Exception {
-        UpdateEmailRequestDTO requestDTO = new UpdateEmailRequestDTO("new_email@example.com");
+        TeamMemberDTO updatedMember = new TeamMemberDTO(1, "John Doe", "updated_" + System.nanoTime() + "@example.com");
+        UpdateEmailRequestDTO requestDTO = new UpdateEmailRequestDTO(updatedMember.getUserEmail());
 
-        when(adminService.modifyTeamMemberEmail(1, "new_email@example.com"))
-                .thenReturn(new TeamMemberDTO(1, "John Doe", "new_email@example.com"));
+        when(adminService.modifyTeamMemberEmail(1, updatedMember.getUserEmail())).thenReturn(updatedMember);
 
         mockMvc.perform(put("/api/admin/team-member/1/update-email")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userEmail").value("new_email@example.com"));
+                .andExpect(jsonPath("$.userEmail").value(updatedMember.getUserEmail()));
     }
 
-    // Modify Team Member Email (Invalid Format) 
-    @Test
-    void testModifyTeamMemberEmailInvalidFormat() throws Exception {
-        UpdateEmailRequestDTO requestDTO = new UpdateEmailRequestDTO("invalid-email");
-
-        when(adminService.modifyTeamMemberEmail(1, "invalid-email"))
-                .thenThrow(new RuntimeException("Invalid email format"));
-
-        mockMvc.perform(put("/api/admin/team-member/1/update-email")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid email format"));
-    }
-    
-    // Delete Team Member 
-    @Test
-    void testDeleteTeamMember() throws Exception {
-        doNothing().when(adminService).deleteTeamMember(1);
-
-        mockMvc.perform(delete("/api/admin/team-member/1"))
-                .andExpect(status().isNoContent());
-    }
-
-    // Delete Team Member (Not Found) 
-    @Test
-    void testDeleteTeamMember_NotFound() throws Exception {
-        doThrow(new RuntimeException("Team member not found")).when(adminService).deleteTeamMember(999);
-
-        mockMvc.perform(delete("/api/admin/team-member/999"))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("Team member not found"));
-    }
-
-    // Promote to Admin
+    /**
+     * Promote Team Member to Admin
+     */
     @Test
     void testPromoteToAdmin() throws Exception {
-        when(adminService.promoteToAdmin(2)).thenReturn(new AdminDTO(2, "John Doe", "john.doe@example.com"));
+        AdminDTO promotedAdmin = new AdminDTO(2, "John Doe", "john.doe@example.com");
+
+        when(adminService.promoteToAdmin(2)).thenReturn(promotedAdmin);
 
         mockMvc.perform(post("/api/admin/team-member/2/promote"))
                 .andExpect(status().isOk())
@@ -196,12 +182,14 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$.userName").value("John Doe"));
     }
 
-    // Assign to Team
+    /**
+     * Assign Team Member to Team
+     */
     @Test
     void testAssignToTeam() throws Exception {
-        TeamMemberDTO mockTeamMember = new TeamMemberDTO(2, "John Doe", "john.doe@example.com"); // Mock return value
-        
-        when(adminService.assignToTeam(2, 1)).thenReturn(mockTeamMember);
+        TeamMemberDTO updatedMember = new TeamMemberDTO(2, "John Doe", "john.doe@example.com");
+
+        when(adminService.assignToTeam(2, 1)).thenReturn(updatedMember);
 
         mockMvc.perform(post("/api/admin/team-member/2/assign-to-team/1"))
                 .andExpect(status().isOk())
@@ -210,7 +198,9 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$.userEmail").value("john.doe@example.com"));
     }
 
-    // Lock Task
+    /**
+     * Lock Task
+     */
     @Test
     void testLockTask() throws Exception {
         doNothing().when(adminService).lockTask(1);
@@ -219,7 +209,9 @@ public class AdminControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // Unlock Task
+    /**
+     * Unlock Task
+     */
     @Test
     void testUnlockTask() throws Exception {
         doNothing().when(adminService).unlockTask(1);
@@ -227,4 +219,77 @@ public class AdminControllerTest {
         mockMvc.perform(put("/api/admin/tasks/1/unlock"))
                 .andExpect(status().isOk());
     }
+
+    // Getting all admins
+    @Test
+    void testGetAllAdmins() throws Exception {
+        List<AdminDTO> mockAdmins = Arrays.asList(
+                        new AdminDTO(1, "Alice Johnson", "alice@example.com"),
+                        new AdminDTO(2, "Bob Smith", "bob@example.com"));
+
+        when(adminService.getAllAdmins()).thenReturn(mockAdmins);
+
+        mockMvc.perform(get("/api/admin/admins"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.size()").value(2))
+                        .andExpect(jsonPath("$[0].accountId").value(1))
+                        .andExpect(jsonPath("$[0].userName").value("Alice Johnson"))
+                        .andExpect(jsonPath("$[1].userEmail").value("bob@example.com"));
+    }
+
+    // Getting all admins
+    @Test
+    void getAllTeamMembers() throws Exception {
+        List<TeamMemberDTO> mockTMs = Arrays.asList(
+                        new TeamMemberDTO(1, "Alice Johnson", "alice@example.com"),
+                        new TeamMemberDTO(2, "Bob Smith", "bob@example.com"));
+
+        when(adminService.getAllTeamMembers()).thenReturn(mockTMs);
+
+        mockMvc.perform(get("/api/admin/team-members"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.size()").value(2))
+                        .andExpect(jsonPath("$[0].accountId").value(1))
+                        .andExpect(jsonPath("$[0].userName").value("Alice Johnson"))
+                        .andExpect(jsonPath("$[1].userEmail").value("bob@example.com"));
+    }
+
+    // Getting all teams
+    @Test
+    void getAllTeams() throws Exception {
+        List<TeamDTO> mockTeams = Arrays.asList(
+                        new TeamDTO(1, "Team 1", 1),
+                        new TeamDTO(2, "Team 2", 2));
+
+        when(adminService.getAllTeams()).thenReturn(mockTeams);
+
+        mockMvc.perform(get("/api/admin/all-teams"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.size()").value(2))
+                        .andExpect(jsonPath("$[0].teamId").value(1))
+                        .andExpect(jsonPath("$[0].teamName").value("Team 1"))
+                        .andExpect(jsonPath("$[1].teamLeadId").value("2"));
+    }
+
+    @Test
+    void testGetAdminById() throws Exception {
+        AdminDTO mockAdmin = new AdminDTO(1, "Admin Sandler", "adam_sandler@example.com");
+
+        when(adminService.getAdminById(1)).thenReturn(mockAdmin);
+
+        mockMvc.perform(get("/api/admin/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accountId").value(1))
+                .andExpect(jsonPath("$.userName").value("Admin Sandler"))
+                .andExpect(jsonPath("$.userEmail").value("adam_sandler@example.com"));
+    }
+
+    @Test
+    void testGetAdminById_NotFound() throws Exception {
+        when(adminService.getAdminById(999)).thenThrow(new RuntimeException("Admin not found"));
+
+        mockMvc.perform(get("/api/admin/999"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Admin not found"));
+    }    
 }

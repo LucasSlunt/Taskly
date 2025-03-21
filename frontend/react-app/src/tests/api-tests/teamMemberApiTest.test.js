@@ -1,4 +1,4 @@
-import { createTask, deleteTask, editTask, assignMemberToTask, changePassword } from '../../api/teamMemberApi';
+import { createTask, deleteTask, editTask, assignMemberToTask, changePassword, getTeamsForMember, getAssignedTasks } from '../../api/teamMemberApi';
 
 const BASE_URL = "http://localhost:8080/api/tasks";
 
@@ -15,12 +15,13 @@ describe('Team Member API', () => {
             description: "Task description",
             isLocked: false,
             status: "To-Do",
+            dueDate: "4-14-2025",
             teamId: 2
         };
 
         fetch.mockResponseOnce(JSON.stringify(mockTask), {status: 201});
 
-        const result = await createTask("New Task", "Task description", false, "To-Do", 2);
+        const result = await createTask("New Task", "Task description", false, "To-Do", "4-14-2025",2);
 
         expect(fetch).toHaveBeenCalledWith(`${BASE_URL}`, {
             method: 'POST',
@@ -30,6 +31,7 @@ describe('Team Member API', () => {
                 description: "Task description",
                 isLocked: false,
                 status: "To-Do",
+                dueDate: "4-14-2025",
                 teamId: 2
             })
         });
@@ -112,6 +114,38 @@ describe('Team Member API', () => {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({oldPassword: "oldPassword", newPassword: "newPassword"})
+        });
+
+        expect(result).toEqual(mockResponse);
+    });
+
+    //test: getting all teams for a team member
+    test('getTeamsForMember should return json body on success', async () => {
+        const mockResponse = { teams: ["Team 1", "Team 2"] };
+        const teamMemberId = 1;
+
+        fetch.mockResponseOnce(JSON.stringify(mockResponse), { status: 200 });
+
+        const result = await getTeamsForMember(teamMemberId);
+
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/${teamMemberId}/teams`, {
+            method: 'GET'
+        });
+
+        expect(result).toEqual(mockResponse);
+    });
+
+    //test: getting all assigned tasks to a team member
+    test('getAssignedTasks should return json body on success', async () => {
+        const mockResponse = {tasks: ["Task 1", "Task 2"]};
+        const teamMemberId = 1;
+
+        fetch.mockResponseOnce(JSON.stringify(mockResponse), { status: 200 });
+
+        const result = await getAssignedTasks(teamMemberId);
+
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/${teamMemberId}/tasks`, {
+            method: 'GET'
         });
 
         expect(result).toEqual(mockResponse);

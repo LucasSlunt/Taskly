@@ -1,12 +1,13 @@
 const BASE_URL = "http://localhost:8080/api/tasks";
 
 //Create a task
-export const createTask = async (title, description, isLocked, status, teamId) => {
+export const createTask = async (title, description, isLocked, status, dueDate, teamId) => {
     try {
+        console.log("Sending this: ", JSON.stringify({title, description, isLocked, status, dueDate, teamId}))
         const response = await fetch(`${BASE_URL}`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({title, description, isLocked, status, teamId})
+            body: JSON.stringify({title, description, isLocked, status, dueDate, teamId})
         });
 
         if (!response.ok) {
@@ -103,6 +104,44 @@ export const changePassword = async (teamMemberId, oldPassword, newPassword) => 
     }
     catch (error) {
         console.error("Error changing password: ", error);
+        throw error;
+    }
+};
+
+//getting all teams for a specific team member
+export const getTeamsForMember = async (accountId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/${accountId}/teams`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve teams: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve teams: `, error);
+        throw error;
+    }
+};
+
+//getting all tasks for a team member
+export const getAssignedTasks = async (teamMemberId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/${teamMemberId}/tasks`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve tasks: ${response.status} ${response.statusText}`);    
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve tasks: `, error);
         throw error;
     }
 };
