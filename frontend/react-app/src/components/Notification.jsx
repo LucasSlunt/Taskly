@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Notification = ({ notif, toggleRead }) => {
+const Notification = ({ notif, toggleRead, deleteNotification }) => {
     return (
         <tr>
             <td className="items">
@@ -11,7 +11,7 @@ const Notification = ({ notif, toggleRead }) => {
             </td>
             <td className="notifDetails">{notif.message}</td>
             <td>
-                <button className="delete">Delete</button>
+                <button className="delete" onClick={() => deleteNotification(notif.id)}>Delete</button>
             </td>
         </tr>
     )

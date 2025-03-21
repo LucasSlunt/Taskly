@@ -17,9 +17,14 @@ const Notifications = () => {
         ));
     };
 
+    //delete any notification
+    const deleteNotification = (id) => {
+        setNotifications(notifications.filter(notif => notif.id !== id));
+    };
+
     return (
         <div id="notifContainer">
-            <table>
+           <table>
                 <thead>
                     <tr>
                         <td colSpan="4">Notifications</td>
@@ -32,7 +37,7 @@ const Notifications = () => {
                                 <td colSpan="4" className="subHeader">Unread</td>
                             </tr>
                             {notifications.filter(notif => !notif.read).map(notif => (
-                                <Notification key={notif.id} notif={notif} toggleRead={toggleRead} />
+                                <Notification key={notif.id} notif={notif} toggleRead={toggleRead} deleteNotification={deleteNotification} />
                             ))}
                         </>
                     )}
@@ -43,7 +48,7 @@ const Notifications = () => {
                                 <td colSpan="4" className="subHeader">Read</td>
                             </tr>
                             {notifications.filter(notif => notif.read).map(notif => (
-                                <Notification key={notif.id} notif={notif} toggleRead={toggleRead} />
+                                <Notification key={notif.id} notif={notif} toggleRead={toggleRead} deleteNotification={deleteNotification} />
                             ))}
                         </>
                     )}
@@ -53,6 +58,8 @@ const Notifications = () => {
     )
 }
 
+
+//old static version (will delete later)
 
 // const Notifications = () => {
 //     return(
