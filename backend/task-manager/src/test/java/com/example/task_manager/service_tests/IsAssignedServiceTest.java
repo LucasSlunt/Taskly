@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -86,7 +87,16 @@ public class IsAssignedServiceTest {
         Team team = createUniqueTeam(teamMember);
         Task task = createUniqueTask(team);
 
+        teamMemberRepository.save(teamMember);
+        teamRepository.save(team);
+        taskRepository.save(task);
+
+        taskRepository.flush();
+        teamRepository.flush();
+        teamMemberRepository.flush();
+
         isAssignedService.assignToTask(teamMember.getAccountId(), task.getTaskId());
+
         isAssignedService.unassignFromTask(teamMember.getAccountId(), task.getTaskId());
 
         assertFalse(isAssignedService.isAssignedToTask(teamMember.getAccountId(), task.getTaskId()));

@@ -1,14 +1,18 @@
 package com.example.task_manager.DTO;
 
+import com.example.task_manager.enums.RoleType;
+
 public class AdminDTO {
     private int accountId;
     private String userName;
     private String userEmail;
+    private RoleType role;
 
-    public AdminDTO(int accountId, String userName, String userEmail) {
+    public AdminDTO(int accountId, String userName, String userEmail, RoleType role) {
         this.accountId = accountId;
         this.userName = userName;
         this.userEmail = userEmail;
+        this.role = role;
     }
 
     //getters and setters
@@ -34,5 +38,13 @@ public class AdminDTO {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    public RoleType getRole() {
+        return role;
+    }
+
+    public void setRole(RoleType role) {
+        this.role = role;
     }
 }

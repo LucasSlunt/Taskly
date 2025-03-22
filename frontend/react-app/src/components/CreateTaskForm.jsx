@@ -66,7 +66,7 @@ function CreateTaskForm(){
             <label className='majorLabel'>
                     Task Name
                     <div>
-                    <input type="text" name="name" id="name"{...register("title", { 
+                    <input type="text" name="name" id="name" className='input'{...register("title", { 
                         required:{
                             value: true,
                             message: 'Please set a Task Name'
@@ -107,7 +107,7 @@ function CreateTaskForm(){
                     Add Discription
                 
                 <div>
-                    <input type="text" name="input-description" id="description" {...register("description", { required: false })}/>
+                    <input type="text" name="input-description" id="description" className='input'{...register("description", { required: false })}/>
                 </div>
                 <div>
                     <input type="text" name="input-description" id="description" {...register("description", { required: false })}/>

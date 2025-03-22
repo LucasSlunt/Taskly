@@ -33,11 +33,11 @@ public class Task {
     private LocalDate expectedCompletionDate;
     private LocalDate dueDate;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "teamId", nullable = true)
     private Team team;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private Set<IsAssigned> assignedMembers = new HashSet<>();
 
     public Task() {}

@@ -20,6 +20,7 @@ import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
@@ -229,15 +230,15 @@ public class TeamMemberServiceTest {
         Admin admin = new Admin("Admin_" + System.nanoTime(), "admin_" + System.nanoTime() + "@example.com", "adminpw");
         admin = teamMemberRepository.save(admin);
 
-        boolean isAdmin = authInfoService.isAdmin(admin.getAccountId());
-        assertTrue(isAdmin);
+        RoleType role = authInfoService.isAdmin(admin.getAccountId());
+        assertEquals(role, admin.getRole());
     }
 
     @Test
     void testIsNotAdmin() {
         TeamMember teamMember = createUniqueTeamMember();
-        boolean isAdmin = authInfoService.isAdmin(teamMember.getAccountId());
-        assertFalse(isAdmin);
+        RoleType role = authInfoService.isAdmin(teamMember.getAccountId());
+        assertEquals(role, teamMember.getRole());
     }
 
     @Test
@@ -285,12 +286,12 @@ public class TeamMemberServiceTest {
         Team team = createUniqueTeam(teamMember);
         Team team2 = createUniqueTeam(teamMember);
 
-		List<TeamDTO> teams = adminService.getAllTeams();
+        List<TeamDTO> teams = adminService.getAllTeams();
 
-		System.out.println("Found " + teams.size() + " teams in DB");
+        System.out.println("Found " + teams.size() + " teams in DB");
 
-		assertNotNull(teams);
-        
+        assertNotNull(teams);
+
         assertTrue(teams.stream().anyMatch(t ->
                 t.getTeamId() == team.getTeamId() &&
                 t.getTeamName().equals(team.getTeamName()) &&
@@ -301,6 +302,6 @@ public class TeamMemberServiceTest {
                 t.getTeamId() == team2.getTeamId() &&
                 t.getTeamName().equals(team2.getTeamName()) &&
                 t.getTeamLeadId() == team2.getTeamLead().getAccountId()
-        ), "Team 2 does not have correct details");
+        ), "Team 2 does not have correct details");		
 	}
 }

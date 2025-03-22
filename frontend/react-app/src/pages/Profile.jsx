@@ -13,16 +13,18 @@ function Profile(){
     ];
 
     return (
-    <div className="profile-page">
+    <div className='pageContainer'>
         <Header/>
-        <UserInfo />
-        <h1>My teams</h1>
-        <div className="teams-grid">
-            {teams.map((team) => (
-                <Teams team={team} key={team.id}/> 
-            ))}
-        </div> 
-        <SignOut/>
+        <div className='pageBody'>
+            <UserInfo />
+            <h1>My teams</h1>
+            <div className="teams-grid">
+                {teams.map((team) => (
+                    <Teams team={team} key={team.id}/> 
+                ))}
+            </div> 
+            <SignOut/>
+        </div>
     </div>
     
     );

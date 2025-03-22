@@ -1,15 +1,17 @@
 package com.example.task_manager.DTO;
 
+import com.example.task_manager.enums.RoleType;
+
 public class AuthInfoDTO {
     private int accountId;
     private String password;
     private String userName;
-    private boolean isAdmin;
+    private RoleType role;
 
-    public AuthInfoDTO(int accountId, String userName, boolean isAdmin) {
+    public AuthInfoDTO(int accountId, String userName, RoleType role) {
         this.accountId = accountId;
         this.userName = userName;
-        this.isAdmin = isAdmin;
+        this.role = role;
     }
 
     public int getAccountId() {
@@ -36,11 +38,11 @@ public class AuthInfoDTO {
         this.userName = userName;
     }
 
-    public boolean getIsAdmin() {
-        return isAdmin;
+    public RoleType getRole() {
+        return role;
     }
 
-    public void setIsAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
+    public void setRole(RoleType role) {
+        this.role = role;
     }
 }

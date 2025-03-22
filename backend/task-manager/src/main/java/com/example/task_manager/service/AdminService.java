@@ -10,6 +10,7 @@ import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.*;
+import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.repository.*;
 
 import jakarta.transaction.Transactional;
@@ -27,14 +28,16 @@ public class AdminService extends TeamMemberService {
 						IsMemberOfRepository isMemberOfRepository, 
 						TaskRepository taskRepository,
 						IsAssignedRepository isAssignedRepository,
-						AuthInfoService authInfoService) {
-		super(teamMemberRepository, teamRepository, taskRepository, isMemberOfRepository, isAssignedRepository, authInfoService);
+						AuthInfoService authInfoService,
+						NotificationService notifService) {
+		super(teamMemberRepository, teamRepository, taskRepository, isMemberOfRepository, isAssignedRepository, authInfoService, notifService);
 		this.adminRepository = adminRepository;
 	}
 
 	// Creates and saves a new Admin entity
 	public AdminDTO createAdmin(String adminName, String adminEmail, String adminPassword) {
 		Admin admin = new Admin(adminName, adminEmail, adminPassword);
+		admin.setRole(RoleType.ADMIN);
 		admin = adminRepository.save(admin);
 		return convertToDTO(admin);
 	}
@@ -70,6 +73,7 @@ public class AdminService extends TeamMemberService {
 	// Creates and saves a new TeamMember entity
 	public TeamMemberDTO createTeamMember(String userName, String userEmail, String userPassword) {
 		TeamMember teamMember = new TeamMember(userName, userEmail, userPassword);
+		teamMember.setRole(RoleType.TEAM_MEMBER);
 		teamMember = teamMemberRepository.save(teamMember);
 		return convertToDTO(teamMember);
 	}
@@ -113,6 +117,7 @@ public class AdminService extends TeamMemberService {
 		admin.setUserEmail(teamMember.getUserEmail());
 		admin.setAuthInfo(teamMember.getAuthInfo());
 		admin.setTeams(new HashSet<>(teamMember.getTeams()));
+		admin.setRole(RoleType.ADMIN);
 
 		admin = adminRepository.save(admin);
 
@@ -159,15 +164,14 @@ public class AdminService extends TeamMemberService {
 	//get all admins
 	public List<AdminDTO> getAllAdmins() {
 		return adminRepository.findAll().stream()
-				.map(admin -> new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail()))
+				.map(admin -> new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail(), admin.getRole()))
 				.collect(Collectors.toList());
 	}
 
 	//get all team members
 	public List<TeamMemberDTO> getAllTeamMembers() {
 		return adminRepository.findAll().stream()
-				.map(teamMember -> new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(),
-						teamMember.getUserEmail()))
+				.map(teamMember -> new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail(), teamMember.getRole()))
 				.collect(Collectors.toList());
 	}
 
@@ -182,21 +186,21 @@ public class AdminService extends TeamMemberService {
 	public AdminDTO getAdminById(int adminId) {
 		Admin admin = adminRepository.findById(adminId)
 				.orElseThrow(() -> new RuntimeException("Admin not found"));
-		return new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail());
+		return new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail(), admin.getRole());
 	}
 
 	//get a single team member
 	public TeamMemberDTO getTeamMemberById(int teamMemberId) {
 		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
 			.orElseThrow(() -> new RuntimeException("Team Member not found"));
-		return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail());
+		return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail(), teamMember.getRole());
 	}
 
 	private AdminDTO convertToDTO(Admin admin) {
-    	return new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail());
+    	return new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail(), admin.getRole());
     }
 
 	private TeamMemberDTO convertToDTO(TeamMember teamMember) {
-        return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail());
+        return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail(), teamMember.getRole());
     }
 }

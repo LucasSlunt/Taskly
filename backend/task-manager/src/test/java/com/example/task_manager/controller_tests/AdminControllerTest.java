@@ -13,6 +13,7 @@ import com.example.task_manager.DTO.AdminRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.controller.AdminController;
+import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.repository.AdminRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.service.AdminService;
@@ -55,7 +56,7 @@ public class AdminControllerTest {
      */
     @Test
     void testCreateAdmin() throws Exception {
-        AdminDTO mockAdmin = new AdminDTO(1, "Admin_" + System.nanoTime(), "admin_" + System.nanoTime() + "@example.com");
+        AdminDTO mockAdmin = new AdminDTO(1, "Admin_" + System.nanoTime(), "admin_" + System.nanoTime() + "@example.com", RoleType.ADMIN);
         AdminRequestDTO requestDTO = new AdminRequestDTO(mockAdmin.getUserName(), mockAdmin.getUserEmail(), "securePass");
 
         when(adminService.createAdmin(mockAdmin.getUserName(), mockAdmin.getUserEmail(), "securePass")).thenReturn(mockAdmin);
@@ -85,7 +86,7 @@ public class AdminControllerTest {
      */
     @Test
     void testModifyAdminName() throws Exception {
-        AdminDTO updatedAdmin = new AdminDTO(1, "NewAdmin_" + System.nanoTime(), "admin@example.com");
+        AdminDTO updatedAdmin = new AdminDTO(1, "NewAdmin_" + System.nanoTime(), "admin@example.com", RoleType.ADMIN);
         UpdateNameRequestDTO requestDTO = new UpdateNameRequestDTO(updatedAdmin.getUserName());
 
         when(adminService.modifyAdminName(1, updatedAdmin.getUserName())).thenReturn(updatedAdmin);
@@ -102,7 +103,7 @@ public class AdminControllerTest {
      */
     @Test
     void testModifyAdminEmail() throws Exception {
-        AdminDTO updatedAdmin = new AdminDTO(1, "Admin User", "updated_" + System.nanoTime() + "@example.com");
+        AdminDTO updatedAdmin = new AdminDTO(1, "Admin User", "updated_" + System.nanoTime() + "@example.com", RoleType.ADMIN);
         UpdateEmailRequestDTO requestDTO = new UpdateEmailRequestDTO(updatedAdmin.getUserEmail());
 
         when(adminService.modifyAdminEmail(1, updatedAdmin.getUserEmail())).thenReturn(updatedAdmin);
@@ -119,7 +120,7 @@ public class AdminControllerTest {
      */
     @Test
     void testCreateTeamMember() throws Exception {
-        TeamMemberDTO mockMember = new TeamMemberDTO(2, "Member_" + System.nanoTime(), "member_" + System.nanoTime() + "@example.com");
+        TeamMemberDTO mockMember = new TeamMemberDTO(2, "Member_" + System.nanoTime(), "member_" + System.nanoTime() + "@example.com", RoleType.TEAM_MEMBER);
         AdminRequestDTO requestDTO = new AdminRequestDTO(mockMember.getUserName(), mockMember.getUserEmail(), "securePass");
 
         when(adminService.createTeamMember(mockMember.getUserName(), mockMember.getUserEmail(), "securePass")).thenReturn(mockMember);
@@ -138,7 +139,7 @@ public class AdminControllerTest {
      */
     @Test
     void testModifyTeamMemberName() throws Exception {
-        TeamMemberDTO updatedMember = new TeamMemberDTO(1, "UpdatedMember_" + System.nanoTime(), "member@example.com");
+        TeamMemberDTO updatedMember = new TeamMemberDTO(1, "UpdatedMember_" + System.nanoTime(), "member@example.com", RoleType.TEAM_MEMBER);
         UpdateNameRequestDTO requestDTO = new UpdateNameRequestDTO(updatedMember.getUserName());
 
         when(adminService.modifyTeamMemberName(1, updatedMember.getUserName())).thenReturn(updatedMember);
@@ -155,7 +156,7 @@ public class AdminControllerTest {
      */
     @Test
     void testModifyTeamMemberEmail() throws Exception {
-        TeamMemberDTO updatedMember = new TeamMemberDTO(1, "John Doe", "updated_" + System.nanoTime() + "@example.com");
+        TeamMemberDTO updatedMember = new TeamMemberDTO(1, "John Doe", "updated_" + System.nanoTime() + "@example.com", RoleType.TEAM_MEMBER);
         UpdateEmailRequestDTO requestDTO = new UpdateEmailRequestDTO(updatedMember.getUserEmail());
 
         when(adminService.modifyTeamMemberEmail(1, updatedMember.getUserEmail())).thenReturn(updatedMember);
@@ -172,7 +173,7 @@ public class AdminControllerTest {
      */
     @Test
     void testPromoteToAdmin() throws Exception {
-        AdminDTO promotedAdmin = new AdminDTO(2, "John Doe", "john.doe@example.com");
+        AdminDTO promotedAdmin = new AdminDTO(2, "John Doe", "john.doe@example.com", RoleType.ADMIN);
 
         when(adminService.promoteToAdmin(2)).thenReturn(promotedAdmin);
 
@@ -187,7 +188,7 @@ public class AdminControllerTest {
      */
     @Test
     void testAssignToTeam() throws Exception {
-        TeamMemberDTO updatedMember = new TeamMemberDTO(2, "John Doe", "john.doe@example.com");
+        TeamMemberDTO updatedMember = new TeamMemberDTO(2, "John Doe", "john.doe@example.com", RoleType.TEAM_MEMBER);
 
         when(adminService.assignToTeam(2, 1)).thenReturn(updatedMember);
 
@@ -224,8 +225,8 @@ public class AdminControllerTest {
     @Test
     void testGetAllAdmins() throws Exception {
         List<AdminDTO> mockAdmins = Arrays.asList(
-                        new AdminDTO(1, "Alice Johnson", "alice@example.com"),
-                        new AdminDTO(2, "Bob Smith", "bob@example.com"));
+                        new AdminDTO(1, "Alice Johnson", "alice@example.com", RoleType.ADMIN),
+                        new AdminDTO(2, "Bob Smith", "bob@example.com", RoleType.ADMIN));
 
         when(adminService.getAllAdmins()).thenReturn(mockAdmins);
 
@@ -241,8 +242,8 @@ public class AdminControllerTest {
     @Test
     void getAllTeamMembers() throws Exception {
         List<TeamMemberDTO> mockTMs = Arrays.asList(
-                        new TeamMemberDTO(1, "Alice Johnson", "alice@example.com"),
-                        new TeamMemberDTO(2, "Bob Smith", "bob@example.com"));
+                        new TeamMemberDTO(1, "Alice Johnson", "alice@example.com", RoleType.TEAM_MEMBER),
+                        new TeamMemberDTO(2, "Bob Smith", "bob@example.com", RoleType.TEAM_MEMBER));
 
         when(adminService.getAllTeamMembers()).thenReturn(mockTMs);
 
@@ -273,7 +274,7 @@ public class AdminControllerTest {
 
     @Test
     void testGetAdminById() throws Exception {
-        AdminDTO mockAdmin = new AdminDTO(1, "Admin Sandler", "adam_sandler@example.com");
+        AdminDTO mockAdmin = new AdminDTO(1, "Admin Sandler", "adam_sandler@example.com", RoleType.ADMIN);
 
         when(adminService.getAdminById(1)).thenReturn(mockAdmin);
 

@@ -12,7 +12,7 @@ function EditTaskForm({task, team}){
                         <label className='majorLabel'>
                                 Task Name
                                 <div>
-                                <input type="text" name="name" id="name" defaultValue={task.name}{...register("name", { 
+                                <input type="text" name="name" id="name" className='input' defaultValue={task.name}{...register("name", { 
                                     required:{
                                         value: true,
                                         message: 'Please set a Task Name'
@@ -51,7 +51,7 @@ function EditTaskForm({task, team}){
                             Description
                             
                             <div>
-                                <input type="text" name="input-discription" id="discription" defaultValue={task.discription}  {...register("discription", { required: false })}/>
+                                <input type="text" name="input-discription" id="discription" className='input' defaultValue={task.discription}  {...register("discription", { required: false })}/>
                             </div>
                             </label>
                             <input type="submit" value="Create Task" id="button"/>

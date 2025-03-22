@@ -10,11 +10,11 @@ import TeamTasks from './pages/TeamTasks';
 import AdminAllUsers from './pages/AdminAllUsers';
 import EditTask from './pages/EditTask';
 import MyTasks from './pages/MyTasks';
+import Notifications from "./pages/Notifications";
 import ProtectedRoute from './components/ProtectedRoute';
 import CreateAccount from './pages/CreateAccount';
 import AdminPanel from './pages/AdminPanel';
 import CreateTask from './pages/CreateTask';
-
 
 
 function App() {
@@ -23,6 +23,7 @@ function App() {
       <div>
         <Routes>
           <Route path="/login" element={<Login/>} />
+          <Route path="/notifications" element={<Notifications/>}/>
           <Route path="/home" element={<ProtectedRoute allowedRoles={['admin', 'teamMember']} protectedContent={<Home/>} urlReirect={"/login"}></ProtectedRoute>}/>
           <Route path="/view-task" element={<ProtectedRoute allowedRoles={['admin', 'teamMember']} protectedContent={<ViewTask/>} urlReirect={"/login"}></ProtectedRoute>}/>
           <Route path="/profile" element={<ProtectedRoute allowedRoles={['admin', 'teamMember']} protectedContent={<Profile/>} urlReirect={"/login"}></ProtectedRoute>}/>

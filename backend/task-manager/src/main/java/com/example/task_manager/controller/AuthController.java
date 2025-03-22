@@ -1,6 +1,7 @@
 package com.example.task_manager.controller;
 
 import com.example.task_manager.DTO.AuthInfoDTO;
+import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.service.AuthInfoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,16 +39,16 @@ public class AuthController {
      * Takes `teamMemberId` as a path variable
      */
     @GetMapping("/{teamMemberId}/is-admin")
-    public ResponseEntity<Boolean> isAdmin(@PathVariable int teamMemberId) {
+    public ResponseEntity<?> isAdmin(@PathVariable int teamMemberId) {
         try {
-            boolean isAdmin = authInfoService.isAdmin(teamMemberId);
-            return ResponseEntity.ok(isAdmin);
+            RoleType role = authInfoService.isAdmin(teamMemberId);
+            return ResponseEntity.ok(role);
         }
         catch (RuntimeException e) {
             if (e.getMessage().contains("not found")) {
                 return ResponseEntity.status(404).body(null);
             }
-            return ResponseEntity.ok(false);
+            return ResponseEntity.status(500).body(null);
         }
     }
 }

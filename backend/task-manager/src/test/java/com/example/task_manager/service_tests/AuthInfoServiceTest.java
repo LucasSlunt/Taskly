@@ -91,7 +91,7 @@ public class AuthInfoServiceTest {
         assertNotNull(response);
         assertEquals(teamMember.getAccountId(), response.getAccountId());
         assertEquals(teamMember.getUserName(), response.getUserName());
-        assertFalse(response.getIsAdmin());
+        assertEquals(teamMember.getRole(), response.getRole());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class AuthInfoServiceTest {
         assertNotNull(response);
         assertEquals(admin.getAccountId(), response.getAccountId());
         assertEquals(admin.getUserName(), response.getUserName());
-        assertTrue(response.getIsAdmin());
+        assertEquals(admin.getRole(), response.getRole());
     }
 
     @Test
@@ -132,6 +132,6 @@ public class AuthInfoServiceTest {
         assertNotNull(response);
         assertEquals(teamMember.getAccountId(), response.getAccountId());
         assertEquals(teamMember.getUserName(), response.getUserName());
-        assertFalse(response.getIsAdmin());
+        assertEquals(teamMember.getRole(), response.getRole());
     }
 }

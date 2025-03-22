@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.example.task_manager.DTO.AuthInfoDTO;
 import com.example.task_manager.controller.AuthController;
+import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.service.AuthInfoService;
 
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ public class AuthInfoControllerTest {
      */
     @Test
     void testLogin_Success() throws Exception {
-        AuthInfoDTO mockUser = new AuthInfoDTO(1, "User_" + System.nanoTime(), false);
+        AuthInfoDTO mockUser = new AuthInfoDTO(1, "User_" + System.nanoTime(), RoleType.ADMIN);
 
         when(authInfoService.authenticateUser(1, "correctpassword")).thenReturn(mockUser);
 
@@ -42,7 +43,7 @@ public class AuthInfoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(1))
                 .andExpect(jsonPath("$.userName").value(mockUser.getUserName()))
-                .andExpect(jsonPath("$.isAdmin").value(false));
+                .andExpect(jsonPath("$.role").value("ADMIN"));
 
         verify(authInfoService, times(1)).authenticateUser(1, "correctpassword");
     }
@@ -52,7 +53,7 @@ public class AuthInfoControllerTest {
      */
     @Test
     void testLogin_AdminSuccess() throws Exception {
-        AuthInfoDTO mockAdmin = new AuthInfoDTO(2, "Admin_" + System.nanoTime(), true);
+        AuthInfoDTO mockAdmin = new AuthInfoDTO(2, "Admin_" + System.nanoTime(), RoleType.ADMIN);
 
         when(authInfoService.authenticateUser(2, "adminpassword")).thenReturn(mockAdmin);
 
@@ -62,7 +63,7 @@ public class AuthInfoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(2))
                 .andExpect(jsonPath("$.userName").value(mockAdmin.getUserName()))
-                .andExpect(jsonPath("$.isAdmin").value(true));
+                .andExpect(jsonPath("$.role").value("ADMIN"));
 
         verify(authInfoService, times(1)).authenticateUser(2, "adminpassword");
     }
@@ -106,11 +107,11 @@ public class AuthInfoControllerTest {
      */
     @Test
     void testIsAdmin_Success_AdminUser() throws Exception {
-        when(authInfoService.isAdmin(2)).thenReturn(true);
+        when(authInfoService.isAdmin(2)).thenReturn(RoleType.ADMIN);
 
         mockMvc.perform(get("/auth-info/2/is-admin"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"));
+                .andExpect(jsonPath("$").value("ADMIN"));
 
         verify(authInfoService, times(1)).isAdmin(2);
     }
@@ -120,11 +121,11 @@ public class AuthInfoControllerTest {
      */
     @Test
     void testIsAdmin_Success_NonAdminUser() throws Exception {
-        when(authInfoService.isAdmin(1)).thenReturn(false);
+        when(authInfoService.isAdmin(1)).thenReturn(RoleType.ADMIN);
 
         mockMvc.perform(get("/auth-info/1/is-admin"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("false"));
+                .andExpect(jsonPath("$").value("ADMIN"));
 
         verify(authInfoService, times(1)).isAdmin(1);
     }

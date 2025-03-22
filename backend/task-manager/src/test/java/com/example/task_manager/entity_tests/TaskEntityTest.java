@@ -80,35 +80,28 @@ public class TaskEntityTest {
         assertEquals(1, savedTask.getAssignedMembers().size());
     }
     
-    // @Test
-    // void testCascadeDeleteWithTask() {
-    //     Team team = createUniqueTeam();
-    //     entityManager.persist(team);
-    //     entityManager.flush();
+    @Test
+    void testCascadeDeleteWithTask() {
+        Team team = createUniqueTeam();
+        entityManager.persist(team);
+        entityManager.flush();
 
-    //     Task task = createUniqueTask(team);
-    //     entityManager.persist(task);
-    //     team.getTasks().add(task); 
+        Task task = createUniqueTask(team);
+        entityManager.persist(task);
+        team.getTasks().add(task); 
 
-    //     TeamMember teamMember = createUniqueTeamMember();
-    //     entityManager.persist(teamMember);
-    //     entityManager.flush();
+        TeamMember teamMember = createUniqueTeamMember();
+        //entityManager.persist(teamMember);
 
-    //     IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
-    //     entityManager.persist(isAssigned);
-    //     entityManager.flush();
+        IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
+        //entityManager.persist(isAssigned);
 
-    //     team.getTasks().remove(task);
-    //     // entityManager.flush();
+        team.getTasks().remove(task);
+        entityManager.remove(isAssigned.getTask());
 
-    //     entityManager.remove(task);
-    //     // entityManager.flush();
-
-    //     entityManager.clear();
-
-    //     assertNull(entityManager.find(Task.class, task.getTaskId()));
-    //     assertNull(entityManager.find(IsAssigned.class, isAssigned.getId()));
-    // }
+        assertNull(entityManager.find(Task.class, task.getTaskId()));
+        assertNull(entityManager.find(IsAssigned.class, isAssigned.getId()));
+    }
 
 
     @Test

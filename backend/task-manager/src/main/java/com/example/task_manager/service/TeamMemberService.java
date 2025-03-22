@@ -35,6 +35,7 @@ public class TeamMemberService {
 	protected final TaskRepository taskRepository;
 	protected final IsAssignedRepository isAssignedRepository;
 	protected final AuthInfoService authInfoService;
+	protected final NotificationService notifService;
 
 	// Constructor for required repositories
 	public TeamMemberService(TeamMemberRepository teamMemberRepository, 
@@ -42,13 +43,15 @@ public class TeamMemberService {
 							 TaskRepository taskRepository, 
 							 IsMemberOfRepository isMemberOfRepository, 
 							 IsAssignedRepository isAssignedRepository,
-							 AuthInfoService authInfoService) {
+							 AuthInfoService authInfoService,
+							 NotificationService notifService) {
 		this.teamMemberRepository = teamMemberRepository;
 		this.teamRepository = teamRepository;
 		this.isMemberOfRepository = isMemberOfRepository;
 		this.taskRepository = taskRepository;
 		this.isAssignedRepository = isAssignedRepository;
 		this.authInfoService = authInfoService;
+		this.notifService = notifService;
 	}
 	
 	/**
@@ -113,6 +116,7 @@ public class TeamMemberService {
 		isAssignedRepository.deleteById(taskId);
 	
 		taskRepository.delete(task);
+
 	}    
 
 	/**
@@ -130,22 +134,47 @@ public class TeamMemberService {
 	 */
 	public TaskDTO editTask(int taskId, TaskDTO taskDTO) {
 		Task task = taskRepository.findById(taskId)
-			.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
-	
+				.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+				
+		String oldTitle = task.getTitle();
+		String oldDescription = task.getDescription();
+		boolean oldLockStatus = task.isLocked();
+		String oldStatus = task.getStatus();
+		LocalDate oldDueDate = task.getDueDate();
+
 		if (taskDTO.getTitle() != null && !taskDTO.getTitle().isEmpty()) {
 			task.setTitle(taskDTO.getTitle());
+
+			//call notif method
+			notifService.notifyTaskTitleChange(task, oldTitle);
 		}
+
 		if (taskDTO.getDescription() != null && !taskDTO.getDescription().isEmpty()) {
 			task.setDescription(taskDTO.getDescription());
+
+			//call notif method
+			notifService.notifyTaskDescriptionChange(task, oldDescription);
 		}
 		
-		task.setIsLocked(taskDTO.getIsLocked());
+		if (taskDTO.getIsLocked() != task.isLocked()) {
+			task.setIsLocked(taskDTO.getIsLocked());
+
+			//call notif method
+			notifService.notifyTaskLockChange(task, oldLockStatus);
+		}
 		
 		if (taskDTO.getStatus() != null && !taskDTO.getStatus().isEmpty()) {
 			task.setStatus(taskDTO.getStatus());
+
+			//call notif method
+			notifService.notifyTaskStatusChange(task, oldStatus);
 		}
+
 		if (taskDTO.getDueDate() != null) {
 			task.setDueDate(taskDTO.getDueDate());
+
+			//call notif method
+			notifService.notifyTaskDueDateChange(task, oldDueDate);
 		}
 
 		if (taskDTO.getPriority() != null) {
@@ -157,6 +186,7 @@ public class TeamMemberService {
 		}
 
 		task = taskRepository.save(task);
+
 		return convertToDTO(task);
 	}
 
@@ -253,7 +283,8 @@ public class TeamMemberService {
 		return new TeamMemberDTO(
 			teamMember.getAccountId(), 
 			teamMember.getUserName(), 
-			teamMember.getUserEmail()
+			teamMember.getUserEmail(),
+			teamMember.getRole()
 		);
 	}
 
