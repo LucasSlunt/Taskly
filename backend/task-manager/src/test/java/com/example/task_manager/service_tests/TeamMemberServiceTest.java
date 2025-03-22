@@ -268,13 +268,13 @@ public class TeamMemberServiceTest {
 		assertNotNull(teamsForMember);
 		assertEquals(2, teamsForMember.size());
 
-		assertEquals(team.getTeamId(), teamsForMember.get(0).getTeamId());
-		assertEquals(team.getTeamName(), teamsForMember.get(0).getTeamName());
-		assertEquals(team.getTeamLead().getAccountId(), teamsForMember.get(0).getTeamLeadId());
+		assertEquals(team.getTeamId(), teamsForMember.get(1).getTeamId());
+		assertEquals(team.getTeamName(), teamsForMember.get(1).getTeamName());
+		assertEquals(team.getTeamLead().getAccountId(), teamsForMember.get(1).getTeamLeadId());
 
-		assertEquals(team2.getTeamId(), teamsForMember.get(1).getTeamId());
-		assertEquals(team2.getTeamName(), teamsForMember.get(1).getTeamName());
-		assertEquals(team2.getTeamLead().getAccountId(), teamsForMember.get(1).getTeamLeadId());
+		assertEquals(team2.getTeamId(), teamsForMember.get(0).getTeamId());
+		assertEquals(team2.getTeamName(), teamsForMember.get(0).getTeamName());
+		assertEquals(team2.getTeamLead().getAccountId(), teamsForMember.get(0).getTeamLeadId());
 	}
 
 	@Test
