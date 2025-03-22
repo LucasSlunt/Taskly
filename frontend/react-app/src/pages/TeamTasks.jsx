@@ -4,6 +4,13 @@ import Header from "../components/Header";
 import "../css/TeamTasks.css";
 import TeamMember from "../components/TeamMember";
 import fakeData from "../FakeData/fakeTaskData.json"
+import { useCookies } from 'react-cookie';
+import { useState, useEffect } from 'react';
+import { getTeamMembers } from "../api/teamApi";
+import { useLocation } from 'react-router-dom';
+
+
+
 
 function getAssignnesNames(task){
   let returnArr = []
@@ -119,6 +126,36 @@ const headerAndAccessorsComplete = [
   }
 ]
 function TeamTasks(){
+  const [cookies] = useCookies(['userInfo']);
+  const userId = cookies.userInfo.accountId;
+
+  const [teamMembers, setTeamMembers ] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const location = useLocation();
+  const { teamId } = location.state;
+  console.log("teamId:", teamId);
+
+  useEffect(()=>{
+    async function loadAPIInfo() {
+        try {
+            const data = await getTeamMembers(teamId)
+            setTeamMembers(data)
+        } catch (error) {
+            console.log(error)
+        }finally{
+            setLoading(false)
+        }
+    }
+    loadAPIInfo();
+      
+},[])
+if(loading){
+  return (<div>Loading...</div>)
+}
+
+ 
+
   //mock
   const isAdmin = false;
 
@@ -151,8 +188,8 @@ function TeamTasks(){
 
             <h2>Team Members</h2>
             <div className="team-list">
-              {members.map((member) => (
-                <TeamMember key={member.id} member={member} isAdminPage={isAdmin}/>
+              {teamMembers.map((member) => (
+                <TeamMember key={member.teamId} member={member} isAdminPage={isAdmin}/>
               ))}
             </div>
 
