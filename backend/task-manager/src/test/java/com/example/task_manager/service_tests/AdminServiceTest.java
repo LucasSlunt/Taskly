@@ -21,6 +21,7 @@ import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.repository.*;
 
 import com.example.task_manager.service.AdminService;
@@ -104,11 +105,34 @@ public class AdminServiceTest {
 
     @Test
     void testModifyTeamMemberName() {
-        TeamMemberDTO teamMember = adminService.createTeamMember("OldName", "name_member" + System.nanoTime() + "@example.com", "password");
+        TeamMemberDTO teamMember = adminService.createTeamMember("OldName",
+                "name_member" + System.nanoTime() + "@example.com", "password");
         TeamMemberDTO updatedTeamMember = adminService.modifyTeamMemberName(teamMember.getAccountId(), "NewName");
         assertEquals("NewName", updatedTeamMember.getUserName());
     }
 
+    @Test
+    void testChangeRoleToTeamMember() {
+        AdminDTO admin = adminService.createAdmin("OssyOsbourne" + System.nanoTime(),
+                "NoMoreTears" + System.nanoTime() + "@rock.com", "music_password");
+
+        TeamMemberDTO result = (TeamMemberDTO) adminService.changeRole(admin.getAccountId(), admin.getRole());
+
+        assertEquals(RoleType.TEAM_MEMBER, result.getRole());
+        assertNotEquals(admin.getAccountId(), result.getAccountId());
+    }
+
+    @Test
+    void testChangeRoleToAdmin() {
+        TeamMemberDTO teamMember = adminService.createTeamMember("Whitesnake" + System.nanoTime(),
+                "HereIGoAgain" + System.nanoTime() + "@rock.com", "on_my_own");
+
+        AdminDTO result = (AdminDTO) adminService.changeRole(teamMember.getAccountId(), teamMember.getRole());
+
+        assertEquals(RoleType.ADMIN, result.getRole());
+        assertNotEquals(teamMember.getAccountId(), result.getAccountId());
+    }
+    
     @Test
     void testAssignToTeam() {
         TeamMemberDTO teamMember = adminService.createTeamMember("AssignedMember", "assigned_member" + System.nanoTime() + "@example.com", "password");

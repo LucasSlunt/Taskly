@@ -2,6 +2,7 @@ package com.example.task_manager.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -96,33 +97,86 @@ public class AdminService extends TeamMemberService {
 	// Updates a TeamMember's email
 	public TeamMemberDTO modifyTeamMemberEmail(int userId, String newUserEmail) {
 		TeamMember teamMember = teamMemberRepository.findById(userId)
-			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + userId));
+				.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + userId));
 
 		teamMember.setUserEmail(newUserEmail);
 		teamMember = teamMemberRepository.save(teamMember);
 		return convertToDTO(teamMember);
 	}
+	
+	// Promotes a member to admin or demotes a member to team member depending on what role is passed through the API
+	public Object changeRole(int memberId, RoleType currentRole) {
+		//if the current role is Admin they are being demoted to team member
+		if (currentRole == RoleType.ADMIN) {
+			Admin admin = adminRepository.findById(memberId)
+					.orElseThrow(() -> new RuntimeException("Admin not found with ID: " + memberId));
 
-	// Promotes a TeamMember to Admin by removing them from the TeamMember table and adding them to the Admin table
-	public AdminDTO promoteToAdmin(int teamMemberId) {
-		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
-			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+			String name = admin.getUserName();
+			String email = admin.getUserEmail();
+			Set<IsMemberOf> teams = admin.getTeams();
+			Set<IsAssigned> tasks = admin.getAssignedTasks();
 
-		teamMemberRepository.delete(teamMember);
-		teamMemberRepository.flush(); // Ensures deletion is immediately reflected in the database
+			String hashed;
+			String salt;
+			AuthInfo authInfo = admin.getAuthInfo();
+			if (authInfo != null) {
+				hashed = authInfo.getHashedPassword();
+				salt = authInfo.getSalt();
+			} 
+			else {
+				throw new RuntimeException("AuthInfo is null before deletion — cannot preserve credentials.");
+			}
 
-		// Creates a new Admin using the TeamMember's existing details
-		Admin admin = new Admin();
-		admin.setUserName(teamMember.getUserName());
-		admin.setUserEmail(teamMember.getUserEmail());
-		admin.setAuthInfo(teamMember.getAuthInfo());
-		admin.setTeams(new HashSet<>(teamMember.getTeams()));
-		admin.setRole(RoleType.ADMIN);
+			//deleete admin, which deletes the member from both team member and admin tables
+			adminRepository.delete(admin);
+			adminRepository.flush();
 
-		admin = adminRepository.save(admin);
+			TeamMember teamMember = new TeamMember(name, email, "TEMP_PASSWORD");
+			teamMember.getAuthInfo().setHashedPassword(hashed);
+			teamMember.getAuthInfo().setSalt(salt);
 
-		return convertToDTO(admin);
-	}	
+			teamMember.setTeams(teams);
+			teamMember.setAssignedTasks(tasks);
+
+			return convertToDTO(teamMemberRepository.save(teamMember));
+		}
+		
+		//if the current role is Team Member they are being promoted to admin
+		if (currentRole == RoleType.TEAM_MEMBER) {
+			TeamMember teamMember = teamMemberRepository.findById(memberId)
+					.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + memberId));
+
+			String name = teamMember.getUserName();
+			String email = teamMember.getUserEmail();
+			Set<IsMemberOf> teams = teamMember.getTeams();
+			Set<IsAssigned> tasks = teamMember.getAssignedTasks();
+
+			String hashed;
+			String salt;
+			AuthInfo authInfo = teamMember.getAuthInfo();
+			if (authInfo != null) {
+				hashed = authInfo.getHashedPassword();
+				salt = authInfo.getSalt();
+			} 
+			else {
+				throw new RuntimeException("AuthInfo is null before deletion — cannot preserve credentials.");
+			}
+
+			teamMemberRepository.delete(teamMember);
+			teamMemberRepository.flush();
+
+			Admin admin = new Admin(name, email, "TEMP_PASSWORD");
+			admin.getAuthInfo().setHashedPassword(hashed);
+			admin.getAuthInfo().setSalt(salt);
+
+			admin.setTeams(teams);
+			admin.setAssignedTasks(tasks);
+
+			return convertToDTO(adminRepository.save(admin));
+		}
+
+		throw new IllegalArgumentException("Invalid role transaction");
+	}
 
 	// Assigns a TeamMember to a Team by creating an IsMemberOf entry
 	public TeamMemberDTO assignToTeam(int teamMemberId, int teamId) {
