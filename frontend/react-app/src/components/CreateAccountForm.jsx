@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import {useForm} from 'react-hook-form';
-export default function CreateAccountForm(){
+import Select from 'react-select'
+export default function CreateAccountForm(teams){
     const { register, handleSubmit, formState: {errors}} = useForm();
     const onSubmit = data => {
         console.log(data);
@@ -35,7 +37,15 @@ export default function CreateAccountForm(){
                         }
                     })}
                     />
-                       
+                    <select name="" id="" {...register('role')}>
+                        <option value="teamMember">Team Member</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                    <Select
+                    options={teams}
+                    isMulti
+                    className='select'
+                    />
                      <button type="submit" id ='createAccountSumbitButton'>Create</button>
 
                 </form>
