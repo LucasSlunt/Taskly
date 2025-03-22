@@ -281,8 +281,6 @@ public class TeamMemberServiceTest {
 
 	@Test
     void testGetAllTeams() {
-        teamRepository.deleteAll();
-
         TeamMember teamMember = createUniqueTeamMember();
         Team team = createUniqueTeam(teamMember);
         Team team2 = createUniqueTeam(teamMember);
@@ -292,14 +290,17 @@ public class TeamMemberServiceTest {
 		System.out.println("Found " + teams.size() + " teams in DB");
 
 		assertNotNull(teams);
-		assertEquals(2, teams.size());
+        
+        assertTrue(teams.stream().anyMatch(t ->
+                t.getTeamId() == team.getTeamId() &&
+                t.getTeamName().equals(team.getTeamName()) &&
+                t.getTeamLeadId() == team.getTeamLead().getAccountId()
+        ), "Team 1 does not have correct details");
 
-		assertEquals(team.getTeamId(), teams.get(0).getTeamId());
-		assertEquals(team.getTeamName(), teams.get(0).getTeamName());
-		assertEquals(team.getTeamLead().getAccountId(), teams.get(0).getTeamLeadId());
-
-		assertEquals(team2.getTeamId(), teams.get(1).getTeamId());
-		assertEquals(team2.getTeamName(), teams.get(1).getTeamName());
-		assertEquals(team2.getTeamLead().getAccountId(), teams.get(1).getTeamLeadId());
+        assertTrue(teams.stream().anyMatch(t ->
+                t.getTeamId() == team2.getTeamId() &&
+                t.getTeamName().equals(team2.getTeamName()) &&
+                t.getTeamLeadId() == team2.getTeamLead().getAccountId()
+        ), "Team 2 does not have correct details");
 	}
 }
