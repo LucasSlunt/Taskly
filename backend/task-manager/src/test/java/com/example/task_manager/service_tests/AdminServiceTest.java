@@ -116,7 +116,7 @@ public class AdminServiceTest {
         AdminDTO admin = adminService.createAdmin("OssyOsbourne" + System.nanoTime(),
                 "NoMoreTears" + System.nanoTime() + "@rock.com", "music_password");
 
-        TeamMemberDTO result = (TeamMemberDTO) adminService.changeRole(admin.getAccountId(), admin.getRole());
+        TeamMemberDTO result = (TeamMemberDTO) adminService.changeRole(admin.getAccountId(), RoleType.TEAM_MEMBER);
 
         assertEquals(RoleType.TEAM_MEMBER, result.getRole());
         assertNotEquals(admin.getAccountId(), result.getAccountId());
@@ -127,7 +127,7 @@ public class AdminServiceTest {
         TeamMemberDTO teamMember = adminService.createTeamMember("Whitesnake" + System.nanoTime(),
                 "HereIGoAgain" + System.nanoTime() + "@rock.com", "on_my_own");
 
-        AdminDTO result = (AdminDTO) adminService.changeRole(teamMember.getAccountId(), teamMember.getRole());
+        AdminDTO result = (AdminDTO) adminService.changeRole(teamMember.getAccountId(), RoleType.ADMIN);
 
         assertEquals(RoleType.ADMIN, result.getRole());
         assertNotEquals(teamMember.getAccountId(), result.getAccountId());

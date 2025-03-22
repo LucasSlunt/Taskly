@@ -105,9 +105,9 @@ public class AdminService extends TeamMemberService {
 	}
 	
 	// Promotes a member to admin or demotes a member to team member depending on what role is passed through the API
-	public Object changeRole(int memberId, RoleType currentRole) {
-		//if the current role is Admin they are being demoted to team member
-		if (currentRole == RoleType.ADMIN) {
+	public Object changeRole(int memberId, RoleType newRole) {
+		//if the new role is team member they are an admin
+		if (newRole == RoleType.TEAM_MEMBER) {
 			Admin admin = adminRepository.findById(memberId)
 					.orElseThrow(() -> new RuntimeException("Admin not found with ID: " + memberId));
 
@@ -141,8 +141,8 @@ public class AdminService extends TeamMemberService {
 			return convertToDTO(teamMemberRepository.save(teamMember));
 		}
 		
-		//if the current role is Team Member they are being promoted to admin
-		if (currentRole == RoleType.TEAM_MEMBER) {
+		//if newRole is an Admin they are a teamMember
+		if (newRole == RoleType.ADMIN) {
 			TeamMember teamMember = teamMemberRepository.findById(memberId)
 					.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + memberId));
 
