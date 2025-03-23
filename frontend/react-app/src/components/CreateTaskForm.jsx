@@ -61,7 +61,7 @@ function CreateTaskForm(){
         return (<div>Loading...</div>)
     }
     return(
-        <form onSubmit={handleSubmit(onSubmit)} className='form'>
+        <form onSubmit={handleSubmit(onSubmit)} className='CreateTaskForm'>
             <label className='majorLabel'>
                     Task Name
                     <div>
