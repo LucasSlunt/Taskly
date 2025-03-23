@@ -3,6 +3,7 @@ const BASE_URL = "http://localhost:8080/api/admin";
 //Create admin
 export const createAdmin = async (name, email, password) => {
     try {
+        console.log(JSON.stringify({ name, email, password }))
         const response = await fetch(`${BASE_URL}`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
@@ -11,6 +12,7 @@ export const createAdmin = async (name, email, password) => {
 
         if (!response.ok) {
             console.error(`Failed to create admin: ${response.status} ${response.statusText}`);
+            throw Error ("FAILED TO CREATE ADMIN")
         }
 
         return await response.json();
@@ -93,6 +95,7 @@ export const createTeamMember = async (name, email, password) => {
 
         if (!response.ok) {
             console.error(`Failed to create team member: ${response.status} ${response.statusText}`);
+            throw Error ("FAILED TO CREATE Team Member")
         }
 
         return await response.json();
