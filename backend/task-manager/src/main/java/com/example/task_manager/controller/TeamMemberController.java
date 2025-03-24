@@ -68,6 +68,18 @@ public class TeamMemberController {
         }
     }
 
+    // Assign many members to a task
+    @PostMapping("/{taskId}/mass-assign")
+    public ResponseEntity<?> massAssignToTask(@PathVariable int taskId, @RequestBody List<Integer> teamMemberIds) {
+        try {
+            List<IsAssignedDTO> isAssignedDTOs = teamMemberService.massAssignToTask(taskId, teamMemberIds);
+            return ResponseEntity.ok(isAssignedDTOs);
+        }
+        catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     // Change Password (Placeholder)
     @PostMapping("/team-members/{teamMemberId}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable int teamMemberId,
