@@ -1,4 +1,4 @@
-import { createTask, deleteTask, editTask, assignMemberToTask, changePassword, getTeamsForMember, getAssignedTasks } from '../../api/teamMemberApi';
+import { createTask, deleteTask, editTask, assignMemberToTask, changePassword, resetPassword, getTeamsForMember, getAssignedTasks } from '../../api/teamMemberApi';
 
 const BASE_URL = "http://localhost:8080/api/tasks";
 
@@ -21,7 +21,7 @@ describe('Team Member API', () => {
 
         fetch.mockResponseOnce(JSON.stringify(mockTask), {status: 201});
 
-        const result = await createTask("New Task", "Task description", false, "To-Do", "4-14-2025",2);
+        const result = await createTask("New Task", "Task description", false, "To-Do", "4-14-2025", 2, "LOW");
 
         expect(fetch).toHaveBeenCalledWith(`${BASE_URL}`, {
             method: 'POST',
@@ -32,7 +32,8 @@ describe('Team Member API', () => {
                 isLocked: false,
                 status: "To-Do",
                 dueDate: "4-14-2025",
-                teamId: 2
+                teamId: 2,
+                priority: "LOW"
             })
         });
 
@@ -60,12 +61,13 @@ describe('Team Member API', () => {
             description: "Updated description",
             isLocked: true,
             status: "In progress",
-            dueDate: "2025-03-01"
+            dueDate: "2025-03-01",
+            priority: "HIGH"
         };
 
         fetch.mockResponseOnce(JSON.stringify(updatedTask), { status: 200 });
 
-        const result = await editTask(1, "Updated Task", "Updated description", true, "In progress", "2025-03-01");
+        const result = await editTask(1, "Updated Task", "Updated description", true, "In progress", "2025-03-01", "HIGH");
 
         expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/1`, {
             method: 'PUT',
@@ -75,7 +77,8 @@ describe('Team Member API', () => {
                 description: "Updated description",
                 isLocked: true,
                 status: "In progress",
-                dueDate: "2025-03-01"
+                dueDate: "2025-03-01",
+                priority: "HIGH"
             })
         });
 
@@ -118,6 +121,23 @@ describe('Team Member API', () => {
 
         expect(result).toEqual(mockResponse);
     });
+
+    //test: resetting a password
+    test('resetPassword should return success on valid password reset', async () => {
+        const mockResponse = { success: true };
+
+        fetch.mockResponseOnce(JSON.stringify(mockResponse), { status: 200 });
+
+        const result = await resetPassword(1, "DefLeppard");
+
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/team-members/1/reset-password`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ newPassword: "DefLeppard" })
+        });
+
+        expect(result).toEqual(mockResponse);
+    })
 
     //test: getting all teams for a team member
     test('getTeamsForMember should return json body on success', async () => {

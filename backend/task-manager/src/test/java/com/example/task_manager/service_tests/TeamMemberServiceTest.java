@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
 import jakarta.transaction.Transactional;
 
 import com.example.task_manager.DTO.TaskDTO;
@@ -31,10 +33,12 @@ import com.example.task_manager.repository.IsMemberOfRepository;
 import com.example.task_manager.service.AdminService;
 import com.example.task_manager.service.AuthInfoService;
 import com.example.task_manager.service.TeamMemberService;
+import com.example.task_manager.enums.TaskPriority;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
+@ActiveProfiles("test")
 public class TeamMemberServiceTest {
 
     @Autowired
@@ -69,9 +73,16 @@ public class TeamMemberServiceTest {
 
     private TeamMember createUniqueTeamMember() {
         return teamMemberRepository.save(new TeamMember(
-            "TeamMember_" + System.nanoTime(), 
-            "team_member" + System.nanoTime() + "@example.com", 
-            "defaultpw"
+                "TeamMember_" + System.nanoTime(),
+                "team_member" + System.nanoTime() + "@example.com",
+                "defaultpw"));
+    }
+    
+    private Admin createUniqueAdmin() {
+        return teamMemberRepository.save(new Admin(
+            "Life" + System.nanoTime(),
+            "In_The" + System.nanoTime() + "@fastlane.com",
+            "speeding_all_the_time"
         ));
     }
 
@@ -89,7 +100,8 @@ public class TeamMemberServiceTest {
             team, 
             false, 
             "Open", 
-            LocalDate.now()
+            LocalDate.now(),
+            TaskPriority.LOW
         ));
     }
 
@@ -104,7 +116,8 @@ public class TeamMemberServiceTest {
             "Open",
             LocalDate.now().plusDays(5),
             null,
-            team.getTeamId()
+            team.getTeamId(),
+            TaskPriority.HIGH
         );
 
         TaskDTO newTaskDTO = teamMemberService.createTask(taskRequestDTO);
@@ -121,7 +134,7 @@ public class TeamMemberServiceTest {
         Team team = createUniqueTeam(teamLead);
 
         TaskRequestDTO taskRequestDTO = new TaskRequestDTO(
-            null, "Task Description", false, "Open", LocalDate.now(), null, team.getTeamId()
+            null, "Task Description", false, "Open", LocalDate.now(), null, team.getTeamId(), TaskPriority.LOW
         );
 
         Exception exception = assertThrows(RuntimeException.class, () -> 
@@ -133,7 +146,7 @@ public class TeamMemberServiceTest {
     @Test
     void testCreateTaskWithNullTeam() {
         TaskRequestDTO taskRequestDTO = new TaskRequestDTO(
-            "New Task", "Task Description", false, "Open", LocalDate.now(), null, null
+            "New Task", "Task Description", false, "Open", LocalDate.now(), null, null, TaskPriority.LOW
         );
 
         Exception exception = assertThrows(RuntimeException.class, () -> 
@@ -177,7 +190,8 @@ public class TeamMemberServiceTest {
             LocalDate.now(),
             null,
             team.getTeamId(),
-            null
+            null,
+            TaskPriority.LOW
         );
 
         TaskDTO updatedTask = teamMemberService.editTask(task.getTaskId(), taskDTO);
@@ -220,6 +234,24 @@ public class TeamMemberServiceTest {
         teamMemberService.changePassword(teamMemberId, "wrongpw", "coolnewpassword");
 
         assertFalse(authInfoService.approveLogin(teamMemberId, "coolnewpassword"));
+    }
+
+    @Test
+    void testResetPasswordWithTeamMember() {
+        TeamMember teamMember = createUniqueTeamMember();
+        int teamMemberId = teamMember.getAccountId();
+
+        teamMemberService.resetPassword(teamMemberId, "the_eagles");
+        assertTrue(authInfoService.approveLogin(teamMemberId, "the_eagles"));
+    }
+
+    @Test
+    void testResetPasswordWithAdmin() {
+        Admin admin = createUniqueAdmin();
+        int adminId = admin.getAccountId();
+
+        teamMemberService.resetPassword(adminId, "metallica");
+        assertTrue(authInfoService.approveLogin(adminId, "metallica"));
     }
 
     @Test
@@ -288,6 +320,8 @@ public class TeamMemberServiceTest {
 		System.out.println("Found " + teams.size() + " teams in DB");
 
         assertTrue(teams.size() >= 2);
+
+        assertNotNull(teams);
 
         TeamDTO team_one = teams.stream()
         .filter(t -> t.getTeamId() == team.getTeamId())

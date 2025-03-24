@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.example.task_manager.entity.AuthInfo;
 import com.example.task_manager.entity.IsAssigned;
@@ -15,11 +16,13 @@ import com.example.task_manager.entity.IsMemberOf;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.enums.TaskPriority;
 
 import jakarta.persistence.PersistenceException;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")
 public class TeamMemberEntityTest {
 
     @Autowired
@@ -34,7 +37,7 @@ public class TeamMemberEntityTest {
     }
 
     private Task createUniqueTask(Team team) {
-        return new Task("Task_" + System.nanoTime(), "Description", team, false, "Open", LocalDate.now());
+        return new Task("Task_" + System.nanoTime(), "Description", team, false, "Open", LocalDate.now(), TaskPriority.LOW);
     }
 
     @Test
@@ -141,7 +144,7 @@ public class TeamMemberEntityTest {
         entityManager.persist(team);
         entityManager.flush();
 
-        Task task = new Task("Task_" + System.nanoTime(), "Description", team, false, "Open", LocalDate.now());
+        Task task = new Task("Task_" + System.nanoTime(), "Description", team, false, "Open", LocalDate.now(), TaskPriority.LOW);
         entityManager.persist(task);
         entityManager.flush();
 
