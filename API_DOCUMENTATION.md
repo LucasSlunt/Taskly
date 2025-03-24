@@ -499,69 +499,63 @@ All API requests should be made to the following base URL (Spring Boot's default
 ### Endpoints
 
 - **Create a Task:** `POST`
-
-  - **Request Body:**
-
-  ```json
-  {
-    "title": "Task Title",
-    "description": "Task Description",
-    "isLocked": false,
-    "status": "To-Do",
-    "dueDate": "2025-03-01",
-    "teamId": 3
-  }
-  ```
-
-  - **Response Body:**
-
-  ```json
-  {
-    "taskId": 4,
-    "title": "Task Title",
-    "description": "Task Description",
-    "isLocked": false,
-    "status": "To-Do",
-    "dueDate": "2025-03-01",
-    "teamId": 3
-  }
-  ```
-
-  - **Description:** Creates a task in the database.
+    - **Request Body:**
+    ```json
+    {
+        "title": "Task Title",
+        "description": "Task Description",
+        "isLocked": false,
+        "status": "To-Do",
+        "dueDate": "2025-03-01",
+        "teamId": 3,
+        "priority": "HIGH"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "taskId": 4,
+        "title": "Task Title",
+        "description": "Task Description",
+        "isLocked": false,
+        "status": "To-Do",
+        "dueDate": "2025-03-01",
+        "teamId": 3,
+        "priority": "HIGH"
+    }
+    ```
+    - **Description:** Creates a task in the database.
 
 - **Delete a Task:** `DELETE /{taskId}`
 
   - **Description:** Deletes a task from the database.
 
 - **Edit a Task:** `PUT /{taskId}`
-
-  - **Request Body:** (TaskDTO, JSON)
-
-  ```json
-  {
-    "title": "Updated Title",
-    "description": "Updated Description",
-    "isLocked": false,
-    "status": "In Progress",
-    "dueDate": "2025-04-01"
-  }
-  ```
-
-  - **Response Body:**
-
-  ```json
-  {
-    "taskId": 4,
-    "title": "Updated Title",
-    "description": "Updated Description",
-    "isLocked": false,
-    "status": "In Progress",
-    "dueDate": "2025-04-01",
-    "teamId": 3
-  }
-  ```
-
-  - **Description:** Updates the details of a task.
+    - **Request Body:** (TaskDTO, JSON)
+    ```json
+    {
+        "title": "Updated Title",
+        "description": "Updated Description",
+        "isLocked": false,
+        "status": "In Progress",
+        "dueDate": "2025-04-01",
+        "priority": "HIGH"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "taskId": 4,
+        "title": "Updated Title",
+        "description": "Updated Description",
+        "isLocked": false,
+        "status": "In Progress",
+        "dueDate": "2025-04-01",
+        "teamId": 3,
+        "priority": "HIGH"
+    }
+    ```
+    - **Description:** Updates the details of a task.
 
 - **Assign Member to a Task:** `POST /{taskId}/assign/{teamMemberId}`
 
@@ -625,14 +619,39 @@ All API requests should be made to the following base URL (Spring Boot's default
       "teamId": 1,
       "assignedMembers": [
         {
-          "accountId": 1,
-          "userName": "Name",
-          "userEmail": "email@ex.com"
+            "taskId": 101,
+            "title": "Implement Login API",
+            "description": "Develop the login functionality for the app",
+            "isLocked": false,
+            "status": "In Progress",
+            "dateCreated": "2024-03-04",
+            "dueDate": "2024-04-01",
+            "teamId": 1,
+            "priority": "HIGH",
+            "assignedMembers": 
+            [
+                {
+                    "accountId": 1,
+                    "userName": "Name",
+                    "userEmail": "email@ex.com"
+                },
+                {
+                    "accountId": 2,
+                    "userName": "Name2",
+                    "userEmail": "email_2@ex.com"
+                }
+            ]
         },
         {
-          "accountId": 2,
-          "userName": "Name2",
-          "userEmail": "email_2@ex.com"
+            "taskId": 102,
+            "title": "Design Homepage",
+            "description": "Create a wireframe for the homepage",
+            "isLocked": true,
+            "status": "Pending",
+            "dueDate": null,
+            "teamId": 2,
+            "priority": "MEDIUM",
+            "assignedMembers": []
         }
       ]
     },
@@ -777,11 +796,12 @@ All API requests should be made to the following base URL (Spring Boot's default
 ## **DTO References**
 
 - **TaskDTO**
-  - `title` (string, required): The title of the task.
-  - `description` (string, optional): A description of the task.
-  - `isLocked` (boolean, optional): Whether the task is locked. Defaults to `null` if not provided.
-  - `status` (string, optional): The task status (e.g., "To-Do", "In Progress", "Done"). Defaults to `null` if not provided.
-  - `dueDate` (string, optional): The due date of the task in `YYYY-MM-DD` format.
+    - `title` (string, required): The title of the task.
+    - `description` (string, optional): A description of the task.
+    - `isLocked` (boolean, optional): Whether the task is locked. Defaults to `null` if not provided.
+    - `status` (string, optional): The task status (e.g., "To-Do", "In Progress", "Done"). Defaults to `null` if not provided.
+    - `dueDate` (string, optional): The due date of the task in `YYYY-MM-DD` format.
+    - `priority` (string, required): The priority of tha task. Must be one of **LOW, MEDIUM, or HIGH**.
 
 ---
 
