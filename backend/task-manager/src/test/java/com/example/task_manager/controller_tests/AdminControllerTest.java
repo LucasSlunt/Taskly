@@ -29,6 +29,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.example.task_manager.DTO.TeamMemberWithTeamLeadDTO;
 import com.example.task_manager.DTO.UpdateEmailRequestDTO;
 import com.example.task_manager.DTO.UpdateNameRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -250,51 +251,51 @@ public class AdminControllerTest {
     @Test
     void testGetAllAdmins() throws Exception {
         List<AdminDTO> mockAdmins = Arrays.asList(
-                        new AdminDTO(1, "Alice Johnson", "alice@example.com", RoleType.ADMIN),
-                        new AdminDTO(2, "Bob Smith", "bob@example.com", RoleType.ADMIN));
+                new AdminDTO(1, "Alice Johnson", "alice@example.com", RoleType.ADMIN),
+                new AdminDTO(2, "Bob Smith", "bob@example.com", RoleType.ADMIN));
 
         when(adminService.getAllAdmins()).thenReturn(mockAdmins);
 
         mockMvc.perform(get("/api/admin/admins"))
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.size()").value(2))
-                        .andExpect(jsonPath("$[0].accountId").value(1))
-                        .andExpect(jsonPath("$[0].userName").value("Alice Johnson"))
-                        .andExpect(jsonPath("$[1].userEmail").value("bob@example.com"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[0].accountId").value(1))
+                .andExpect(jsonPath("$[0].userName").value("Alice Johnson"))
+                .andExpect(jsonPath("$[1].userEmail").value("bob@example.com"));
     }
 
     // Getting all admins
     @Test
     void getAllTeamMembers() throws Exception {
-        List<TeamMemberDTO> mockTMs = Arrays.asList(
-                        new TeamMemberDTO(1, "Alice Johnson", "alice@example.com", RoleType.TEAM_MEMBER),
-                        new TeamMemberDTO(2, "Bob Smith", "bob@example.com", RoleType.TEAM_MEMBER));
+        List<TeamMemberWithTeamLeadDTO> mockTMs = Arrays.asList(
+                new TeamMemberWithTeamLeadDTO(1, "Alice Johnson", "alice@example.com", RoleType.TEAM_MEMBER, false, null, null),
+                new TeamMemberWithTeamLeadDTO(2, "Bob Smith", "bob@example.com", RoleType.TEAM_MEMBER, false, null, null));
 
         when(adminService.getAllTeamMembers()).thenReturn(mockTMs);
 
         mockMvc.perform(get("/api/admin/team-members"))
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.size()").value(2))
-                        .andExpect(jsonPath("$[0].accountId").value(1))
-                        .andExpect(jsonPath("$[0].userName").value("Alice Johnson"))
-                        .andExpect(jsonPath("$[1].userEmail").value("bob@example.com"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[0].accountId").value(1))
+                .andExpect(jsonPath("$[0].userName").value("Alice Johnson"))
+                .andExpect(jsonPath("$[1].userEmail").value("bob@example.com"));
     }
 
     // Getting all teams
     @Test
     void getAllTeams() throws Exception {
         List<TeamDTO> mockTeams = Arrays.asList(
-                        new TeamDTO(1, "Team 1", 1),
-                        new TeamDTO(2, "Team 2", 2));
+                new TeamDTO(1, "Team 1", 1),
+                new TeamDTO(2, "Team 2", 2));
 
         when(adminService.getAllTeams()).thenReturn(mockTeams);
 
         mockMvc.perform(get("/api/admin/all-teams"))
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.size()").value(2))
-                        .andExpect(jsonPath("$[0].teamId").value(1))
-                        .andExpect(jsonPath("$[0].teamName").value("Team 1"))
-                        .andExpect(jsonPath("$[1].teamLeadId").value("2"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[0].teamId").value(1))
+                .andExpect(jsonPath("$[0].teamName").value("Team 1"))
+                .andExpect(jsonPath("$[1].teamLeadId").value("2"));
     }
 
     @Test
@@ -317,5 +318,5 @@ public class AdminControllerTest {
         mockMvc.perform(get("/api/admin/999"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Admin not found"));
-    }    
+    }
 }

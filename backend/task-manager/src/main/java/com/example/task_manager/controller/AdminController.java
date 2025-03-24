@@ -19,6 +19,8 @@ import java.util.NoSuchElementException;
 
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.example.task_manager.DTO.TeamMemberWithTeamLeadDTO;
+
 @RestController
 @RequestMapping("/api/admin")
 //This is an admin controller
@@ -44,13 +46,12 @@ public class AdminController {
     public ResponseEntity<?> createAdmin(@RequestBody AdminRequestDTO request) {
         try {
             AdminDTO createAdmin = adminService.createAdmin(
-                request.getName(),
-                request.getEmail(),
-                request.getPassword()
+                    request.getName(),
+                    request.getEmail(),
+                    request.getPassword()
             );
             return ResponseEntity.ok(createAdmin);
-        } 
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -61,8 +62,7 @@ public class AdminController {
         try {
             adminService.deleteAdmin(adminId);
             return ResponseEntity.noContent().build();
-        } 
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(404).body("Admin not found");
         }
     }
@@ -73,8 +73,7 @@ public class AdminController {
         try {
             AdminDTO updatedAdmin = adminService.modifyAdminName(adminId, request.getNewName());
             return ResponseEntity.ok(updatedAdmin);
-        } 
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -85,11 +84,9 @@ public class AdminController {
         try {
             AdminDTO updatedAdmin = adminService.modifyAdminEmail(adminId, request.getNewEmail());
             return ResponseEntity.ok(updatedAdmin);
-        }
-        catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(404).body("Admin not found");
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -99,13 +96,12 @@ public class AdminController {
     public ResponseEntity<?> createTeamMember(@RequestBody AdminRequestDTO request) {
         try {
             TeamMemberDTO createTeamMember = adminService.createTeamMember(
-                request.getName(),
-                request.getEmail(),
-                request.getPassword()
+                    request.getName(),
+                    request.getEmail(),
+                    request.getPassword()
             );
             return ResponseEntity.ok(createTeamMember);
-        } 
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -115,8 +111,7 @@ public class AdminController {
     public ResponseEntity<?> modifyTeamMemberName(@PathVariable int teamMemberId, @RequestBody UpdateNameRequestDTO request) {
         try {
             return ResponseEntity.ok(adminService.modifyTeamMemberName(teamMemberId, request.getNewName()));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -126,11 +121,9 @@ public class AdminController {
     public ResponseEntity<?> modifyTeamMemberEmail(@PathVariable int teamMemberId, @RequestBody UpdateEmailRequestDTO request) {
         try {
             return ResponseEntity.ok(adminService.modifyTeamMemberEmail(teamMemberId, request.getNewEmail()));
-        } 
-        catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(404).body("Team member not found");
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -141,8 +134,7 @@ public class AdminController {
         try {
             adminService.deleteTeamMember(teamMemberId);
             return ResponseEntity.noContent().build();
-        } 
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.status(404).body("Team member not found");
         }
     }
@@ -174,8 +166,7 @@ public class AdminController {
         try {
             adminService.lockTask(taskId);
             return ResponseEntity.ok().build();
-        } 
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -190,7 +181,7 @@ public class AdminController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
+
     //get all admins
     @GetMapping("/admins")
     public ResponseEntity<?> getAdmins() {
@@ -206,7 +197,7 @@ public class AdminController {
     @GetMapping("/team-members")
     public ResponseEntity<?> getTeamMembers() {
         try {
-            List<TeamMemberDTO> teamMembers = adminService.getAllTeamMembers();
+            List<TeamMemberWithTeamLeadDTO> teamMembers = adminService.getAllTeamMembers();
             return ResponseEntity.ok(teamMembers);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

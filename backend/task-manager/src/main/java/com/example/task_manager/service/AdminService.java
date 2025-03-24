@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.DTO.TeamMemberWithTeamLeadDTO;
 import com.example.task_manager.entity.*;
 import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.repository.*;
@@ -20,7 +21,7 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class AdminService extends TeamMemberService {
 
-	private final AdminRepository adminRepository;
+    private final AdminRepository adminRepository;
 
 	// Constructor injection for required repositories
 	public AdminService(AdminRepository adminRepository, 
@@ -222,13 +223,6 @@ public class AdminService extends TeamMemberService {
 				.collect(Collectors.toList());
 	}
 
-	//get all team members
-	public List<TeamMemberDTO> getAllTeamMembers() {
-		return adminRepository.findAll().stream()
-				.map(teamMember -> new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail(), teamMember.getRole()))
-				.collect(Collectors.toList());
-	}
-
 	//get all teams
 	public List<TeamDTO> getAllTeams() {
 		return teamRepository.findAll().stream()
@@ -254,7 +248,32 @@ public class AdminService extends TeamMemberService {
     	return new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail(), admin.getRole());
     }
 
-	private TeamMemberDTO convertToDTO(TeamMember teamMember) {
+    //get all team members
+    public List<TeamMemberWithTeamLeadDTO> getAllTeamMembers() {
+        return teamMemberRepository.findAll().stream()
+                .map(teamMember -> {
+                    List<Team> teamLeadOf = teamRepository.findByTeamLead_AccountId(teamMember.getAccountId());
+                    List<Integer> teamsLedIds = teamLeadOf.stream()
+                            .map(Team::getTeamId)
+                            .collect(Collectors.toList());
+                    List<String> teamsLedNames = teamLeadOf.stream()
+                            .map(Team::getTeamName)
+                            .collect(Collectors.toList());
+                    boolean isTeamLead = !teamsLedNames.isEmpty();
+
+                    return new TeamMemberWithTeamLeadDTO(
+                            teamMember.getAccountId(),
+                            teamMember.getUserName(),
+                            teamMember.getUserEmail(),
+                            teamMember.getRole(),
+                            isTeamLead,
+                            teamsLedIds,
+                            teamsLedNames);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private TeamMemberDTO convertToDTO(TeamMember teamMember) {
         return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail(), teamMember.getRole());
     }
 }
