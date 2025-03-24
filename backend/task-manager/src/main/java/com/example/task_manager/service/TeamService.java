@@ -52,7 +52,11 @@ public class TeamService {
 		team.setTeamName(teamName);
 		team.setTeamLead(teamLead);
 
-		team = teamRepository.save(team);
+        team = teamRepository.save(team);
+        
+        IsMemberOf isMemberOf = new IsMemberOf(teamLead, team);
+        isMemberOfRepository.save(isMemberOf);
+
 		return convertToDTO(team);
 	}
 
