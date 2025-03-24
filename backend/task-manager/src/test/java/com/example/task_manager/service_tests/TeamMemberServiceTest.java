@@ -33,6 +33,7 @@ import com.example.task_manager.repository.IsMemberOfRepository;
 import com.example.task_manager.service.AdminService;
 import com.example.task_manager.service.AuthInfoService;
 import com.example.task_manager.service.TeamMemberService;
+import com.example.task_manager.enums.TaskPriority;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -92,7 +93,8 @@ public class TeamMemberServiceTest {
             team, 
             false, 
             "Open", 
-            LocalDate.now()
+            LocalDate.now(),
+            TaskPriority.LOW
         ));
     }
 
@@ -107,7 +109,8 @@ public class TeamMemberServiceTest {
             "Open",
             LocalDate.now().plusDays(5),
             null,
-            team.getTeamId()
+            team.getTeamId(),
+            TaskPriority.HIGH
         );
 
         TaskDTO newTaskDTO = teamMemberService.createTask(taskRequestDTO);
@@ -124,7 +127,7 @@ public class TeamMemberServiceTest {
         Team team = createUniqueTeam(teamLead);
 
         TaskRequestDTO taskRequestDTO = new TaskRequestDTO(
-            null, "Task Description", false, "Open", LocalDate.now(), null, team.getTeamId()
+            null, "Task Description", false, "Open", LocalDate.now(), null, team.getTeamId(), TaskPriority.LOW
         );
 
         Exception exception = assertThrows(RuntimeException.class, () -> 
@@ -136,7 +139,7 @@ public class TeamMemberServiceTest {
     @Test
     void testCreateTaskWithNullTeam() {
         TaskRequestDTO taskRequestDTO = new TaskRequestDTO(
-            "New Task", "Task Description", false, "Open", LocalDate.now(), null, null
+            "New Task", "Task Description", false, "Open", LocalDate.now(), null, null, TaskPriority.LOW
         );
 
         Exception exception = assertThrows(RuntimeException.class, () -> 
@@ -180,7 +183,8 @@ public class TeamMemberServiceTest {
             LocalDate.now(),
             null,
             team.getTeamId(),
-            null
+            null,
+            TaskPriority.LOW
         );
 
         TaskDTO updatedTask = teamMemberService.editTask(task.getTaskId(), taskDTO);
@@ -291,6 +295,8 @@ public class TeamMemberServiceTest {
 		System.out.println("Found " + teams.size() + " teams in DB");
 
         assertTrue(teams.size() >= 2);
+
+        assertNotNull(teams);
 
         TeamDTO team_one = teams.stream()
         .filter(t -> t.getTeamId() == team.getTeamId())

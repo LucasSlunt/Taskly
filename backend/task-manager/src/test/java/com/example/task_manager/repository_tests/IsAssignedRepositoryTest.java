@@ -17,6 +17,7 @@ import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.enums.TaskPriority;
 import com.example.task_manager.repository.IsAssignedRepository;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
@@ -77,6 +78,7 @@ public class IsAssignedRepositoryTest {
         task.setStatus("Open");
         task.setTeam(team);
         task.setDateCreated(LocalDate.now());
+        task.setPriority(TaskPriority.MEDIUM);
         return taskRepository.save(task);
     }
 

@@ -22,6 +22,7 @@ import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
 import com.example.task_manager.service.IsAssignedService;
+import com.example.task_manager.enums.TaskPriority;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -66,7 +67,8 @@ public class IsAssignedServiceTest {
             team,
             false,
             "Open",
-            LocalDate.now()
+            LocalDate.now(),
+            TaskPriority.LOW
         ));
     }
 
