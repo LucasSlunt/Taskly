@@ -1,5 +1,7 @@
 package com.example.task_manager.controller_tests;
 
+import java.awt.PageAttributes;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -11,14 +13,17 @@ import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.controller.TeamMemberController;
+import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.service.TeamMemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import com.example.task_manager.enums.TaskPriority;
@@ -28,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @WebMvcTest(TeamMemberController.class)
+@ActiveProfiles("test")
 public class TeamMemberControllerTest {
 
     @Autowired
@@ -167,7 +173,24 @@ public class TeamMemberControllerTest {
      */
     @Test
     void testChangePassword() throws Exception {
-        // TODO: Implement Change Password Test
+            // TODO: Implement Change Password Test
+    }
+    
+    @Test
+    void testResetPassword() throws Exception {
+            int teamMemberId = 1;
+            String newPassword = "trustmethisissecure";
+        
+        String request = objectMapper.writeValueAsString(new Object() {
+                public final String newPassword = "BrainStew_GreenDay";
+        });
+
+        doNothing().when(teamMemberService).resetPassword(teamMemberId, newPassword);
+
+        mockMvc.perform(post("/api/tasks/team-members/{teamMemberId}/reset-password", teamMemberId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
+                .andExpect(status().isNoContent());
     }
 
      @Test

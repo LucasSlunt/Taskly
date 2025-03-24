@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
 import jakarta.transaction.Transactional;
 
 import com.example.task_manager.DTO.TaskDTO;
@@ -36,6 +38,7 @@ import com.example.task_manager.enums.TaskPriority;
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
+@ActiveProfiles("test")
 public class TeamMemberServiceTest {
 
     @Autowired
@@ -70,9 +73,16 @@ public class TeamMemberServiceTest {
 
     private TeamMember createUniqueTeamMember() {
         return teamMemberRepository.save(new TeamMember(
-            "TeamMember_" + System.nanoTime(), 
-            "team_member" + System.nanoTime() + "@example.com", 
-            "defaultpw"
+                "TeamMember_" + System.nanoTime(),
+                "team_member" + System.nanoTime() + "@example.com",
+                "defaultpw"));
+    }
+    
+    private Admin createUniqueAdmin() {
+        return teamMemberRepository.save(new Admin(
+            "Life" + System.nanoTime(),
+            "In_The" + System.nanoTime() + "@fastlane.com",
+            "speeding_all_the_time"
         ));
     }
 
@@ -249,6 +259,24 @@ public class TeamMemberServiceTest {
         teamMemberService.changePassword(teamMemberId, "wrongpw", "coolnewpassword");
 
         assertFalse(authInfoService.approveLogin(teamMemberId, "coolnewpassword"));
+    }
+
+    @Test
+    void testResetPasswordWithTeamMember() {
+        TeamMember teamMember = createUniqueTeamMember();
+        int teamMemberId = teamMember.getAccountId();
+
+        teamMemberService.resetPassword(teamMemberId, "the_eagles");
+        assertTrue(authInfoService.approveLogin(teamMemberId, "the_eagles"));
+    }
+
+    @Test
+    void testResetPasswordWithAdmin() {
+        Admin admin = createUniqueAdmin();
+        int adminId = admin.getAccountId();
+
+        teamMemberService.resetPassword(adminId, "metallica");
+        assertTrue(authInfoService.approveLogin(adminId, "metallica"));
     }
 
     @Test

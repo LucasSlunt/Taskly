@@ -2,6 +2,7 @@ package com.example.task_manager.controller;
 
 import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.AdminRequestDTO;
+import com.example.task_manager.DTO.ChangeRoleRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.DTO.UpdateEmailRequestDTO;
@@ -147,13 +148,14 @@ public class AdminController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-    // Promote Team Member to Admin
-    @PostMapping("/team-member/{teamMemberId}/promote")
-    public ResponseEntity<?> promoteToAdmin(@PathVariable int teamMemberId) {
+    
+    //change the role (promote/demote) of a team member
+    @PostMapping("/team-member/{teamMemberId}/change-role")
+    public ResponseEntity<?> changeRole(@PathVariable int teamMemberId, @RequestBody ChangeRoleRequestDTO request) {
         try {
-            return ResponseEntity.ok(adminService.promoteToAdmin(teamMemberId));
-        } catch (RuntimeException e) {
+            return ResponseEntity.ok(adminService.changeRole(teamMemberId, request.getRole()));
+        }
+        catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
