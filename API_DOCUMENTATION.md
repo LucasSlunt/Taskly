@@ -193,11 +193,25 @@ All API requests should be made to the following base URL (Spring Boot's default
     - `teamId` (integer, required): The ID of the team to assign them to.
   - **Description:** Assigns a team member to a specified team.
 
-- **Promote Team Member to Admin:** `POST /team-member/{teamMemberId}/promote`
-
-  - **Parameters:**
-    - `teamMemberId` (integer, required): The ID of the team member to be promoted.
-  - **Description:** Upgrades a team member to an admin role, granting them full administrative privileges.
+- **Change Role:** `POST /team-member/{teamMemberId}/change-role`
+    - **Parameters:**
+        - `teamMemberId` (integer, required): The ID of the member having their role changed.
+    - **Request Body:**
+    ```json 
+    {
+        "role": "ADMIN"
+    }
+    ```
+    - **Response Body:**
+    ```json
+    {
+        "accountId": 1,
+        "userName": "Name",
+        "userEmail": "email@example.com",
+        "role": "ADMIN"
+    }
+    ```
+    - **Note:** The member's ID will change, provide them with the new one.
 
 - **Lock a Task:** `PUT /tasks/{taskId}/lock`
 

@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.AdminRequestDTO;
+import com.example.task_manager.DTO.ChangeRoleRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.controller.AdminController;
@@ -157,7 +158,8 @@ public class AdminControllerTest {
      */
     @Test
     void testModifyTeamMemberEmail() throws Exception {
-        TeamMemberDTO updatedMember = new TeamMemberDTO(1, "John Doe", "updated_" + System.nanoTime() + "@example.com", RoleType.TEAM_MEMBER);
+        TeamMemberDTO updatedMember = new TeamMemberDTO(1, "John Doe", "updated_" + System.nanoTime() + "@example.com",
+                RoleType.TEAM_MEMBER);
         UpdateEmailRequestDTO requestDTO = new UpdateEmailRequestDTO(updatedMember.getUserEmail());
 
         when(adminService.modifyTeamMemberEmail(1, updatedMember.getUserEmail())).thenReturn(updatedMember);
@@ -169,19 +171,42 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$.userEmail").value(updatedMember.getUserEmail()));
     }
 
-    /**
-     * Promote Team Member to Admin
-     */
+    //changes role to team member
     @Test
-    void testPromoteToAdmin() throws Exception {
-        AdminDTO promotedAdmin = new AdminDTO(2, "John Doe", "john.doe@example.com", RoleType.ADMIN);
+    void testChangeRoleToTeamMember() throws Exception {
+        TeamMemberDTO updatedTeamMember = new TeamMemberDTO(1, "Stranglehold", "TedNugent@rock.com",
+                RoleType.TEAM_MEMBER);
 
-        when(adminService.promoteToAdmin(2)).thenReturn(promotedAdmin);
+        when(adminService.changeRole(1, RoleType.ADMIN)).thenReturn(updatedTeamMember);
 
-        mockMvc.perform(post("/api/admin/team-member/2/promote"))
+        String request = objectMapper.writeValueAsString(new ChangeRoleRequestDTO(RoleType.ADMIN));
+
+        mockMvc.perform(post("/api/admin/team-member/1/change-role")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.accountId").value(2))
-                .andExpect(jsonPath("$.userName").value("John Doe"));
+                .andExpect(jsonPath("$.accountId").value(1))
+                .andExpect(jsonPath("$.userName").value("Stranglehold"))
+                .andExpect(jsonPath("$.role").value("TEAM_MEMBER"));
+    }
+    
+    //changes role to admin
+    @Test
+    void testChangeRoleToAdmin() throws Exception {
+        AdminDTO admin = new AdminDTO(1, "HighwayTune", "GretaVanFleet@rock.com", RoleType.ADMIN);
+
+        when(adminService.changeRole(1, RoleType.TEAM_MEMBER)).thenReturn(admin);
+
+        String request = objectMapper.writeValueAsString(new ChangeRoleRequestDTO(RoleType.TEAM_MEMBER));
+
+        mockMvc.perform(post(
+                "/api/admin/team-member/1/change-role")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accountId").value(1))
+                .andExpect(jsonPath("$.userName").value("HighwayTune"))
+                .andExpect(jsonPath("$.role").value("ADMIN"));
     }
 
     /**
