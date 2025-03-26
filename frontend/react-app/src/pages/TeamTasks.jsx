@@ -8,6 +8,7 @@ import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
 import { getTeamMembers } from "../api/teamApi";
 import { useLocation } from 'react-router-dom';
+import { getTeamTasks } from "../api/teamApi";
 
 
 
@@ -18,6 +19,21 @@ function getAssignnesNames(task){
       returnArr = [...returnArr, assigne.name]
   })
   return returnArr
+}
+function getAssigneesNames(taskItem) {
+  return taskItem.assignedMembers.map((member) => member.userName).join(", ");
+}
+function setUpData(results) {
+  return results
+    .map((taskItem) => ({
+      id: taskItem.taskId,
+      name: taskItem.title,
+      assignees: getAssigneesNames(taskItem),
+      status: taskItem.status,
+    
+      dueDate: taskItem.dueDate || "No Due Date",
+      isLocked: taskItem.isLocked
+    }));
 }
 const headerAndAccessors = [
       {
@@ -39,10 +55,7 @@ const headerAndAccessors = [
           Header: "Status",
           accessor: "status",
       },
-      {
-          Header: "Priority",
-          accessor: "priority",
-      },
+
       {
           Header: "Due Date",
           accessor: "dueDate",
@@ -52,6 +65,7 @@ const headerAndAccessors = [
         accessor: "isLocked",
       }
 ]
+
 function setUpDataTasksToDo(obj){
   let ansArr = []
   fakeData.map((taskItem) =>{
@@ -130,11 +144,37 @@ function TeamTasks(){
   const userId = cookies.userInfo.accountId;
 
   const [teamMembers, setTeamMembers ] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingNames, setLoadingNames] = useState(true);
+  const [loadingTasks, setLoadingTasks] = useState(true);
 
   const location = useLocation();
   const { teamId } = location.state;
   console.log("teamId:", teamId);
+
+  const [tasksToDo, setTasksToDo ] = useState([]);
+  
+  
+  async function fetchData(){
+      try{
+          const results = await getTeamTasks(teamId);
+          console.log("Team Tasks Results:", results);
+          setTasksToDo(results);
+      } catch (error){
+          console.log("error while getting tasks: ", error);
+      }finally{
+          setLoadingTasks(false)
+      }
+  }
+  
+  
+  useEffect(()=>{
+      fetchData();
+      console.log("Tasks To Do:", tasksToDo);
+      
+      
+  },[]);
+
+
 
   useEffect(()=>{
     async function loadAPIInfo() {
@@ -144,13 +184,13 @@ function TeamTasks(){
         } catch (error) {
             console.log(error)
         }finally{
-            setLoading(false)
+            setLoadingNames(false)
         }
     }
     loadAPIInfo();
       
 },[])
-if(loading){
+if(loadingNames || loadingTasks){
   return (<div>Loading...</div>)
 }
 
@@ -167,6 +207,7 @@ if(loading){
     { id: 4, name: "Bob" },
     { id: 5, name: "Joe Smith" },
   ];
+  
 
 
     return (
@@ -175,15 +216,12 @@ if(loading){
         <div className='pageBody'>
             <h2>Team 1 Tasks</h2>
             <TaskList
-            dataToUse={setUpDataTasksToDo(fakeData)}
+            dataToUse={setUpData(tasksToDo)}
             headersAndAccessors={headerAndAccessors}
             />
             <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
             <h2>Completed Tasks</h2>
-            <TaskList
-            dataToUse={setUpDataComplete(fakeData)}
-            headersAndAccessors={headerAndAccessorsComplete}
-            />
+           
             
 
             <h2>Team Members</h2>
