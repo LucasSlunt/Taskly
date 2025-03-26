@@ -113,13 +113,15 @@ public class AdminService extends TeamMemberService {
                     .orElseThrow(() -> new RuntimeException("Admin not found with ID: " + memberId));
 
             String name = admin.getUserName();
-            String email = admin.getUserEmail();
-            Set<IsMemberOf> teams = admin.getTeams();
-            Set<IsAssigned> tasks = admin.getAssignedTasks();
+			String email = admin.getUserEmail();
+			Set<IsMemberOf> oldTeams = admin.getTeams();
+			Set<IsAssigned> oldTasks = admin.getAssignedTasks();
+            Set<Notification> oldNotifs = admin.getNotifications();
 
             String hashed;
             String salt;
             AuthInfo authInfo = admin.getAuthInfo();
+
             if (authInfo != null) {
                 hashed = authInfo.getHashedPassword();
                 salt = authInfo.getSalt();
@@ -127,18 +129,36 @@ public class AdminService extends TeamMemberService {
                 throw new RuntimeException("AuthInfo is null before deletion — cannot preserve credentials.");
             }
 
-            //deleete admin, which deletes the member from both team member and admin tables
+			TeamMember teamMember = new TeamMember(name, email, "TEMP_PASSWORD");
+            teamMember.setAuthInfo(new AuthInfo(hashed, salt, teamMember));
+
+            Set<IsAssigned> newTasks = oldTasks.stream()
+                    .map(old -> new IsAssigned(
+                            old.getTask(),
+                            teamMember,
+                            old.getTeam()
+                    ))
+                    .collect(Collectors.toSet());
+            teamMember.setAssignedTasks(newTasks);
+
+            Set<IsMemberOf> newTeams = oldTeams.stream()
+                    .map(old -> new IsMemberOf(
+                        teamMember,
+                        old.getTeam()
+                    ))
+                    .collect(Collectors.toSet());
+            teamMember.setTeams(newTeams);
+
+            for (Notification notif : oldNotifs) {
+                notif.setTeamMember(teamMember);
+            }
+
+            TeamMember savedTeamMember = teamMemberRepository.save(teamMember);
+
             adminRepository.delete(admin);
             adminRepository.flush();
-
-            TeamMember teamMember = new TeamMember(name, email, "TEMP_PASSWORD");
-            teamMember.getAuthInfo().setHashedPassword(hashed);
-            teamMember.getAuthInfo().setSalt(salt);
-
-            teamMember.setTeams(teams);
-            teamMember.setAssignedTasks(tasks);
-
-            return convertToDTO(teamMemberRepository.save(teamMember));
+    
+            return convertToDTO(savedTeamMember);
         }
 
         //if newRole is an Admin they are a teamMember
@@ -148,30 +168,50 @@ public class AdminService extends TeamMemberService {
 
             String name = teamMember.getUserName();
             String email = teamMember.getUserEmail();
-            Set<IsMemberOf> teams = teamMember.getTeams();
-            Set<IsAssigned> tasks = teamMember.getAssignedTasks();
+            Set<IsMemberOf> oldTeams = teamMember.getTeams();
+            Set<IsAssigned> oldTasks = teamMember.getAssignedTasks();
+            Set<Notification> oldNotifs = teamMember.getNotifications();
 
             String hashed;
             String salt;
             AuthInfo authInfo = teamMember.getAuthInfo();
+
             if (authInfo != null) {
                 hashed = authInfo.getHashedPassword();
                 salt = authInfo.getSalt();
             } else {
                 throw new RuntimeException("AuthInfo is null before deletion — cannot preserve credentials.");
             }
+             
+            Admin admin = new Admin(name, email, "TEMP_PASSWORD");
+            admin.setAuthInfo(new AuthInfo(hashed, salt, admin));
 
+            Set<IsAssigned> newTasks = oldTasks.stream()
+                    .map(old -> new IsAssigned(
+                            old.getTask(),
+                            admin,
+                            old.getTeam()
+                    ))
+                    .collect(Collectors.toSet());
+            admin.setAssignedTasks(newTasks);
+
+            Set<IsMemberOf> newTeams = oldTeams.stream()
+                    .map(old -> new IsMemberOf(
+                        admin, 
+                        old.getTeam()
+                    ))
+                    .collect(Collectors.toSet());
+            admin.setTeams(newTeams);
+
+            for (Notification notif : oldNotifs) {
+                notif.setTeamMember(admin);
+            }
+
+            Admin savedAdmin = adminRepository.save(admin);
             teamMemberRepository.delete(teamMember);
             teamMemberRepository.flush();
 
-            Admin admin = new Admin(name, email, "TEMP_PASSWORD");
-            admin.getAuthInfo().setHashedPassword(hashed);
-            admin.getAuthInfo().setSalt(salt);
-
-            admin.setTeams(teams);
-            admin.setAssignedTasks(tasks);
-
-            return convertToDTO(adminRepository.save(admin));
+            return convertToDTO(savedAdmin);
         }
 
         throw new IllegalArgumentException("Invalid role transaction");
