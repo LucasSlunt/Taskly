@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
+import com.example.task_manager.TestHelper;
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
@@ -28,49 +29,7 @@ import com.example.task_manager.enums.TaskPriority;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class IsAssignedServiceTest {
-
-    @Autowired
-    private IsAssignedService isAssignedService;
-
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private IsAssignedRepository isAssignedRepository;
-
-    private TeamMember createUniqueTeamMember() {
-        return teamMemberRepository.save(new TeamMember(
-            "TeamMember_" + System.nanoTime(),
-            "team_member" + System.nanoTime() + "@example.com",
-            "defaultpw"
-        ));
-    }
-
-    private Team createUniqueTeam(TeamMember teamLead) {
-        return teamRepository.save(new Team(
-            "Team_" + System.nanoTime(),
-            teamLead
-        ));
-    }
-
-    private Task createUniqueTask(Team team) {
-        return taskRepository.save(new Task(
-            "Task_" + System.nanoTime(),
-            "Description for task",
-            team,
-            false,
-            "Open",
-            LocalDate.now(),
-            TaskPriority.LOW
-        ));
-    }
+public class IsAssignedServiceTest extends TestHelper {
 
     @Test
     void testAssignToTask() {

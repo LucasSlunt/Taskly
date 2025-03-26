@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
+import com.example.task_manager.TestHelper;
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
@@ -39,71 +40,7 @@ import com.example.task_manager.enums.TaskPriority;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class TeamMemberServiceTest {
-
-    @Autowired
-    private AuthInfoService authInfoService;
-
-    @Autowired
-    private TeamMemberService teamMemberService;
-
-    @Autowired
-    private AdminService adminService;
-
-    @Autowired
-    private AdminRepository adminRepository;
-
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private IsAssignedRepository isAssignedRepository;
-
-    @Autowired
-    private IsMemberOfRepository isMemberOfRepository;
-
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
-
-    private TeamMember createUniqueTeamMember() {
-        return teamMemberRepository.save(new TeamMember(
-                "TeamMember_" + System.nanoTime(),
-                "team_member" + System.nanoTime() + "@example.com",
-                "defaultpw"));
-    }
-    
-    private Admin createUniqueAdmin() {
-        return teamMemberRepository.save(new Admin(
-            "Life" + System.nanoTime(),
-            "In_The" + System.nanoTime() + "@fastlane.com",
-            "speeding_all_the_time"
-        ));
-    }
-
-    private Team createUniqueTeam(TeamMember teamLead) {
-        return teamRepository.save(new Team(
-            "Team_" + System.nanoTime(),
-            teamLead
-        ));
-    }
-
-    private Task createUniqueTask(Team team) {
-        return taskRepository.save(new Task(
-            "Task_" + System.nanoTime(), 
-            "Task Description", 
-            team, 
-            false, 
-            "Open", 
-            LocalDate.now(),
-            TaskPriority.LOW
-        ));
-    }
+public class TeamMemberServiceTest extends TestHelper{
 
     @Test
     void testCreateTask() {

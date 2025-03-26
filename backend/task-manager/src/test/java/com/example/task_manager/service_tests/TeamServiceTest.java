@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
+import com.example.task_manager.TestHelper;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.Team;
@@ -31,50 +32,7 @@ import com.example.task_manager.service.TeamService;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class TeamServiceTest {
-
-    @Autowired
-    private TeamService teamService;
-
-    @Autowired
-    private IsMemberOfService isMemberOfService;
-
-    @Autowired
-    private AdminRepository adminRepository;
-
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private IsAssignedRepository isAssignedRepository;
-
-    @Autowired
-    private IsMemberOfRepository isMemberOfRepository;
-
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
-
-    private TeamMember createUniqueTeamMember(String role) {
-        return teamMemberRepository.save(new TeamMember(
-                role + "_" + System.nanoTime(),
-                role.toLowerCase() + System.nanoTime() + "@example.com",
-                "defaultpw"
-        ));
-    }
-
-    private Team createUniqueTeam(TeamMember teamLead) {
-        return teamRepository.save(new Team(
-                "Team_" + System.nanoTime(),
-                teamLead
-        ));
-    }
-
+public class TeamServiceTest extends TestHelper{
     @Test
     void testCreateTeam() {
         TeamMember teamLead = createUniqueTeamMember("Lead");

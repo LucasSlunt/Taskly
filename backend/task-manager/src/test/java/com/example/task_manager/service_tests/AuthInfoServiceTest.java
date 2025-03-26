@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
+import com.example.task_manager.TestHelper;
 import com.example.task_manager.DTO.AuthInfoDTO;
 import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.TeamMember;
@@ -24,35 +25,7 @@ import com.example.task_manager.service.AuthInfoService;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class AuthInfoServiceTest {
-
-    @Autowired
-    private AuthInfoService authInfoService;
-
-    @Autowired
-    private AdminRepository adminRepository;
-
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
-
-    private TeamMember createUniqueTeamMember() {
-        return teamMemberRepository.save(new TeamMember(
-            "TeamMember_" + System.nanoTime(),
-            "team_member" + System.nanoTime() + "@secure.com",
-            "defaultpw"
-        ));
-    }
-
-    private Admin createUniqueAdmin() {
-        return adminRepository.save(new Admin(
-            "Admin_" + System.nanoTime(),
-            "admin_" + System.nanoTime() + "@secure.com",
-            "adminpw"
-        ));
-    }
+public class AuthInfoServiceTest extends TestHelper{
 
     @Test
     void testHashPassword() {

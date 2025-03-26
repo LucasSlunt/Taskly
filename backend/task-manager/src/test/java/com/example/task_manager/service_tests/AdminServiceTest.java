@@ -15,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
+import com.example.task_manager.TestHelper;
 import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
@@ -36,34 +37,9 @@ import com.example.task_manager.service.TeamService;
 @Transactional
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class AdminServiceTest {
+public class AdminServiceTest extends TestHelper{
 
-    @Autowired
-    private AdminService adminService;
-
-    @Autowired
-    private TeamService teamService;
-
-    @Autowired
-    private AdminRepository adminRepository;
-
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private IsAssignedRepository isAssignedRepository;
-
-    @Autowired
-    private IsMemberOfRepository isMemberOfRepository;
-
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
+    
 
     @Test
     void testCreateAdmin() {
