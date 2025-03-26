@@ -104,7 +104,7 @@ function CreateTaskForm(){
                         </select></p>)}
                         {teamMembers.length===0&&(
                             <select {...register('assignees',{required: true})}>
-                                <option disabled selected value =''>CHOSE TEAM TO CHOOSE MEMBERS</option>
+                                <option disabled selected value =''>CHOOSE TEAM TO CHOOSE MEMBERS</option>
                             </select>
                         )}
                 </label>
