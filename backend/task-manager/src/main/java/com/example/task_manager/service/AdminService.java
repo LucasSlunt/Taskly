@@ -116,6 +116,7 @@ public class AdminService extends TeamMemberService {
 			String email = admin.getUserEmail();
 			Set<IsMemberOf> oldTeams = admin.getTeams();
 			Set<IsAssigned> oldTasks = admin.getAssignedTasks();
+            Set<Notification> oldNotifs = admin.getNotifications();
 
 			String hashed;
 			String salt;
@@ -133,8 +134,7 @@ public class AdminService extends TeamMemberService {
 			adminRepository.flush();
 
 			TeamMember teamMember = new TeamMember(name, email, "TEMP_PASSWORD");
-			teamMember.getAuthInfo().setHashedPassword(hashed);
-            teamMember.getAuthInfo().setSalt(salt);
+            teamMember.setAuthInfo(new AuthInfo(hashed, salt, teamMember));
 
             Set<IsAssigned> newTasks = oldTasks.stream()
                     .map(old -> new IsAssigned(
@@ -153,6 +153,10 @@ public class AdminService extends TeamMemberService {
                     .collect(Collectors.toSet());
             teamMember.setTeams(newTeams);
 
+            for (Notification notif : oldNotifs) {
+                notif.setTeamMember(teamMember);
+            }
+
 			return convertToDTO(teamMemberRepository.save(teamMember));
 		}
 		
@@ -165,6 +169,7 @@ public class AdminService extends TeamMemberService {
 			String email = teamMember.getUserEmail();
 			Set<IsMemberOf> oldTeams = teamMember.getTeams();
 			Set<IsAssigned> oldTasks = teamMember.getAssignedTasks();
+            Set<Notification> oldNotifs = teamMember.getNotifications();
 
 			String hashed;
 			String salt;
@@ -181,8 +186,7 @@ public class AdminService extends TeamMemberService {
 			teamMemberRepository.flush();
 
 			Admin admin = new Admin(name, email, "TEMP_PASSWORD");
-			admin.getAuthInfo().setHashedPassword(hashed);
-            admin.getAuthInfo().setSalt(salt);
+            admin.setAuthInfo(new AuthInfo(hashed, salt, admin));
 
             Set<IsAssigned> newTasks = oldTasks.stream()
                     .map(old -> new IsAssigned(
@@ -200,6 +204,10 @@ public class AdminService extends TeamMemberService {
                     ))
                     .collect(Collectors.toSet());
             admin.setTeams(newTeams);
+
+            for (Notification notif : oldNotifs) {
+                notif.setTeamMember(admin);
+            }
 
 			return convertToDTO(adminRepository.save(admin));
 		}
