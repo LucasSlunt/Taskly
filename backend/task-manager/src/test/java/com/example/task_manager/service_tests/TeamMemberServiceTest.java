@@ -14,7 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
-import com.example.task_manager.TestHelper;
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
@@ -29,7 +28,7 @@ import com.example.task_manager.enums.TaskPriority;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class TeamMemberServiceTest extends TestHelper{
+public class TeamMemberServiceTest extends ServiceTestHelper{
 
     @Test
     void testCreateTask() {

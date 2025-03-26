@@ -12,7 +12,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
-import com.example.task_manager.TestHelper;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.entity.Team;
@@ -22,7 +21,7 @@ import com.example.task_manager.entity.TeamMember;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class TeamServiceTest extends TestHelper{
+public class TeamServiceTest extends ServiceTestHelper{
     @Test
     void testCreateTeam() {
         TeamMember teamLead = createUniqueTeamMember("Lead");

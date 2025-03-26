@@ -9,7 +9,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
-import com.example.task_manager.TestHelper;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 
@@ -17,7 +16,7 @@ import com.example.task_manager.DTO.TeamMemberDTO;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class IsMemberOfServiceTest extends TestHelper{
+public class IsMemberOfServiceTest extends ServiceTestHelper{
 
     @Test
     void testAddMemberToTeam() {

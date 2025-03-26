@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
-import com.example.task_manager.TestHelper;
 import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
@@ -30,7 +29,7 @@ import com.example.task_manager.enums.TaskPriority;
 @Transactional
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class AdminServiceTest extends TestHelper{
+public class AdminServiceTest extends ServiceTestHelper{
 
     
 

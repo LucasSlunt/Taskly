@@ -9,7 +9,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
-import com.example.task_manager.TestHelper;
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
@@ -19,7 +18,7 @@ import com.example.task_manager.entity.TeamMember;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class IsAssignedServiceTest extends TestHelper {
+public class IsAssignedServiceTest extends ServiceTestHelper {
 
     @Test
     void testAssignToTask() {

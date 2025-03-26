@@ -2,82 +2,23 @@ package com.example.task_manager.repository_tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
-import com.example.task_manager.enums.TaskPriority;
-import com.example.task_manager.repository.IsAssignedRepository;
-import com.example.task_manager.repository.TaskRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
-public class IsAssignedRepositoryTest{
-
-    @Autowired
-    private TestEntityManager entityManager;
-
-    @Autowired
-    private IsAssignedRepository isAssignedRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-
-    /**
-     * Creates and persists a unique Team.
-     */
-    private Team createAndPersistUniqueTeam() {
-        Team team = new Team();
-        team.setTeamName("Test Team " + System.nanoTime());
-        entityManager.persist(team);
-        entityManager.flush();
-        return team;
-    }
-
-    /**
-     * Creates and persists a unique TeamMember.
-     */
-    private TeamMember createAndPersistUniqueTeamMember() {
-        TeamMember teamMember = new TeamMember("TestUser" + System.nanoTime(),
-                "test" + System.nanoTime() + "@example.com", "defaultpw");
-        entityManager.persist(teamMember);
-        entityManager.flush();
-        return teamMember;
-    }
-
-    /**
-     * Creates and saves a new Task with a unique title.
-     */
-    private Task createAndSaveUniqueTask(Team team) {
-        Task task = new Task();
-        task.setTitle("Implement Feature X " + System.nanoTime());
-        task.setStatus("Open");
-        task.setTeam(team);
-        task.setDateCreated(LocalDate.now());
-        task.setPriority(TaskPriority.MEDIUM);
-        return taskRepository.save(task);
-    }
-
-    /**
-     * Creates and saves a new IsAssigned entry with a unique identifier.
-     */
-    private IsAssigned createAndSaveUniqueAssignment(Task task, TeamMember teamMember, Team team) {
-        IsAssigned assignment = new IsAssigned(task, teamMember, team);
-        return isAssignedRepository.save(assignment);
-    }
+public class IsAssignedRepositoryTest extends RepositoryTestHelper{
 
     @Test
     void testSaveAssignment() {

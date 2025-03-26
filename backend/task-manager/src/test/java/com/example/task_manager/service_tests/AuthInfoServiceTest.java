@@ -9,7 +9,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
-import com.example.task_manager.TestHelper;
 import com.example.task_manager.DTO.AuthInfoDTO;
 import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.TeamMember;
@@ -19,7 +18,7 @@ import com.example.task_manager.service.AuthInfoService;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class AuthInfoServiceTest extends TestHelper{
+public class AuthInfoServiceTest extends ServiceTestHelper{
 
     @Test
     void testHashPassword() {

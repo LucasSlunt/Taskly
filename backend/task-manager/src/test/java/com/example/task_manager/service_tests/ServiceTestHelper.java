@@ -1,9 +1,8 @@
-package com.example.task_manager;
+package com.example.task_manager.service_tests;
 
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
@@ -28,7 +27,7 @@ import com.example.task_manager.service.NotificationService;
 import com.example.task_manager.service.TeamMemberService;
 import com.example.task_manager.service.TeamService;
 
-public class TestHelper {
+public class ServiceTestHelper {
 
 
     @Autowired

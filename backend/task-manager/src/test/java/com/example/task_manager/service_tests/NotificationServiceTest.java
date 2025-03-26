@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.example.task_manager.TestHelper;
 import com.example.task_manager.DTO.NotificationDTO;
 import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Notification;
@@ -25,7 +24,7 @@ import jakarta.transaction.Transactional;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class NotificationServiceTest extends TestHelper{
+public class NotificationServiceTest extends ServiceTestHelper{
 
     @Test
     void testNotifyTaskTitleChange() {
