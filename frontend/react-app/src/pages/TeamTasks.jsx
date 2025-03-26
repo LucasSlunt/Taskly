@@ -22,7 +22,7 @@ function setUpData(results) {
       name: taskItem.title,
       assignees: getAssigneesNames(taskItem),
       status: taskItem.status,
-    
+      priority: taskItem.priority,
       dueDate: taskItem.dueDate || "No Due Date",
       isLocked: taskItem.isLocked
     }));
@@ -34,6 +34,7 @@ function setUpDataCompleted(results) {
       id: taskItem.taskId,
       name: taskItem.title,
       assignees: getAssigneesNames(taskItem),
+      priority: taskItem.priority,
       status: taskItem.status,
       dueDate: taskItem.dueDate || "No Due Date",
       isLocked: taskItem.isLocked
@@ -54,6 +55,10 @@ const headerAndAccessors = [
       {
           Header: "Assignee(s)",
           accessor: "assignees",
+      },
+      {
+        Header: "Priority",
+        accessor: "priority",
       },
       {
           Header: "Status",
