@@ -95,7 +95,7 @@ const Home = () => {
                 
                     <div id="teamButtons" className='teamButtonContainer'>
                         {teams.map((team)=>(
-                            <Link className="teamButton headerText1" to='/team-tasks' key={team.teamId} >
+                            <Link className="teamButton headerText1" to='/team-tasks' state={{ teamId: team.teamId}} key={team.teamId} >
                             {team.teamName}
                             </Link>
                             
