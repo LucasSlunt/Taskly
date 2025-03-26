@@ -60,8 +60,12 @@ public class TeamService {
         team.setTeamLead(teamLead);
 
         team = teamRepository.save(team);
-        return convertToDTO(team);
-    }
+        
+        IsMemberOf isMemberOf = new IsMemberOf(teamLead, team);
+        isMemberOfRepository.save(isMemberOf);
+
+		return convertToDTO(team);
+	}
 
     /**
      * Deletes a team by its ID.

@@ -89,6 +89,12 @@ public class TeamServiceTest {
 
         TeamDTO newTeam = teamService.createTeam(teamName, teamLead.getAccountId());
 
+        List<TeamMemberDTO> members = teamService.getTeamMembers(newTeam.getTeamId());
+
+        assertTrue(members.stream().anyMatch(member -> member.getAccountId() == teamLead.getAccountId()),
+            "Team lead should be included in the team's member list."
+        );
+
         assertNotNull(newTeam);
         assertEquals(teamName, newTeam.getTeamName());
         assertEquals(teamLead.getAccountId(), newTeam.getTeamLeadId());
