@@ -16,7 +16,7 @@ function getAssigneesNames(taskItem) {
 }
 function setUpData(results) {
   return results
-  .filter((taskItem) => taskItem.status === "Not Started" || taskItem.status === "In Progress")
+  .filter((taskItem) => taskItem.status !== "done")
     .map((taskItem) => ({
       id: taskItem.taskId,
       name: taskItem.title,
@@ -29,7 +29,7 @@ function setUpData(results) {
 }
 function setUpDataCompleted(results) {
   return results
-    .filter((taskItem) => taskItem.status === "Done")
+    .filter((taskItem) => taskItem.status === "done")
     .map((taskItem) => ({
       id: taskItem.taskId,
       name: taskItem.title,
