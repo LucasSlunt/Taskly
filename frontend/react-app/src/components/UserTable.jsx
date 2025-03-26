@@ -106,10 +106,10 @@ function UserTable({teams}){
         const teamMembers = await getTeamMembers(event.target.value)
         console.log(teamMembers)
         if(teamMembers.length <1){
-            arrReturn = [...arrReturn,{name: teamMembers.userName, role: teamMembers.role, del: teamMembers.accountId}]
+            arrReturn = [...arrReturn,{name: teamMembers.userName, role: teamMembers.role, id: teamMembers.accountId, del: teamMembers.accountId}]
         }else{
             teamMembers.map((member)=>{
-                arrReturn = [...arrReturn,{name: member.userName, role: member.role, del: member.accountId}]
+                arrReturn = [...arrReturn,{name: member.userName, role: member.role, id: teamMembers.accountId, del: member.accountId}]
              })
         }
         console.log(arrReturn)
@@ -144,6 +144,13 @@ function UserTable({teams}){
               )
         },
         {
+            Header: 'ID',
+            accessor: 'id',
+            Cell:(original) =>(
+                <div>{original.cell.row.values.del}</div>
+            )
+        },
+        {
             Header: "",
             accessor: "del",
             Cell: (original) => (
@@ -161,10 +168,10 @@ function UserTable({teams}){
                 let arrReturn = [];
                 console.log(teamMembers)
                 if(teamMembers.length <1){
-                    arrReturn = [...arrReturn,{name: teamMembers.userName, role: teamMembers.role, del: teamMembers.accountId}]
+                    arrReturn = [...arrReturn,{name: teamMembers.userName, role: teamMembers.role, id: teamMembers.accountId, del: teamMembers.accountId}]
                 }else{
                     teamMembers.map((member)=>{
-                        arrReturn = [...arrReturn,{name: member.userName, role: member.role, del: member.accountId}]
+                        arrReturn = [...arrReturn,{name: member.userName, role: member.role, id: teamMembers.accountId, del: member.accountId}]
                      })
                 }
                 console.log(arrReturn)
