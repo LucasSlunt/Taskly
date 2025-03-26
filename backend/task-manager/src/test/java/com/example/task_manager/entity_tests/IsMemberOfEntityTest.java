@@ -16,18 +16,8 @@ import com.example.task_manager.entity.TeamMember;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
-public class IsMemberOfEntityTest {
+public class IsMemberOfEntityTest extends EntityTestHelper{
 
-    @Autowired
-    private TestEntityManager entityManager;
-
-    private Team createUniqueTeam(TeamMember teamLead) {
-        return new Team("Team_" + System.nanoTime(), teamLead);
-    }
-
-    private TeamMember createUniqueTeamMember() {
-        return new TeamMember("Member_" + System.nanoTime(), "user_" + System.nanoTime() + "@example.com", "defaultpw");
-    }
 
     @Test
     void testIsMemberOfPersistence() {
