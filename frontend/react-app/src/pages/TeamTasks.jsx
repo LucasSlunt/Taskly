@@ -24,7 +24,7 @@ function setUpData(results) {
       status: taskItem.status,
       priority: taskItem.priority,
       dueDate: taskItem.dueDate || "No Due Date",
-      isLocked: taskItem.isLocked
+      isLocked: taskItem.isLocked.toString()
     }));
 }
 function setUpDataCompleted(results) {
@@ -37,7 +37,7 @@ function setUpDataCompleted(results) {
       priority: taskItem.priority,
       status: taskItem.status,
       dueDate: taskItem.dueDate || "No Due Date",
-      isLocked: taskItem.isLocked
+      isLocked: taskItem.isLocked.toString()
     }));
 }
 const headerAndAccessors = [
@@ -178,17 +178,28 @@ if(loadingNames || loadingTasks){
       <div className='pageContainer'>
         <Header/>
         <div className='pageBody'>
-            <h2>Team 1 Tasks</h2>
+        <h2>Team 1 Tasks</h2>
+          {setUpData(tasksToDo).length > 0 ? (
             <TaskList
-            dataToUse={setUpData(tasksToDo)}
-            headersAndAccessors={headerAndAccessors}
+              dataToUse={setUpData(tasksToDo)}
+              headersAndAccessors={headerAndAccessors}
             />
+          ) : (
+            <p>No tasks to do</p>
+          )}
+            
+
             <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
             <h2>Completed Tasks</h2>
+            {setUpDataCompleted(tasksToDo).length > 0 ? (
             <TaskList
-            dataToUse={setUpDataCompleted(tasksToDo)}
-            headersAndAccessors={headerAndAccessorsComplete}
+              dataToUse={setUpData(tasksToDo)}
+              headersAndAccessors={headerAndAccessors}
             />
+          ) : (
+            <h2>No tasks completed</h2>
+          )}
+          
             
 
             <h2>Team Members</h2>
