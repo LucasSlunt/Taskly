@@ -52,7 +52,7 @@ function CreateTaskForm(){
                      })
                     }  
             })
-            window.location.href="/home";
+            //window.location.href="/home";
         } catch (error) {
             console.log(error)
             alert("FAILED IN MAKING TASK");
@@ -84,8 +84,8 @@ function CreateTaskForm(){
                 <label>
                     Choose Team:
                     <div>
-                        <select name="" id="" onChange={teamSelected}>
-                            <option disabled selected value>Choose A Team To Assign</option>
+                        <select name="" id="" onChange={teamSelected} {...register('team',{required:true})}>
+                            <option disabled selected value=''>Choose A Team To Assign</option>
                             {userTeams.map((team)=>(
                                 <option value = {team.teamId}>{team.teamName}</option>
                             ))}
@@ -93,15 +93,20 @@ function CreateTaskForm(){
                     </div>
                 </label>
                 <label className='majorLabel'>
-                    
+                    Assigned To:
                     {teamMembers.length !== 0&&(<p>  
-                        <select id="" {...register('assignees')}>
-                            <option disabled selected value>Assign Users</option>
+                        <select id="" {...register('assignees',{required: true})}>
+                            <option disabled selected value=''>Assign Users</option>
                             <option value={userId}>Yourself</option>
                             {teamMembers.map((teamMember)=>(
                                 <option value={teamMember.accountId}>{teamMember.userName}</option>
                             ))}
                         </select></p>)}
+                        {teamMembers.length===0&&(
+                            <select {...register('assignees',{required: true})}>
+                                <option disabled selected value =''>CHOOSE TEAM TO CHOOSE MEMBERS</option>
+                            </select>
+                        )}
                 </label>
                 <label className='majorLabel'>
                     Add Discription
@@ -109,17 +114,14 @@ function CreateTaskForm(){
                 <div>
                     <input type="text" name="input-description" id="description" className='input'{...register("description", { required: false })}/>
                 </div>
-                <div>
-                    <input type="text" name="input-description" id="description" {...register("description", { required: false })}/>
-                </div>
                 </label>
                 <label>
                     Priority
                     <div>
                         <select name="" id="" {...register("priority")}>
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
+                            <option value="LOW">Low</option>
+                            <option value="MEDIUM">Medium</option>
+                            <option value="HIGH">High</option>
                         </select>
                     </div>
                 </label>

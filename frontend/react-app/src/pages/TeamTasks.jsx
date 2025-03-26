@@ -4,13 +4,41 @@ import Header from "../components/Header";
 import "../css/TeamTasks.css";
 import TeamMember from "../components/TeamMember";
 import fakeData from "../FakeData/fakeTaskData.json"
+import { useCookies } from 'react-cookie';
+import { useState, useEffect } from 'react';
+import { getTeamMembers } from "../api/teamApi";
+import { useLocation } from 'react-router-dom';
+import { getTeamTasks } from "../api/teamApi";
 
-function getAssignnesNames(task){
-  let returnArr = []
-  task.assignees.map((assigne)=>{
-      returnArr = [...returnArr, assigne.name]
-  })
-  return returnArr
+
+function getAssigneesNames(taskItem) {
+  return taskItem.assignedMembers.map((member) => member.userName).join(", ");
+}
+function setUpData(results) {
+  return results
+  .filter((taskItem) => taskItem.status !== "done")
+    .map((taskItem) => ({
+      id: taskItem.taskId,
+      name: taskItem.title,
+      assignees: getAssigneesNames(taskItem),
+      status: taskItem.status,
+      priority: taskItem.priority,
+      dueDate: taskItem.dueDate || "No Due Date",
+      isLocked: taskItem.isLocked.toString()
+    }));
+}
+function setUpDataCompleted(results) {
+  return results
+    .filter((taskItem) => taskItem.status === "done")
+    .map((taskItem) => ({
+      id: taskItem.taskId,
+      name: taskItem.title,
+      assignees: getAssigneesNames(taskItem),
+      priority: taskItem.priority,
+      status: taskItem.status,
+      dueDate: taskItem.dueDate || "No Due Date",
+      isLocked: taskItem.isLocked.toString()
+    }));
 }
 const headerAndAccessors = [
       {
@@ -29,13 +57,14 @@ const headerAndAccessors = [
           accessor: "assignees",
       },
       {
+        Header: "Priority",
+        accessor: "priority",
+      },
+      {
           Header: "Status",
           accessor: "status",
       },
-      {
-          Header: "Priority",
-          accessor: "priority",
-      },
+
       {
           Header: "Due Date",
           accessor: "dueDate",
@@ -45,54 +74,10 @@ const headerAndAccessors = [
         accessor: "isLocked",
       }
 ]
-function setUpDataTasksToDo(obj){
-  let ansArr = []
-  fakeData.map((taskItem) =>{
-  if(taskItem.status !== "done"){
-    ansArr = [ ...ansArr,
-        {
-            id: taskItem.id,
-            name: taskItem.name,
-            assignees: getAssignnesNames(taskItem).join(' '),
-            status: taskItem.status,
-            priority: taskItem.priority,
-            dueDate: taskItem.dueDate,
-            isLocked: taskItem.isLocked
-        }]
-    
-  }
-  }
-  )
-  if(ansArr.length > 0){
-    return ansArr
-  }else{
-    return [" "]
-  }
-}
-function setUpDataComplete(obj){
-  let ansArr = []
-  console.log(fakeData)
-  fakeData.map((taskItem) =>{
-    if(taskItem.status === "done"){
-     ansArr = [...ansArr,
-         {
-            id: taskItem.id,
-            name: taskItem.name,
-            assignees: getAssignnesNames(taskItem).join(' '),
-            dueDate: taskItem.dueDate,
-            dateCompteted: taskItem.dateCompteted
- 
- 
-         }]
-    }
-  }
- )
- if(ansArr.length > 0){
-  return ansArr
-  }else{
-  return [" "]
-}
-}
+
+
+
+
 const headerAndAccessorsComplete = [
   {
     Header: "Task Name",
@@ -119,6 +104,62 @@ const headerAndAccessorsComplete = [
   }
 ]
 function TeamTasks(){
+  const [cookies] = useCookies(['userInfo']);
+  const userId = cookies.userInfo.accountId;
+
+  const [teamMembers, setTeamMembers ] = useState([]);
+  const [loadingNames, setLoadingNames] = useState(true);
+  const [loadingTasks, setLoadingTasks] = useState(true);
+
+  const location = useLocation();
+  const { teamId } = location.state;
+  console.log("teamId:", teamId);
+
+  const [tasksToDo, setTasksToDo ] = useState([]);
+  
+  
+  async function fetchData(){
+      try{
+          const results = await getTeamTasks(teamId);
+          console.log("Team Tasks Results:", results);
+          setTasksToDo(results);
+      } catch (error){
+          console.log("error while getting tasks: ", error);
+      }finally{
+          setLoadingTasks(false)
+      }
+  }
+  
+  
+  useEffect(()=>{
+      fetchData();
+      console.log("Tasks To Do:", tasksToDo);
+      
+      
+  },[]);
+
+
+
+  useEffect(()=>{
+    async function loadAPIInfo() {
+        try {
+            const data = await getTeamMembers(teamId)
+            setTeamMembers(data)
+        } catch (error) {
+            console.log(error)
+        }finally{
+            setLoadingNames(false)
+        }
+    }
+    loadAPIInfo();
+      
+},[])
+if(loadingNames || loadingTasks){
+  return (<div>Loading...</div>)
+}
+
+ 
+
   //mock
   const isAdmin = false;
 
@@ -130,29 +171,41 @@ function TeamTasks(){
     { id: 4, name: "Bob" },
     { id: 5, name: "Joe Smith" },
   ];
+  
 
 
     return (
       <div className='pageContainer'>
         <Header/>
         <div className='pageBody'>
-            <h2>Team 1 Tasks</h2>
+        <h2>Team 1 Tasks</h2>
+          {setUpData(tasksToDo).length > 0 ? (
             <TaskList
-            dataToUse={setUpDataTasksToDo(fakeData)}
-            headersAndAccessors={headerAndAccessors}
+              dataToUse={setUpData(tasksToDo)}
+              headersAndAccessors={headerAndAccessors}
             />
+          ) : (
+            <p>No tasks to do</p>
+          )}
+            
+
             <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
             <h2>Completed Tasks</h2>
+            {setUpDataCompleted(tasksToDo).length > 0 ? (
             <TaskList
-            dataToUse={setUpDataComplete(fakeData)}
-            headersAndAccessors={headerAndAccessorsComplete}
+              dataToUse={setUpData(tasksToDo)}
+              headersAndAccessors={headerAndAccessors}
             />
+          ) : (
+            <h2>No tasks completed</h2>
+          )}
+          
             
 
             <h2>Team Members</h2>
             <div className="team-list">
-              {members.map((member) => (
-                <TeamMember key={member.id} member={member} isAdminPage={isAdmin}/>
+              {teamMembers.map((member) => (
+                <TeamMember key={member.teamId} member={member} isAdminPage={isAdmin}/>
               ))}
             </div>
 

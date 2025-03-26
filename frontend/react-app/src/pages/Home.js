@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import {Link} from 'react-router-dom'
 import fakeData from "../FakeData/fakeTaskData.json"
 import TaskList from '../components/TaskList';
+import { getAssignedTasks } from "../api/teamMemberApi";
+
 function setUpDataTasksToDo(obj){
     let ansArr = []
     fakeData.map((taskItem) =>{
@@ -32,8 +34,25 @@ if(ansArr.length > 0){
 }
 
 
+function setUpData(results) {
+    return results
+    .filter((taskItem) => taskItem.status !== "done")
+      .map((taskItem) => ({
+        id: taskItem.taskId,
+        name: taskItem.title,
+        status: taskItem.status,
+        team: taskItem.teamId,
+        dueDate: taskItem.dueDate || "No Due Date", 
+      }));
+}
+
+
+
+
 
 const Home = () => {
+
+
     const headerAndAccessor = [
         {
             Header: "Task Name",
@@ -59,8 +78,32 @@ const Home = () => {
 
 
     const [cookies] = useCookies(['userInfo'])
+    const userId = cookies.userInfo.accountId
     const [teams, setTeams] = useState([])
     const [loading, setLoading] = useState(true);
+    const [loadingTasks, setLoadingTasks] = useState(true);
+    const [tasksToDo, setTasksToDo ] = useState([]);
+
+
+
+    async function fetchData(){
+        try{
+            const results = await getAssignedTasks(userId);
+            console.log("API Results:", results);
+            setTasksToDo(results);
+        } catch (error){
+            console.log("error while getting tasks: ", error);
+        }finally{
+            setLoadingTasks(false)
+        }
+    }
+
+
+    useEffect(()=>{
+        fetchData();
+        console.log("Tasks To Do:", tasksToDo);
+    },[]);
+    
     useEffect(()=>{
         async function loadAPIInfo() {
             try {
@@ -75,7 +118,7 @@ const Home = () => {
         loadAPIInfo();
     
     },[])
-    if(loading){
+    if(loading || loadingTasks){
         return (<div>Loading...</div>)
     }
     return (
@@ -95,7 +138,7 @@ const Home = () => {
                 
                     <div id="teamButtons" className='teamButtonContainer'>
                         {teams.map((team)=>(
-                            <Link className="teamButton headerText1" to='/team-tasks' key={team.teamId} >
+                            <Link className="teamButton headerText1" to='/team-tasks' state={{ teamId: team.teamId}} key={team.teamId} >
                             {team.teamName}
                             </Link>
                             
@@ -106,10 +149,15 @@ const Home = () => {
 
                 <div id="taskSection">
                     <h2>My Tasks (Preview)</h2>
-                    <TaskList
-                    dataToUse={setUpDataTasksToDo(fakeData)}
-                    headersAndAccessors={headerAndAccessor}
-                    />
+                        {setUpData(tasksToDo).length > 0 ? (
+                        <TaskList
+                        dataToUse={setUpData(tasksToDo)}
+                        headersAndAccessors={headerAndAccessor}
+                        />
+                    ) : (
+                        <p>No tasks to do</p>
+                    )}
+                    
                     
                 </div>
             </div>
