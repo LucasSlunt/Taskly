@@ -114,8 +114,8 @@ public class AdminService extends TeamMemberService {
 
 			String name = admin.getUserName();
 			String email = admin.getUserEmail();
-			Set<IsMemberOf> teams = admin.getTeams();
-			Set<IsAssigned> tasks = admin.getAssignedTasks();
+			Set<IsMemberOf> oldTeams = admin.getTeams();
+			Set<IsAssigned> oldTasks = admin.getAssignedTasks();
 
 			String hashed;
 			String salt;
@@ -134,10 +134,24 @@ public class AdminService extends TeamMemberService {
 
 			TeamMember teamMember = new TeamMember(name, email, "TEMP_PASSWORD");
 			teamMember.getAuthInfo().setHashedPassword(hashed);
-			teamMember.getAuthInfo().setSalt(salt);
+            teamMember.getAuthInfo().setSalt(salt);
 
-			teamMember.setTeams(teams);
-			teamMember.setAssignedTasks(tasks);
+            Set<IsAssigned> newTasks = oldTasks.stream()
+                    .map(old -> new IsAssigned(
+                            old.getTask(),
+                            teamMember,
+                            old.getTeam()
+                    ))
+                    .collect(Collectors.toSet());
+            teamMember.setAssignedTasks(newTasks);
+
+            Set<IsMemberOf> newTeams = oldTeams.stream()
+                    .map(old -> new IsMemberOf(
+                        teamMember,
+                        old.getTeam()
+                    ))
+                    .collect(Collectors.toSet());
+            teamMember.setTeams(newTeams);
 
 			return convertToDTO(teamMemberRepository.save(teamMember));
 		}
@@ -149,8 +163,8 @@ public class AdminService extends TeamMemberService {
 
 			String name = teamMember.getUserName();
 			String email = teamMember.getUserEmail();
-			Set<IsMemberOf> teams = teamMember.getTeams();
-			Set<IsAssigned> tasks = teamMember.getAssignedTasks();
+			Set<IsMemberOf> oldTeams = teamMember.getTeams();
+			Set<IsAssigned> oldTasks = teamMember.getAssignedTasks();
 
 			String hashed;
 			String salt;
@@ -168,10 +182,24 @@ public class AdminService extends TeamMemberService {
 
 			Admin admin = new Admin(name, email, "TEMP_PASSWORD");
 			admin.getAuthInfo().setHashedPassword(hashed);
-			admin.getAuthInfo().setSalt(salt);
+            admin.getAuthInfo().setSalt(salt);
 
-			admin.setTeams(teams);
-			admin.setAssignedTasks(tasks);
+            Set<IsAssigned> newTasks = oldTasks.stream()
+                    .map(old -> new IsAssigned(
+                            old.getTask(),
+                            admin,
+                            old.getTeam()
+                    ))
+                    .collect(Collectors.toSet());
+            admin.setAssignedTasks(newTasks);
+
+            Set<IsMemberOf> newTeams = oldTeams.stream()
+                    .map(old -> new IsMemberOf(
+                        admin, 
+                        old.getTeam()
+                    ))
+                    .collect(Collectors.toSet());
+            admin.setTeams(newTeams);
 
 			return convertToDTO(adminRepository.save(admin));
 		}
