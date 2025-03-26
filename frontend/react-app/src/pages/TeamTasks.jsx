@@ -11,26 +11,30 @@ import { useLocation } from 'react-router-dom';
 import { getTeamTasks } from "../api/teamApi";
 
 
-
-
-function getAssignnesNames(task){
-  let returnArr = []
-  task.assignees.map((assigne)=>{
-      returnArr = [...returnArr, assigne.name]
-  })
-  return returnArr
-}
 function getAssigneesNames(taskItem) {
   return taskItem.assignedMembers.map((member) => member.userName).join(", ");
 }
 function setUpData(results) {
   return results
+  .filter((taskItem) => taskItem.status === "Not Started" || taskItem.status === "In Progress")
     .map((taskItem) => ({
       id: taskItem.taskId,
       name: taskItem.title,
       assignees: getAssigneesNames(taskItem),
       status: taskItem.status,
     
+      dueDate: taskItem.dueDate || "No Due Date",
+      isLocked: taskItem.isLocked
+    }));
+}
+function setUpDataCompleted(results) {
+  return results
+    .filter((taskItem) => taskItem.status === "Done")
+    .map((taskItem) => ({
+      id: taskItem.taskId,
+      name: taskItem.title,
+      assignees: getAssigneesNames(taskItem),
+      status: taskItem.status,
       dueDate: taskItem.dueDate || "No Due Date",
       isLocked: taskItem.isLocked
     }));
@@ -66,54 +70,9 @@ const headerAndAccessors = [
       }
 ]
 
-function setUpDataTasksToDo(obj){
-  let ansArr = []
-  fakeData.map((taskItem) =>{
-  if(taskItem.status !== "done"){
-    ansArr = [ ...ansArr,
-        {
-            id: taskItem.id,
-            name: taskItem.name,
-            assignees: getAssignnesNames(taskItem).join(' '),
-            status: taskItem.status,
-            priority: taskItem.priority,
-            dueDate: taskItem.dueDate,
-            isLocked: taskItem.isLocked
-        }]
-    
-  }
-  }
-  )
-  if(ansArr.length > 0){
-    return ansArr
-  }else{
-    return [" "]
-  }
-}
-function setUpDataComplete(obj){
-  let ansArr = []
-  console.log(fakeData)
-  fakeData.map((taskItem) =>{
-    if(taskItem.status === "done"){
-     ansArr = [...ansArr,
-         {
-            id: taskItem.id,
-            name: taskItem.name,
-            assignees: getAssignnesNames(taskItem).join(' '),
-            dueDate: taskItem.dueDate,
-            dateCompteted: taskItem.dateCompteted
- 
- 
-         }]
-    }
-  }
- )
- if(ansArr.length > 0){
-  return ansArr
-  }else{
-  return [" "]
-}
-}
+
+
+
 const headerAndAccessorsComplete = [
   {
     Header: "Task Name",
@@ -221,7 +180,10 @@ if(loadingNames || loadingTasks){
             />
             <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
             <h2>Completed Tasks</h2>
-           
+            <TaskList
+            dataToUse={setUpDataCompleted(tasksToDo)}
+            headersAndAccessors={headerAndAccessorsComplete}
+            />
             
 
             <h2>Team Members</h2>
