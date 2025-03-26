@@ -62,8 +62,11 @@ public class AdminController {
         try {
             adminService.deleteAdmin(adminId);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.status(404).body("Admin not found");
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(500).body("Unexpected error: " + e.getMessage());
         }
     }
 

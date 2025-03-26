@@ -35,6 +35,9 @@ public class TeamMember {
     @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<IsAssigned> assignedTasks = new HashSet<>();
 
+    @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Notification> notifications = new HashSet<>();
+
     public TeamMember() {}
 
     public TeamMember(String userName, String userEmail, String rawPassword) {
@@ -120,4 +123,16 @@ public class TeamMember {
         this.role = role;
     }
 
+    public Set<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Set<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+    public void addNotification(Notification notification) {
+        this.notifications.add(notification);
+        notification.setTeamMember(this);
+    }    
 }

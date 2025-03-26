@@ -37,6 +37,7 @@ public class NotificationService {
     private NotificationDTO createNotification(TeamMember teamMember, Task task, NotificationType type,
             String message) {
         Notification notif = new Notification(type, message, task, teamMember);
+        teamMember.addNotification(notif);
         notifRepository.save(notif);
         return convertToDTO(notif);
     }
