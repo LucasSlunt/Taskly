@@ -34,9 +34,8 @@ function setUpDataCompleted(results) {
       id: taskItem.taskId,
       name: taskItem.title,
       assignees: getAssigneesNames(taskItem),
-      priority: taskItem.priority,
-      status: taskItem.status,
       dueDate: taskItem.dueDate || "No Due Date",
+      dateCompleted: taskItem.dateCompleted,
       isLocked: taskItem.isLocked.toString()
     }));
 }
@@ -193,8 +192,8 @@ if(loadingNames || loadingTasks){
             <h2>Completed Tasks</h2>
             {setUpDataCompleted(tasksToDo).length > 0 ? (
             <TaskList
-              dataToUse={setUpData(tasksToDo)}
-              headersAndAccessors={headerAndAccessors}
+              dataToUse={setUpDataCompleted(tasksToDo)}
+              headersAndAccessors={headerAndAccessorsComplete}
             />
           ) : (
             <h2>No tasks completed</h2>
