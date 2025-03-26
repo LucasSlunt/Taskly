@@ -1,4 +1,4 @@
-package com.example.task_manager.service_tests;
+package com.example.task_manager.test_helpers;
 
 import java.time.LocalDate;
 

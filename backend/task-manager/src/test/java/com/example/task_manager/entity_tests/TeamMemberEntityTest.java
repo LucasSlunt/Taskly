@@ -15,6 +15,7 @@ import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.enums.TaskPriority;
+import com.example.task_manager.test_helpers.EntityTestHelper;
 
 import jakarta.persistence.PersistenceException;
 

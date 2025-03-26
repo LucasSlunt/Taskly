@@ -13,6 +13,7 @@ import com.example.task_manager.DTO.AuthInfoDTO;
 import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.service.AuthInfoService;
+import com.example.task_manager.test_helpers.ServiceTestHelper;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

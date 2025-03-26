@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import com.example.task_manager.entity.IsMemberOf;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.test_helpers.EntityTestHelper;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
