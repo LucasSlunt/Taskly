@@ -433,9 +433,7 @@ All API requests should be made to the following base URL (Spring Boot's default
 ### Endpoints
 
 - **Create a Team:** `POST`
-
     - **Request Body:**
-
     ```json
     {
     "teamId": 1,
@@ -443,9 +441,7 @@ All API requests should be made to the following base URL (Spring Boot's default
     "teamLeadId": 1001
     }
     ```
-
     - **Response Body:**
-
     ```json
     {
     "teamId": 1,
@@ -453,7 +449,6 @@ All API requests should be made to the following base URL (Spring Boot's default
     "teamLeadId": 1001
     }
     ```
-
     - **Description:** Creates a team in the database.
 
 - **Delete a Team:** `DELETE /{teamId}`
@@ -490,17 +485,19 @@ All API requests should be made to the following base URL (Spring Boot's default
             "accountId": 1,
             "userName": "John Doe",
             "userEmail": "john@example.com",
-            "role": "ADMIN"
+            "role": "ADMIN",
+            "isTeamLead": true
         },
         {
             "accountId": 2,
             "userName": "Jane Smith",
             "userEmail": "jane@example.com",
-            "role": "TEAM_MEMBER"
+            "role": "TEAM_MEMBER",
+            "isTeamLead": false
         }
         ]
     ```
-    - **Description:** Returns a list of every team member in a team. Each list item contains the team member's ID, name, and email.
+    - **Description:** Returns a list of every team member in a team. Each list item contains the team member's ID, name, email, role, and a boolean of whether they are the team lead.
 
 - **Get Team Tasks:** `GET /{teamId}/tasks`
     - **Response Body:**
