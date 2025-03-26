@@ -2,6 +2,7 @@ package com.example.task_manager.controller;
 
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.DTO.PasswordChangeRequestDTO;
+import com.example.task_manager.DTO.ResetPasswordRequestDTO;
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
@@ -68,6 +69,18 @@ public class TeamMemberController {
         }
     }
 
+    // Assign many members to a task
+    @PostMapping("/{taskId}/mass-assign")
+    public ResponseEntity<?> massAssignToTask(@PathVariable int taskId, @RequestBody List<Integer> teamMemberIds) {
+        try {
+            List<IsAssignedDTO> isAssignedDTOs = teamMemberService.massAssignToTask(taskId, teamMemberIds);
+            return ResponseEntity.ok(isAssignedDTOs);
+        }
+        catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     // Change Password (Placeholder)
     @PostMapping("/team-members/{teamMemberId}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable int teamMemberId,
@@ -76,6 +89,19 @@ public class TeamMemberController {
             teamMemberService.changePassword(teamMemberId, request.getOldPassword(), request.getNewPassword());
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    //Reset Password
+    @PostMapping("/team-members/{teamMemberId}/reset-password")
+    public ResponseEntity<?> resetPassword(@PathVariable int teamMemberId,
+            @RequestBody ResetPasswordRequestDTO request) {
+        try {
+            teamMemberService.resetPassword(teamMemberId, request.getNewPassword());
+            return ResponseEntity.noContent().build();
+        }
+        catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

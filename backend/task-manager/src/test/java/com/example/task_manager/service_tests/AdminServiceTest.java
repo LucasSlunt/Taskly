@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
@@ -23,6 +24,7 @@ import com.example.task_manager.DTO.TeamMemberWithTeamLeadDTO;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.repository.*;
 import com.example.task_manager.enums.TaskPriority;
 
@@ -32,6 +34,7 @@ import com.example.task_manager.service.TeamService;
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
+@ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AdminServiceTest {
 
@@ -119,6 +122,28 @@ public class AdminServiceTest {
         assertEquals("NewName", updatedTeamMember.getUserName());
     }
 
+    @Test
+    void testChangeRoleToTeamMember() {
+        AdminDTO admin = adminService.createAdmin("OssyOsbourne" + System.nanoTime(),
+                "NoMoreTears" + System.nanoTime() + "@rock.com", "music_password");
+
+        TeamMemberDTO result = (TeamMemberDTO) adminService.changeRole(admin.getAccountId(), RoleType.TEAM_MEMBER);
+
+        assertEquals(RoleType.TEAM_MEMBER, result.getRole());
+        assertNotEquals(admin.getAccountId(), result.getAccountId());
+    }
+
+    @Test
+    void testChangeRoleToAdmin() {
+        TeamMemberDTO teamMember = adminService.createTeamMember("Whitesnake" + System.nanoTime(),
+                "HereIGoAgain" + System.nanoTime() + "@rock.com", "on_my_own");
+
+        AdminDTO result = (AdminDTO) adminService.changeRole(teamMember.getAccountId(), RoleType.ADMIN);
+
+        assertEquals(RoleType.ADMIN, result.getRole());
+        assertNotEquals(teamMember.getAccountId(), result.getAccountId());
+    }
+    
     @Test
     void testAssignToTeam() {
         TeamMemberDTO teamMember = adminService.createTeamMember("AssignedMember",

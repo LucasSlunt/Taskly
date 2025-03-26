@@ -197,24 +197,50 @@ public class TeamMemberService {
 	 * @param taskId       The ID of the task.
 	 * @param teamMemberId The ID of the team member to be assigned.
 	 */
-	public IsAssignedDTO assignToTask(int taskId, int teamMemberId) {
-		Task task = taskRepository.findById(taskId)
-			.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+    public IsAssignedDTO assignToTask(int taskId, int teamMemberId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
 
-		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
-			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+        TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+                .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
-		// Ensure that the member is not already assigned to this task
-		boolean alreadyAssigned = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMemberId, taskId);
-		if (alreadyAssigned) {
-			throw new RuntimeException("Team Member is already assigned to this task.");
-		}
+        // Ensure that the member is not already assigned to this task
+        boolean alreadyAssigned = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMemberId, taskId);
+        if (alreadyAssigned) {
+            throw new RuntimeException("Team Member is already assigned to this task.");
+        }
 
-		IsAssigned isAssigned = new IsAssigned(task, teamMember, task.getTeam());
-		isAssigned = isAssignedRepository.save(isAssigned);
+        IsAssigned isAssigned = new IsAssigned(task, teamMember, task.getTeam());
+        isAssigned = isAssignedRepository.save(isAssigned);
 
-		return convertToDTO(isAssigned);	
-	}
+        return convertToDTO(isAssigned);
+    }
+    
+    public List<IsAssignedDTO> massAssignToTask(int taskId, List<Integer> teamMemberIds) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+
+        List<IsAssigned> newAssignments = new ArrayList<>();
+
+        for (Integer teamMemberId : teamMemberIds) {
+            TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+                    .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+
+            boolean alreadyAssigned = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMemberId,
+                    taskId);
+
+            if (!alreadyAssigned) {
+                IsAssigned isAssigned = new IsAssigned(task, teamMember, task.getTeam());
+                newAssignments.add(isAssigned);
+            }
+        }
+        
+        List<IsAssigned> savedAssignments = isAssignedRepository.saveAll(newAssignments);
+
+        return savedAssignments.stream()    
+            .map(this::convertToDTO)
+            .collect(Collectors.toList());
+    }
 
 	/**
 	 * Changes the password for a TeamMember.
@@ -225,18 +251,39 @@ public class TeamMemberService {
 	 * @param newPassword  The new password to set (not yet implemented).
 	 */
 	public void changePassword(int teamMemberId, String oldPassword, String newPassword) {
-		if (newPassword == null || newPassword.isEmpty()){
+		if (newPassword == null || newPassword.isEmpty()) {
 			throw new RuntimeException("Cannot change password to null or empty string");
 		}
 		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
-			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
-			
-			boolean isOldPasswordVerified = authInfoService.approveLogin(teamMember.getAccountId(),oldPassword);
-			if (isOldPasswordVerified){
-				String salt = teamMember.getAuthInfo().getSalt();
-				String newHashedPassword = AuthInfoService.hashPassword(newPassword, salt);
-				teamMember.getAuthInfo().setHashedPassword(newHashedPassword);
-			}
+				.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+
+		boolean isOldPasswordVerified = authInfoService.approveLogin(teamMember.getAccountId(), oldPassword);
+		if (isOldPasswordVerified) {
+			String salt = teamMember.getAuthInfo().getSalt();
+			String newHashedPassword = AuthInfoService.hashPassword(newPassword, salt);
+			teamMember.getAuthInfo().setHashedPassword(newHashedPassword);
+		}
+	}
+	
+	public void resetPassword(int teamMemberId, String newPassword) {
+		//check if password is valid
+		if (newPassword == null || newPassword.isEmpty()) {
+			throw new RuntimeException("Cannot change password to null or empty string");
+		}
+
+		//ensure the team member exists
+		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+				.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+
+		//create new salt and new password
+		String newSalt = authInfoService.generateSalt();
+		String newHashedPassword = authInfoService.hashPassword(newPassword, newSalt);
+
+		//set the new salt and hashed password
+		teamMember.getAuthInfo().setSalt(newSalt);
+		teamMember.getAuthInfo().setHashedPassword(newHashedPassword);
+
+		teamMemberRepository.save(teamMember);
 	}
 
 	public TeamMemberDTO getTeamMember(int accountId) {
