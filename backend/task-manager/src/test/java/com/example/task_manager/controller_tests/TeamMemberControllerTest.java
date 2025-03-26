@@ -1,5 +1,7 @@
 package com.example.task_manager.controller_tests;
 
+import java.awt.PageAttributes;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -11,22 +13,27 @@ import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.controller.TeamMemberController;
+import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.service.TeamMemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import com.example.task_manager.enums.TaskPriority;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
 @WebMvcTest(TeamMemberController.class)
+@ActiveProfiles("test")
 public class TeamMemberControllerTest {
 
     @Autowired
@@ -48,7 +55,7 @@ public class TeamMemberControllerTest {
     void testCreateTask() throws Exception {
         int uniqueId = (int) System.nanoTime();
         int teamId = uniqueId + 1;
-        TaskDTO mockTask = new TaskDTO(uniqueId, "Task Title " + uniqueId, "Description", false, "Open", LocalDate.now(), null, teamId, null);
+        TaskDTO mockTask = new TaskDTO(uniqueId, "Task Title " + uniqueId, "Description", false, "Open", LocalDate.now(), null, teamId, null,  TaskPriority.LOW);
 
         TaskRequestDTO requestDTO = new TaskRequestDTO(
                 "Task Title " + uniqueId,
@@ -57,7 +64,8 @@ public class TeamMemberControllerTest {
                 "Open",
                 LocalDate.of(2025, 3, 11),
                 Arrays.asList(1, 2, 3),
-                teamId
+                teamId,
+                TaskPriority.LOW
         );
 
         when(teamMemberService.createTask(any(TaskRequestDTO.class))).thenReturn(mockTask);
@@ -70,7 +78,8 @@ public class TeamMemberControllerTest {
                 .andExpect(jsonPath("$.description").value("Description"))
                 .andExpect(jsonPath("$.isLocked").value(false))
                 .andExpect(jsonPath("$.status").value("Open"))
-                .andExpect(jsonPath("$.teamId").value(teamId));
+                .andExpect(jsonPath("$.teamId").value(teamId))
+                .andExpect(jsonPath("$.priority").value("LOW"));
     }
 
     /**
@@ -102,7 +111,8 @@ public class TeamMemberControllerTest {
                 LocalDate.now().plusDays(3),
                 null,
                 teamId,
-                null
+                null,
+                TaskPriority.HIGH
         );
 
         when(teamMemberService.editTask(eq(uniqueId), any(TaskDTO.class))).thenReturn(requestDTO);
@@ -115,7 +125,8 @@ public class TeamMemberControllerTest {
                 .andExpect(jsonPath("$.description").value("Updated Description"))
                 .andExpect(jsonPath("$.isLocked").value(false))
                 .andExpect(jsonPath("$.status").value("In Progress"))
-                .andExpect(jsonPath("$.teamId").value(teamId));
+                .andExpect(jsonPath("$.teamId").value(teamId))
+                .andExpect(jsonPath("$.priority").value("HIGH"));
     }
 
     /**
@@ -140,7 +151,24 @@ public class TeamMemberControllerTest {
      */
     @Test
     void testChangePassword() throws Exception {
-        // TODO: Implement Change Password Test
+            // TODO: Implement Change Password Test
+    }
+    
+    @Test
+    void testResetPassword() throws Exception {
+            int teamMemberId = 1;
+            String newPassword = "trustmethisissecure";
+        
+        String request = objectMapper.writeValueAsString(new Object() {
+                public final String newPassword = "BrainStew_GreenDay";
+        });
+
+        doNothing().when(teamMemberService).resetPassword(teamMemberId, newPassword);
+
+        mockMvc.perform(post("/api/tasks/team-members/{teamMemberId}/reset-password", teamMemberId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
+                .andExpect(status().isNoContent());
     }
 
      @Test
@@ -161,13 +189,15 @@ public class TeamMemberControllerTest {
     @Test
     void testGetAssignedTasks() throws Exception {
         List<TaskDTO> mockTasks = Arrays.asList(
-                new TaskDTO(1, "Task Title 1", "Task 1 description", false, "Open", LocalDate.now(), null, 1, null),
-                new TaskDTO(2, "Task Title 2", "Task 2 description", true, "Closed", LocalDate.now(), null, 1, null));
+                new TaskDTO(1, "Task Title 1", "Task 1 description", false, "Open", LocalDate.now(), null, 1, null, TaskPriority.MEDIUM),
+                new TaskDTO(2, "Task Title 2", "Task 2 description", true, "Closed", LocalDate.now(), null, 1, null, TaskPriority.MEDIUM));
 
         when(teamMemberService.getAssignedTasks(1)).thenReturn(mockTasks);
 
         MvcResult result = mockMvc.perform(get("/api/tasks/1/tasks"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].priority").value("MEDIUM"))
+                .andExpect(jsonPath("$[1].priority").value("MEDIUM"))
                 .andReturn();
 
     }

@@ -1,4 +1,4 @@
-import { createAdmin, deleteAdmin, modifyAdminName, createTeamMember, deleteTeamMember, modifyTeamMemberName, modifyTeamMemberEmail, modifyAdminEmail, assignTeamMemberToTeam, lockTask, promoteTeamMemberToAdmin, unlockTask, getTeamMembers, getAdmins, getTeams, getAdminById, getTeamMemberById } from '../../api/adminApi';
+import { createAdmin, deleteAdmin, modifyAdminName, createTeamMember, deleteTeamMember, modifyTeamMemberName, modifyTeamMemberEmail, modifyAdminEmail, assignTeamMemberToTeam, lockTask, changeRole, unlockTask, getTeamMembers, getAdmins, getTeams, getAdminById, getTeamMemberById } from '../../api/adminApi';
 
 const BASE_URL = "http://localhost:8080/api/admin";
 
@@ -184,15 +184,16 @@ describe('Admin API', () => {
         expect(result).toBe(true);
     });
 
-    //test: promoting a team member to admin
-    test('promoteTeamMemberToAdmin should return true on success', async () => {
+    //test: changing role of team member or admin
+    test('changeRole should return true on success', async () => {
         fetch.mockResponseOnce('', { status: 200 });
 
-        const result = await promoteTeamMemberToAdmin(1, 1);
+        const result = await changeRole(1, "ADMIN");
 
-        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/team-member/1/promote`, {
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/team-member/1/change-role`, {
             method: 'POST',
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({role: "ADMIN"})
         });
 
         expect(result).toBe(true);

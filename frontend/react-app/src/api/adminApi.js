@@ -3,6 +3,7 @@ const BASE_URL = "http://localhost:8080/api/admin";
 //Create admin
 export const createAdmin = async (name, email, password) => {
     try {
+        console.log(JSON.stringify({ name, email, password }))
         const response = await fetch(`${BASE_URL}`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
@@ -11,6 +12,7 @@ export const createAdmin = async (name, email, password) => {
 
         if (!response.ok) {
             console.error(`Failed to create admin: ${response.status} ${response.statusText}`);
+            throw Error ("FAILED TO CREATE ADMIN")
         }
 
         return await response.json();
@@ -93,6 +95,7 @@ export const createTeamMember = async (name, email, password) => {
 
         if (!response.ok) {
             console.error(`Failed to create team member: ${response.status} ${response.statusText}`);
+            throw Error ("FAILED TO CREATE Team Member")
         }
 
         return await response.json();
@@ -184,22 +187,23 @@ export const assignTeamMemberToTeam = async (teamMemberId, teamId) => {
     }
 };
 
-//Promote team member to admin
-export const promoteTeamMemberToAdmin = async (teamMemberId) => {
+//Changing the role of a team member or admin
+export const changeRole = async (teamMemberId, newRole) => {
     try {
-        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}/promote`, {
+        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}/change-role`, {
             method: 'POST',
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ role: newRole })
         });
 
         if (!response.ok) {
-            console.error(`Failed to promote team member to admin: ${response.status} ${response.statusText}`);
+            console.error(`Failed to change the role: ${response.status} ${response.statusText}`);
         }
 
         return true;
     }
     catch (error) {
-        console.error(`Failed to promote team member to admin: `, error);
+        console.error(`Failed to change the role: `, error);
         throw error;
     }
 };

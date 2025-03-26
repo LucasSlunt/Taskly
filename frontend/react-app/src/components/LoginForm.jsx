@@ -13,7 +13,7 @@ function LoginForm(){
                 const dataToCokie= {
                     accountId:responseLogin.accountId,
                     userName:responseLogin.userName,
-                    role:(responseLogin.isAdmin ? "admin":"teamMember"),
+                    role:(responseLogin.role === 'ADMIN' ? "admin":"teamMember"),
                     password: responseLogin.password}
                 await setCookie("userInfo", dataToCokie,{secure: false});
                 window.location.href="/home";
