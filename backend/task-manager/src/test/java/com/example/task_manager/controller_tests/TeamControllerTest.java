@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.example.task_manager.DTO.TeamMemberInTeamDTO;
 import com.example.task_manager.entity.TeamMember;
 
 @WebMvcTest(TeamController.class)
@@ -116,9 +117,10 @@ public class TeamControllerTest {
         String memberName = "John Doe " + teamId;
         String memberEmail = "john" + teamId + "@example.com";
         RoleType role = RoleType.TEAM_MEMBER;
+        boolean isTeamLead = false;
 
-        TeamMemberDTO mockTeamMember = new TeamMemberDTO(teamMemberId, memberName, memberEmail, role);
-        List<TeamMemberDTO> teamMembers = Collections.singletonList(mockTeamMember);
+        TeamMemberInTeamDTO mockTeamMember = new TeamMemberInTeamDTO(teamMemberId, memberName, memberEmail, role, isTeamLead);
+        List<TeamMemberInTeamDTO> teamMembers = Collections.singletonList(mockTeamMember);
 
         when(teamService.getTeamMembers(teamId)).thenReturn(teamMembers);
 
