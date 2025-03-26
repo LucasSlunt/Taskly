@@ -1,8 +1,9 @@
 import {useTable, useSortBy} from 'react-table'
-import React from 'react';
+import React, { useEffect } from 'react';
 import "../css/TaskList.css"
 import SearchFilterSort from './SearchFilterSort';
 import { useState} from 'react';
+import { getTeamMembers } from '../api/teamApi';
 const AllTeams = [
     {
         name: "Team1",
@@ -54,7 +55,8 @@ const AllTeams = [
         }]
     }
     ]
-function UserTable(){
+function UserTable({teams}){
+    const [loading, setLoading] = useState(true);
     const deleteUser=((event)=>{
         console.log("delete THIS USER ")
         console.log(event.target.value)
@@ -73,21 +75,28 @@ function UserTable(){
         })
         return firstSetOfData
     })
-    const changeSearch =(event) =>{
+    
+    const changeSearch = async(event) =>{
+        setLoading(true);
         console.log("seeing a new team")
-        let membersValue = []
-        let arrReturn = []
-        for(let i = 0; i<AllTeams.length;i++){
-            if(event.target.value === AllTeams[i].id){
-                membersValue = AllTeams[i].members
-                membersValue.map((member)=>{
-                    arrReturn = [...arrReturn,{name: member.name, role: member.role, del: member.memberID}]
-                })
-                break;
-            }
+        try {
+            let arrReturn = []
+        const teamMembers = await getTeamMembers(event.target.value)
+        console.log(teamMembers)
+        if(teamMembers.length <1){
+            arrReturn = [...arrReturn,{name: teamMembers.userName, role: teamMembers.role, del: teamMembers.accountId}]
+        }else{
+            teamMembers.map((member)=>{
+                arrReturn = [...arrReturn,{name: member.userName, role: member.role, del: member.accountId}]
+             })
         }
         console.log(arrReturn)
         setTeam(()=>(arrReturn))
+        } catch (error) {
+            alert(error)
+        }finally{
+            setLoading(false)
+        }
       }
 
     
@@ -124,14 +133,38 @@ function UserTable(){
         }
     ],[searchQuery, loadThisTeam]
     )
+    useEffect(()=>{
+        async function getFirstTeam() {
+            try {
+                const teamMembers = await getTeamMembers(teams[0].teamId)
+                let arrReturn = [];
+                console.log(teamMembers)
+                if(teamMembers.length <1){
+                    arrReturn = [...arrReturn,{name: teamMembers.userName, role: teamMembers.role, del: teamMembers.accountId}]
+                }else{
+                    teamMembers.map((member)=>{
+                        arrReturn = [...arrReturn,{name: member.userName, role: member.role, del: member.accountId}]
+                     })
+                }
+                console.log(arrReturn)
+                setTeam(()=>(arrReturn))
+
+            } catch (error) {
+                alert(error)
+            }finally{
+                setLoading(false)
+            }
+        }
+        getFirstTeam();
+    },[])
 
     const { getTableBodyProps, getTableProps, rows, prepareRow, headerGroups} = useTable({columns,data: data}, useSortBy)
     return(
         
         <div className='container'>
             <select name="searchThis" id="searchThis" onChange={changeSearch}>
-                    {AllTeams.map((team)=>(
-                        <option value={team.id}>{team.name}</option>
+                    {teams.map((team)=>(
+                        <option value={team.teamId}>{team.teamName}</option>
                     ))}
              </select>
             
@@ -141,8 +174,8 @@ function UserTable(){
                 setSearchQuery={setSearchQuery}
             />
             
-
-            <table {...getTableProps()}>
+            {loading && (<div>...loading</div>)}
+            {!loading && (<table {...getTableProps()}>
                 <thead>
                     {headerGroups.map((headerGroup) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
@@ -169,7 +202,7 @@ function UserTable(){
                             )
                         })}
                 </tbody>
-            </table>
+            </table>)}
         </div>
 
     );
