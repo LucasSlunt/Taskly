@@ -4,7 +4,7 @@ import "../css/TaskList.css"
 import SearchFilterSort from './SearchFilterSort';
 import { useState} from 'react';
 import { getTeamMembers } from '../api/teamApi';
-import { deleteAdmin, deleteTeamMember } from '../api/adminApi';
+import { changeRole, deleteAdmin, deleteTeamMember } from '../api/adminApi';
 const AllTeams = [
     {
         name: "Team1",
@@ -78,11 +78,17 @@ function UserTable({teams}){
 
     }
     
-    const changeRole = ((userID, event)=>{
+    const changeUserRole = async (userID, event)=>{
         console.log("rolesChanged")
         console.log(userID, event.target.value)
+        try {
+            const response = await changeRole(userID, event.target.value)
+            alert(response)
+        } catch (error) {
+            console.log(error)
+        }
     }
-    )
+    
 
     const [loadThisTeam, setTeam] = useState(()=>{
         let firstSetOfData = []
@@ -131,7 +137,7 @@ function UserTable({teams}){
             Header: "Role",
             accessor:"role",
             Cell: (original) => (
-                <select className="cellSelect" id={"role "+original.cell.row.values.del} defaultValue={original.value} onChange={(e)=>changeRole(original.cell.row.values.del, e)}>
+                <select className="cellSelect" id={"role "+original.cell.row.values.del} defaultValue={original.value} onChange={(e)=>changeUserRole(original.cell.row.values.del, e)}>
                     <option value="ADMIN">Admin</option>
                     <option value="TEAM_MEMBER">Team Member</option>
                 </select>

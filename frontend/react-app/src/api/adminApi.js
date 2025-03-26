@@ -200,6 +200,7 @@ export const changeRole = async (teamMemberId, newRole) => {
 
         if (!response.ok) {
             console.error(`Failed to change the role: ${response.status} ${response.statusText}`);
+            throw Error("FAILED TO CHANGE ROLE");
         }
 
         return true;
