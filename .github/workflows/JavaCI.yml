@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-      - Github-Secrets-Injecting
+  pull_request:
 
 jobs:
   build:
