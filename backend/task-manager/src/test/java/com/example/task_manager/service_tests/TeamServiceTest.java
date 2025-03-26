@@ -23,6 +23,7 @@ import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.enums.TaskPriority;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
 import com.example.task_manager.repository.AdminRepository;
@@ -211,7 +212,7 @@ public class TeamServiceTest {
         TeamMember teamMember = createUniqueTeamMember("ADMIN");
         Team team = createUniqueTeam(teamMember);
 
-        Task task = new Task("Dire Straits", "Die Straits fan club.", team, false, "Open", LocalDate.now());
+        Task task = new Task("Dire Straits", "Die Straits fan club.", team, false, "Open", LocalDate.now(), TaskPriority.HIGH);
 
         taskRepository.save(task);
 

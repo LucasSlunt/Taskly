@@ -14,6 +14,7 @@ import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.DTO.TeamRequestDTO;
 import com.example.task_manager.controller.TeamController;
 import com.example.task_manager.enums.RoleType;
+import com.example.task_manager.enums.TaskPriority;
 import com.example.task_manager.service.TeamService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -134,8 +135,8 @@ public class TeamControllerTest {
         int teamId = 1;
 
         List<TaskDTO> mockTasks = Arrays.asList(
-                new TaskDTO(1, "Task 1", "Thing 1", false, "Open", LocalDate.now(), null, teamId, null),
-                new TaskDTO(2, "Task 2", "Thing 2", false, "Open", LocalDate.now(), null, teamId, null)
+                new TaskDTO(1, "Task 1", "Thing 1", false, "Open", LocalDate.now(), null, teamId, null, TaskPriority.HIGH),
+                new TaskDTO(2, "Task 2", "Thing 2", false, "Open", LocalDate.now(), null, teamId, null, TaskPriority.HIGH)
         );
 
         when(teamService.getTeamTasks(teamId)).thenReturn(mockTasks);

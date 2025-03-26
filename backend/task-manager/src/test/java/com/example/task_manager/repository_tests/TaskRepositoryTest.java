@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.enums.TaskPriority;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
@@ -42,7 +43,7 @@ public class TaskRepositoryTest {
         Team team = new Team("Team 1", teamMember);
         teamRepository.save(team);
 
-        Task task = new Task("Fix Bugs", "Fix all critical bugs", team, false, "Open", LocalDate.now());
+        Task task = new Task("Fix Bugs", "Fix all critical bugs", team, false, "Open", LocalDate.now(), TaskPriority.HIGH);
         taskRepository.save(task);
 
         List<Task> results = taskRepository.findByTeam_TeamId(team.getTeamId());
