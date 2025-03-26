@@ -20,14 +20,11 @@ import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.enums.TaskPriority;
 import com.example.task_manager.repository.IsAssignedRepository;
 import com.example.task_manager.repository.TaskRepository;
-import com.example.task_manager.repository.TeamMemberRepository;
-import com.example.task_manager.repository.TeamRepository;
-import com.example.task_manager.repository.AuthInfoRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
-public class IsAssignedRepositoryTest {
+public class IsAssignedRepositoryTest{
 
     @Autowired
     private TestEntityManager entityManager;
@@ -38,19 +35,11 @@ public class IsAssignedRepositoryTest {
     @Autowired
     private TaskRepository taskRepository;
 
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
 
     /**
      * Creates and persists a unique Team.
      */
-    private Team createUniqueTeam() {
+    private Team createAndPersistUniqueTeam() {
         Team team = new Team();
         team.setTeamName("Test Team " + System.nanoTime());
         entityManager.persist(team);
@@ -61,7 +50,7 @@ public class IsAssignedRepositoryTest {
     /**
      * Creates and persists a unique TeamMember.
      */
-    private TeamMember createUniqueTeamMember() {
+    private TeamMember createAndPersistUniqueTeamMember() {
         TeamMember teamMember = new TeamMember("TestUser" + System.nanoTime(),
                 "test" + System.nanoTime() + "@example.com", "defaultpw");
         entityManager.persist(teamMember);
@@ -72,7 +61,7 @@ public class IsAssignedRepositoryTest {
     /**
      * Creates and saves a new Task with a unique title.
      */
-    private Task createUniqueTask(Team team) {
+    private Task createAndSaveUniqueTask(Team team) {
         Task task = new Task();
         task.setTitle("Implement Feature X " + System.nanoTime());
         task.setStatus("Open");
@@ -85,17 +74,17 @@ public class IsAssignedRepositoryTest {
     /**
      * Creates and saves a new IsAssigned entry with a unique identifier.
      */
-    private IsAssigned createUniqueAssignment(Task task, TeamMember teamMember, Team team) {
+    private IsAssigned createAndSaveUniqueAssignment(Task task, TeamMember teamMember, Team team) {
         IsAssigned assignment = new IsAssigned(task, teamMember, team);
         return isAssignedRepository.save(assignment);
     }
 
     @Test
     void testSaveAssignment() {
-        Team team = createUniqueTeam();
-        Task task = createUniqueTask(team);
-        TeamMember teamMember = createUniqueTeamMember();
-        IsAssigned assignment = createUniqueAssignment(task, teamMember, team);
+        Team team = createAndPersistUniqueTeam();
+        Task task = createAndSaveUniqueTask(team);
+        TeamMember teamMember = createAndPersistUniqueTeamMember();
+        IsAssigned assignment = createAndSaveUniqueAssignment(task, teamMember, team);
 
         assertNotNull(assignment);
         assertEquals(task.getTaskId(), assignment.getTask().getTaskId());
@@ -104,10 +93,10 @@ public class IsAssignedRepositoryTest {
 
     @Test
     void testFindByTeamMemberAndTask() {
-        Team team = createUniqueTeam();
-        TeamMember teamMember = createUniqueTeamMember();
-        Task task = createUniqueTask(team);
-        IsAssigned assignment = createUniqueAssignment(task, teamMember, team);
+        Team team = createAndPersistUniqueTeam();
+        TeamMember teamMember = createAndPersistUniqueTeamMember();
+        Task task = createAndSaveUniqueTask(team);
+        IsAssigned assignment = createAndSaveUniqueAssignment(task, teamMember, team);
 
 
         Optional<IsAssigned> foundAssignment = isAssignedRepository.findByTeamMemberAndTask(teamMember, task);
@@ -117,10 +106,10 @@ public class IsAssignedRepositoryTest {
 
     @Test
     void testExistsByTeamMemberAndTask() {
-        Team team = createUniqueTeam();
-        TeamMember teamMember = createUniqueTeamMember();
-        Task task = createUniqueTask(team);
-        IsAssigned assignment = createUniqueAssignment(task, teamMember, team);
+        Team team = createAndPersistUniqueTeam();
+        TeamMember teamMember = createAndPersistUniqueTeamMember();
+        Task task = createAndSaveUniqueTask(team);
+        IsAssigned assignment = createAndSaveUniqueAssignment(task, teamMember, team);
 
 
         boolean exists = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMember.getAccountId(), task.getTaskId());
@@ -129,10 +118,10 @@ public class IsAssignedRepositoryTest {
 
     @Test
     void testFindAssignmentsByTeamMember() {
-        Team team = createUniqueTeam();
-        Task task = createUniqueTask(team);
-        TeamMember teamMember = createUniqueTeamMember();
-        IsAssigned assignment = createUniqueAssignment(task, teamMember, team);
+        Team team = createAndPersistUniqueTeam();
+        Task task = createAndSaveUniqueTask(team);
+        TeamMember teamMember = createAndPersistUniqueTeamMember();
+        IsAssigned assignment = createAndSaveUniqueAssignment(task, teamMember, team);
 
 
         Collection<IsAssigned> assignments = isAssignedRepository.findByTeamMember_AccountId(teamMember.getAccountId());
@@ -143,10 +132,10 @@ public class IsAssignedRepositoryTest {
 
     @Test
     void testDeleteAssignment() {
-        Team team = createUniqueTeam();
-        TeamMember teamMember = createUniqueTeamMember();
-        Task task = createUniqueTask(team);
-        IsAssigned assignment = createUniqueAssignment(task, teamMember, team);
+        Team team = createAndPersistUniqueTeam();
+        TeamMember teamMember = createAndPersistUniqueTeamMember();
+        Task task = createAndSaveUniqueTask(team);
+        IsAssigned assignment = createAndSaveUniqueAssignment(task, teamMember, team);
 
         isAssignedRepository.delete(assignment);
         boolean exists = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMember.getAccountId(), task.getTaskId());
@@ -173,11 +162,11 @@ public class IsAssignedRepositoryTest {
 
     @Test
     void testFindAssignmentsByTask() {
-        Team team = createUniqueTeam();
-        Task task = createUniqueTask(team);
+        Team team = createAndPersistUniqueTeam();
+        Task task = createAndSaveUniqueTask(team);
 
-        TeamMember teamMember1 = createUniqueTeamMember();
-        TeamMember teamMember2 = createUniqueTeamMember();
+        TeamMember teamMember1 = createAndPersistUniqueTeamMember();
+        TeamMember teamMember2 = createAndPersistUniqueTeamMember();
 
         IsAssigned assignment1 = new IsAssigned(task, teamMember1, team);
         isAssignedRepository.save(assignment1);
