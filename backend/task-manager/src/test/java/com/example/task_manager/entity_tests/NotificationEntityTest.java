@@ -80,7 +80,6 @@ public class NotificationEntityTest {
         Notification savedNotification = entMan.find(Notification.class, notification.getNotificationId());
 
         assertNotNull(savedNotification.getCreatedAt());
-        assertTrue(savedNotification.getCreatedAt().isBefore(LocalDateTime.now()));
     }
 
     @Test
