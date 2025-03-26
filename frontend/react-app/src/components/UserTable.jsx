@@ -4,6 +4,7 @@ import "../css/TaskList.css"
 import SearchFilterSort from './SearchFilterSort';
 import { useState} from 'react';
 import { getTeamMembers } from '../api/teamApi';
+import { deleteAdmin, deleteTeamMember } from '../api/adminApi';
 const AllTeams = [
     {
         name: "Team1",
@@ -56,11 +57,26 @@ const AllTeams = [
     }
     ]
 function UserTable({teams}){
+
     const [loading, setLoading] = useState(true);
-    const deleteUser=((event)=>{
+
+    const deleteUser = async (event, role)=>{
         console.log("delete THIS USER ")
         console.log(event.target.value)
-    })
+        try {
+            if(role === 'ADMIN'){
+                const response = await deleteAdmin(event.target.value)
+                alert('ADMIN DELETED')
+            }else{
+                const response = await deleteTeamMember(event.target.value)
+                alert('TEAM MEMBER DELETED')
+            }
+        } catch (error) {
+            
+        }
+        
+
+    }
     
     const changeRole = ((userID, event)=>{
         console.log("rolesChanged")
@@ -116,9 +132,8 @@ function UserTable({teams}){
             accessor:"role",
             Cell: (original) => (
                 <select className="cellSelect" id={"role "+original.cell.row.values.del} defaultValue={original.value} onChange={(e)=>changeRole(original.cell.row.values.del, e)}>
-                    <option value="teamLead">Team Lead</option>
-                    <option value="admin">Admin</option>
-                    <option value="teamMember">Team Member</option>
+                    <option value="ADMIN">Admin</option>
+                    <option value="TEAM_MEMBER">Team Member</option>
                 </select>
               )
         },
@@ -126,7 +141,7 @@ function UserTable({teams}){
             Header: "",
             accessor: "del",
             Cell: (original) => (
-                <button id= {"delete " + original.value} value={original.value} onClick={(e)=>deleteUser(e)}>
+                <button id= {"delete " + original.value} value={original.value} onClick={(e)=>deleteUser(e, original.cell.row.values.role)}>
                     Delete
                 </button>
               )
