@@ -31,9 +31,10 @@ public class AdminService extends TeamMemberService {
             TaskRepository taskRepository,
             IsAssignedRepository isAssignedRepository,
             AuthInfoService authInfoService,
-            NotificationService notifService) {
+            NotificationService notifService,
+            NotificationRepository notifRepository) {
         super(teamMemberRepository, teamRepository, taskRepository, isMemberOfRepository, isAssignedRepository,
-                authInfoService, notifService);
+                authInfoService, notifService, notifRepository);
         this.adminRepository = adminRepository;
     }
 
