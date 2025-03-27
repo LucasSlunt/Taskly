@@ -266,7 +266,11 @@ public class AdminService extends TeamMemberService {
     //get all teams
     public List<TeamDTO> getAllTeams() {
         return teamRepository.findAll().stream()
-                .map(team -> new TeamDTO(team.getTeamId(), team.getTeamName(), team.getTeamLead().getAccountId()))
+                .map(team -> new TeamDTO(
+                    team.getTeamId(),
+                    team.getTeamName(),
+                    team.getTeamLead() != null ? team.getTeamLead().getAccountId() : -1 // 👈 use sentinel
+                ))
                 .collect(Collectors.toList());
     }
 
