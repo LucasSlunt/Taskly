@@ -189,7 +189,30 @@ public class IsAssignedRepositoryTest {
 
         assertNotNull(assignmentsForTask);
         assertEquals(2, assignmentsForTask.size()); // Since two team members were assigned to the task
-        assertTrue(assignmentsForTask.stream().anyMatch(a -> a.getTeamMember().getAccountId() == teamMember1.getAccountId()));
-        assertTrue(assignmentsForTask.stream().anyMatch(a -> a.getTeamMember().getAccountId() == teamMember2.getAccountId()));
+        assertTrue(assignmentsForTask.stream()
+                .anyMatch(a -> a.getTeamMember().getAccountId() == teamMember1.getAccountId()));
+        assertTrue(assignmentsForTask.stream()
+                .anyMatch(a -> a.getTeamMember().getAccountId() == teamMember2.getAccountId()));
     }
+    
+    @Test
+    void testDeleteAllAssignmentsByTaskId() {
+        Team team = createUniqueTeam();
+        Task task = createUniqueTask(team);
+
+        TeamMember member1 = createUniqueTeamMember();
+        TeamMember member2 = createUniqueTeamMember();
+
+        isAssignedRepository.save(new IsAssigned(task, member1, team));
+        isAssignedRepository.save(new IsAssigned(task, member2, team));
+
+        Collection<IsAssigned> assignmentsBefore = isAssignedRepository.findByTask(task);
+        assertEquals(2, assignmentsBefore.size());
+
+        isAssignedRepository.deleteAllByTask_TaskId(task.getTaskId());
+
+        Collection<IsAssigned> assignmentsAfter = isAssignedRepository.findByTask(task);
+        assertEquals(0, assignmentsAfter.size());
+    }
+
 }
