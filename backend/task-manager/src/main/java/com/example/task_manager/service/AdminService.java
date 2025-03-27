@@ -23,115 +23,111 @@ public class AdminService extends TeamMemberService {
 
     private final AdminRepository adminRepository;
 
-	// Constructor injection for required repositories
-	public AdminService(AdminRepository adminRepository, 
-						TeamMemberRepository teamMemberRepository, 
-						TeamRepository teamRepository, 
-						IsMemberOfRepository isMemberOfRepository, 
-						TaskRepository taskRepository,
-						IsAssignedRepository isAssignedRepository,
-						AuthInfoService authInfoService,
-						NotificationService notifService) {
-		super(teamMemberRepository, teamRepository, taskRepository, isMemberOfRepository, isAssignedRepository, authInfoService, notifService);
-		this.adminRepository = adminRepository;
-	}
+    // Constructor injection for required repositories
+    public AdminService(AdminRepository adminRepository,
+            TeamMemberRepository teamMemberRepository,
+            TeamRepository teamRepository,
+            IsMemberOfRepository isMemberOfRepository,
+            TaskRepository taskRepository,
+            IsAssignedRepository isAssignedRepository,
+            AuthInfoService authInfoService,
+            NotificationService notifService) {
+        super(teamMemberRepository, teamRepository, taskRepository, isMemberOfRepository, isAssignedRepository,
+                authInfoService, notifService);
+        this.adminRepository = adminRepository;
+    }
 
-	// Creates and saves a new Admin entity
-	public AdminDTO createAdmin(String adminName, String adminEmail, String adminPassword) {
-		Admin admin = new Admin(adminName, adminEmail, adminPassword);
-		admin.setRole(RoleType.ADMIN);
-		admin = adminRepository.save(admin);
-		return convertToDTO(admin);
-	}
+    // Creates and saves a new Admin entity
+    public AdminDTO createAdmin(String adminName, String adminEmail, String adminPassword) {
+        Admin admin = new Admin(adminName, adminEmail, adminPassword);
+        admin.setRole(RoleType.ADMIN);
+        admin = adminRepository.save(admin);
+        return convertToDTO(admin);
+    }
 
-	// Deletes an Admin by ID
-	public void deleteAdmin(int adminId) {
-		if (!adminRepository.existsById(adminId)) {
-			throw new RuntimeException("Admin not found with ID: " + adminId);
-		}
-		adminRepository.deleteById(adminId);
-	}
+    // Deletes an Admin by ID
+    public void deleteAdmin(int adminId) {
+        Admin admin = adminRepository.findById(adminId)
+            .orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
+        adminRepository.delete(admin);
+    }
+    
+    // Updates an Admin's username
+    public AdminDTO modifyAdminName(int adminId, String newAdminName) {
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
 
-	// Updates an Admin's username
-	public AdminDTO modifyAdminName(int adminId, String newAdminName) {
-		Admin admin = adminRepository.findById(adminId)
-			.orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
+        admin.setUserName(newAdminName);
+        admin = adminRepository.save(admin);
+        return convertToDTO(admin);
+    }
 
-		admin.setUserName(newAdminName);
-		admin = adminRepository.save(admin);
-		return convertToDTO(admin);
-	}
+    // Updates an Admin's email
+    public AdminDTO modifyAdminEmail(int adminId, String newAdminEmail) {
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
 
-	// Updates an Admin's email
-	public AdminDTO modifyAdminEmail(int adminId, String newAdminEmail) {
-		Admin admin = adminRepository.findById(adminId)
-			.orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
-	
-		admin.setUserEmail(newAdminEmail);
-		admin = adminRepository.save(admin);
-		return convertToDTO(admin);
-	}
+        admin.setUserEmail(newAdminEmail);
+        admin = adminRepository.save(admin);
+        return convertToDTO(admin);
+    }
 
-	// Creates and saves a new TeamMember entity
-	public TeamMemberDTO createTeamMember(String userName, String userEmail, String userPassword) {
-		TeamMember teamMember = new TeamMember(userName, userEmail, userPassword);
-		teamMember.setRole(RoleType.TEAM_MEMBER);
-		teamMember = teamMemberRepository.save(teamMember);
-		return convertToDTO(teamMember);
-	}
+    // Creates and saves a new TeamMember entity
+    public TeamMemberDTO createTeamMember(String userName, String userEmail, String userPassword) {
+        TeamMember teamMember = new TeamMember(userName, userEmail, userPassword);
+        teamMember.setRole(RoleType.TEAM_MEMBER);
+        teamMember = teamMemberRepository.save(teamMember);
+        return convertToDTO(teamMember);
+    }
 
-	// Deletes a TeamMember by ID
-	public void deleteTeamMember(int accountId) {
-		teamMemberRepository.deleteById(accountId);
-	}
+    // Deletes a TeamMember by ID
+    public void deleteTeamMember(int accountId) {
+        teamMemberRepository.deleteById(accountId);
+    }
 
-	// Updates a TeamMember's username
-	public TeamMemberDTO modifyTeamMemberName(int userId, String newUserName) {
-		TeamMember teamMember = teamMemberRepository.findById(userId)
-			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + userId));
-	
-		teamMember.setUserName(newUserName);
-		teamMember = teamMemberRepository.save(teamMember);
-		return convertToDTO(teamMember);
-	}
+    // Updates a TeamMember's username
+    public TeamMemberDTO modifyTeamMemberName(int userId, String newUserName) {
+        TeamMember teamMember = teamMemberRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + userId));
 
-	// Updates a TeamMember's email
-	public TeamMemberDTO modifyTeamMemberEmail(int userId, String newUserEmail) {
-		TeamMember teamMember = teamMemberRepository.findById(userId)
-				.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + userId));
+        teamMember.setUserName(newUserName);
+        teamMember = teamMemberRepository.save(teamMember);
+        return convertToDTO(teamMember);
+    }
 
-		teamMember.setUserEmail(newUserEmail);
-		teamMember = teamMemberRepository.save(teamMember);
-		return convertToDTO(teamMember);
-	}
-	
-	// Promotes a member to admin or demotes a member to team member depending on what role is passed through the API
-	public Object changeRole(int memberId, RoleType newRole) {
-		//if the new role is team member they are an admin
-		if (newRole == RoleType.TEAM_MEMBER) {
-			Admin admin = adminRepository.findById(memberId)
-					.orElseThrow(() -> new RuntimeException("Admin not found with ID: " + memberId));
+    // Updates a TeamMember's email
+    public TeamMemberDTO modifyTeamMemberEmail(int userId, String newUserEmail) {
+        TeamMember teamMember = teamMemberRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + userId));
 
-			String name = admin.getUserName();
+        teamMember.setUserEmail(newUserEmail);
+        teamMember = teamMemberRepository.save(teamMember);
+        return convertToDTO(teamMember);
+    }
+
+    // Promotes a member to admin or demotes a member to team member depending on what role is passed through the API
+    public Object changeRole(int memberId, RoleType newRole) {
+        //if the new role is team member they are an admin
+        if (newRole == RoleType.TEAM_MEMBER) {
+            Admin admin = adminRepository.findById(memberId)
+                    .orElseThrow(() -> new RuntimeException("Admin not found with ID: " + memberId));
+
+            String name = admin.getUserName();
 			String email = admin.getUserEmail();
 			Set<IsMemberOf> oldTeams = admin.getTeams();
 			Set<IsAssigned> oldTasks = admin.getAssignedTasks();
             Set<Notification> oldNotifs = admin.getNotifications();
 
-			String hashed;
-			String salt;
-			AuthInfo authInfo = admin.getAuthInfo();
-			if (authInfo != null) {
-				hashed = authInfo.getHashedPassword();
-				salt = authInfo.getSalt();
-			} 
-			else {
-				throw new RuntimeException("AuthInfo is null before deletion — cannot preserve credentials.");
-			}
+            String hashed;
+            String salt;
+            AuthInfo authInfo = admin.getAuthInfo();
 
-			//deleete admin, which deletes the member from both team member and admin tables
-			adminRepository.delete(admin);
-			adminRepository.flush();
+            if (authInfo != null) {
+                hashed = authInfo.getHashedPassword();
+                salt = authInfo.getSalt();
+            } else {
+                throw new RuntimeException("AuthInfo is null before deletion — cannot preserve credentials.");
+            }
 
 			TeamMember teamMember = new TeamMember(name, email, "TEMP_PASSWORD");
             teamMember.setAuthInfo(new AuthInfo(hashed, salt, teamMember));
@@ -157,35 +153,37 @@ public class AdminService extends TeamMemberService {
                 notif.setTeamMember(teamMember);
             }
 
-			return convertToDTO(teamMemberRepository.save(teamMember));
-		}
-		
-		//if newRole is an Admin they are a teamMember
-		if (newRole == RoleType.ADMIN) {
-			TeamMember teamMember = teamMemberRepository.findById(memberId)
-					.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + memberId));
+            TeamMember savedTeamMember = teamMemberRepository.save(teamMember);
 
-			String name = teamMember.getUserName();
-			String email = teamMember.getUserEmail();
-			Set<IsMemberOf> oldTeams = teamMember.getTeams();
-			Set<IsAssigned> oldTasks = teamMember.getAssignedTasks();
+            adminRepository.delete(admin);
+            adminRepository.flush();
+    
+            return convertToDTO(savedTeamMember);
+        }
+
+        //if newRole is an Admin they are a teamMember
+        if (newRole == RoleType.ADMIN) {
+            TeamMember teamMember = teamMemberRepository.findById(memberId)
+                    .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + memberId));
+
+            String name = teamMember.getUserName();
+            String email = teamMember.getUserEmail();
+            Set<IsMemberOf> oldTeams = teamMember.getTeams();
+            Set<IsAssigned> oldTasks = teamMember.getAssignedTasks();
             Set<Notification> oldNotifs = teamMember.getNotifications();
 
-			String hashed;
-			String salt;
-			AuthInfo authInfo = teamMember.getAuthInfo();
-			if (authInfo != null) {
-				hashed = authInfo.getHashedPassword();
-				salt = authInfo.getSalt();
-			} 
-			else {
-				throw new RuntimeException("AuthInfo is null before deletion — cannot preserve credentials.");
-			}
+            String hashed;
+            String salt;
+            AuthInfo authInfo = teamMember.getAuthInfo();
 
-			teamMemberRepository.delete(teamMember);
-			teamMemberRepository.flush();
-
-			Admin admin = new Admin(name, email, "TEMP_PASSWORD");
+            if (authInfo != null) {
+                hashed = authInfo.getHashedPassword();
+                salt = authInfo.getSalt();
+            } else {
+                throw new RuntimeException("AuthInfo is null before deletion — cannot preserve credentials.");
+            }
+             
+            Admin admin = new Admin(name, email, "TEMP_PASSWORD");
             admin.setAuthInfo(new AuthInfo(hashed, salt, admin));
 
             Set<IsAssigned> newTasks = oldTasks.stream()
@@ -209,79 +207,85 @@ public class AdminService extends TeamMemberService {
                 notif.setTeamMember(admin);
             }
 
-			return convertToDTO(adminRepository.save(admin));
-		}
+            Admin savedAdmin = adminRepository.save(admin);
+            teamMemberRepository.delete(teamMember);
+            teamMemberRepository.flush();
 
-		throw new IllegalArgumentException("Invalid role transaction");
-	}
+            return convertToDTO(savedAdmin);
+        }
 
-	// Assigns a TeamMember to a Team by creating an IsMemberOf entry
-	public TeamMemberDTO assignToTeam(int teamMemberId, int teamId) {
-		Team team = teamRepository.findById(teamId)
-			.orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
-		
-		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
-			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+        throw new IllegalArgumentException("Invalid role transaction");
+    }
 
-		IsMemberOf isMemberOf = new IsMemberOf();
-		isMemberOf.setTeam(team);
-		isMemberOf.setTeamMember(teamMember);
+    // Assigns a TeamMember to a Team by creating an IsMemberOf entry
+    public TeamMemberDTO assignToTeam(int teamMemberId, int teamId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
 
-		isMemberOfRepository.save(isMemberOf);
-		
-		// Ensures the association is also reflected in the TeamMember entity
-		teamMember.getTeams().add(isMemberOf);
-		return convertToDTO(teamMemberRepository.save(teamMember));
-	}
+        TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+                .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
-	// Locks a Task by setting its isLocked property to true
-	public void lockTask(int taskId) {
-		Task task = taskRepository.findById(taskId)
-			.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
-		
-		task.setIsLocked(true);
-		taskRepository.save(task);
-	}
+        IsMemberOf isMemberOf = new IsMemberOf();
+        isMemberOf.setTeam(team);
+        isMemberOf.setTeamMember(teamMember);
 
-	// Unlocks a Task by setting its isLocked property to false
-	public void unlockTask(int taskId) {
-		Task task = taskRepository.findById(taskId)
-				.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+        isMemberOfRepository.save(isMemberOf);
 
-		task.setIsLocked(false);
-		taskRepository.save(task);
-	}
+        // Ensures the association is also reflected in the TeamMember entity
+        teamMember.getTeams().add(isMemberOf);
+        return convertToDTO(teamMemberRepository.save(teamMember));
+    }
 
-	//get all admins
-	public List<AdminDTO> getAllAdmins() {
-		return adminRepository.findAll().stream()
-				.map(admin -> new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail(), admin.getRole()))
-				.collect(Collectors.toList());
-	}
+    // Locks a Task by setting its isLocked property to true
+    public void lockTask(int taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
 
-	//get all teams
-	public List<TeamDTO> getAllTeams() {
-		return teamRepository.findAll().stream()
-				.map(team -> new TeamDTO(team.getTeamId(), team.getTeamName(), team.getTeamLead().getAccountId()))
-				.collect(Collectors.toList());
-	}
+        task.setIsLocked(true);
+        taskRepository.save(task);
+    }
 
-	//get a single admin
-	public AdminDTO getAdminById(int adminId) {
-		Admin admin = adminRepository.findById(adminId)
-				.orElseThrow(() -> new RuntimeException("Admin not found"));
-		return new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail(), admin.getRole());
-	}
+    // Unlocks a Task by setting its isLocked property to false
+    public void unlockTask(int taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
 
-	//get a single team member
-	public TeamMemberDTO getTeamMemberById(int teamMemberId) {
-		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
-			.orElseThrow(() -> new RuntimeException("Team Member not found"));
-		return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail(), teamMember.getRole());
-	}
+        task.setIsLocked(false);
+        taskRepository.save(task);
+    }
 
-	private AdminDTO convertToDTO(Admin admin) {
-    	return new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail(), admin.getRole());
+    //get all admins
+    public List<AdminDTO> getAllAdmins() {
+        return adminRepository.findAll().stream()
+                .map(admin -> new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail(),
+                        admin.getRole()))
+                .collect(Collectors.toList());
+    }
+
+    //get all teams
+    public List<TeamDTO> getAllTeams() {
+        return teamRepository.findAll().stream()
+                .map(team -> new TeamDTO(team.getTeamId(), team.getTeamName(), team.getTeamLead().getAccountId()))
+                .collect(Collectors.toList());
+    }
+
+    //get a single admin
+    public AdminDTO getAdminById(int adminId) {
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
+        return new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail(), admin.getRole());
+    }
+
+    //get a single team member
+    public TeamMemberDTO getTeamMemberById(int teamMemberId) {
+        TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+                .orElseThrow(() -> new RuntimeException("Team Member not found"));
+        return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail(),
+                teamMember.getRole());
+    }
+
+    private AdminDTO convertToDTO(Admin admin) {
+        return new AdminDTO(admin.getAccountId(), admin.getUserName(), admin.getUserEmail(), admin.getRole());
     }
 
     //get all team members
@@ -310,6 +314,7 @@ public class AdminService extends TeamMemberService {
     }
 
     private TeamMemberDTO convertToDTO(TeamMember teamMember) {
-        return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail(), teamMember.getRole());
+        return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail(),
+                teamMember.getRole());
     }
 }
