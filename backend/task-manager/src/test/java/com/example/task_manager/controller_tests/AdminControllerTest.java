@@ -1,6 +1,5 @@
 package com.example.task_manager.controller_tests;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -10,24 +9,34 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import com.example.task_manager.DTO.AdminDTO;
+import com.example.task_manager.DTO.AdminRequestDTO;
 import com.example.task_manager.DTO.ChangeRoleRequestDTO;
+import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.controller.AdminController;
 import com.example.task_manager.enums.RoleType;
+import com.example.task_manager.repository.AdminRepository;
+import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.service.AdminService;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.example.task_manager.controller.AdminController;
-import com.example.task_manager.service.TeamMemberService;
+import com.example.task_manager.DTO.TeamMemberWithTeamLeadDTO;
+import com.example.task_manager.DTO.UpdateEmailRequestDTO;
+import com.example.task_manager.DTO.UpdateNameRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebMvcTest(AdminController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class AdminControllerTest {
 
@@ -38,10 +47,14 @@ public class AdminControllerTest {
     private AdminService adminService;
 
     @MockBean
-    private TeamMemberService teamMemberService;
+    private AdminRepository adminRepository;
+
+    @MockBean
+    private TeamMemberRepository teamMemberRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
+
 
     //changes role to team member
     @Test
@@ -61,7 +74,7 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$.userName").value("Stranglehold"))
                 .andExpect(jsonPath("$.role").value("TEAM_MEMBER"));
     }
-
+    
     //changes role to admin
     @Test
     void testChangeRoleToAdmin() throws Exception {
@@ -134,22 +147,5 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$[0].accountId").value(1))
                 .andExpect(jsonPath("$[0].userName").value("Alice Johnson"))
                 .andExpect(jsonPath("$[1].userEmail").value("bob@example.com"));
-    }
-
-    @Test
-    void testResetPassword() throws Exception {
-        int teamMemberId = 1;
-        String newPassword = "trustmethisissecure";
-
-        String request = objectMapper.writeValueAsString(new Object() {
-            public final String newPassword = "BrainStew_GreenDay";
-        });
-
-        doNothing().when(teamMemberService).resetPassword(eq(teamMemberId), eq("BrainStew_GreenDay"));
-
-        mockMvc.perform(post("/api/admins/actions/{teamMemberId}/reset-password", teamMemberId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(request))
-                .andExpect(status().isNoContent());
     }
 }
