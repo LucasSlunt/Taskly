@@ -36,7 +36,7 @@ if(ansArr.length > 0){
 
 function setUpData(results) {
     return results
-    .filter((taskItem) => taskItem.status !== "done")
+    .filter((taskItem) => taskItem.status !== "Done")
       .map((taskItem) => ({
         id: taskItem.taskId,
         name: taskItem,
