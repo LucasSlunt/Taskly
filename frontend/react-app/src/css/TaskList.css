@@ -44,6 +44,10 @@ thead th{
     height: 100%;
     
   }
+
+  .selector {
+   height: 43px;
+  }
   
   .search-input {
     flex: 1;
