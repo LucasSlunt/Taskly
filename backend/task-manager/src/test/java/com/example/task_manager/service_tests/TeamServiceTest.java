@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -25,65 +24,16 @@ import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.test_helpers.ServiceTestHelper;
+
 import com.example.task_manager.enums.TaskPriority;
-import com.example.task_manager.repository.TeamMemberRepository;
-import com.example.task_manager.repository.TeamRepository;
-import com.example.task_manager.repository.AdminRepository;
-import com.example.task_manager.repository.AuthInfoRepository;
-import com.example.task_manager.repository.IsAssignedRepository;
-import com.example.task_manager.repository.IsMemberOfRepository;
-import com.example.task_manager.repository.TaskRepository;
-import com.example.task_manager.service.IsMemberOfService;
-import com.example.task_manager.service.TeamService;
+
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class TeamServiceTest {
-
-    @Autowired
-    private TeamService teamService;
-
-    @Autowired
-    private IsMemberOfService isMemberOfService;
-
-    @Autowired
-    private AdminRepository adminRepository;
-
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private IsAssignedRepository isAssignedRepository;
-
-    @Autowired
-    private IsMemberOfRepository isMemberOfRepository;
-
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
-
-    private TeamMember createUniqueTeamMember(String role) {
-        return teamMemberRepository.save(new TeamMember(
-                role + "_" + System.nanoTime(),
-                role.toLowerCase() + System.nanoTime() + "@example.com",
-                "defaultpw"
-        ));
-    }
-
-    private Team createUniqueTeam(TeamMember teamLead) {
-        return teamRepository.save(new Team(
-                "Team_" + System.nanoTime(),
-                teamLead
-        ));
-    }
-
+public class TeamServiceTest extends ServiceTestHelper{
     @Test
     void testCreateTeam() {
         TeamMember teamLead = createUniqueTeamMember("Lead");

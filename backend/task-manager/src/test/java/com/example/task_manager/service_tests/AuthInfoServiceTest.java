@@ -3,9 +3,6 @@ package com.example.task_manager.service_tests;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,44 +12,14 @@ import jakarta.transaction.Transactional;
 import com.example.task_manager.DTO.AuthInfoDTO;
 import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.TeamMember;
-import com.example.task_manager.repository.AdminRepository;
-import com.example.task_manager.repository.AuthInfoRepository;
-import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.service.AuthInfoService;
+import com.example.task_manager.test_helpers.ServiceTestHelper;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class AuthInfoServiceTest {
-
-    @Autowired
-    private AuthInfoService authInfoService;
-
-    @Autowired
-    private AdminRepository adminRepository;
-
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
-
-    private TeamMember createUniqueTeamMember() {
-        return teamMemberRepository.save(new TeamMember(
-            "TeamMember_" + System.nanoTime(),
-            "team_member" + System.nanoTime() + "@secure.com",
-            "defaultpw"
-        ));
-    }
-
-    private Admin createUniqueAdmin() {
-        return adminRepository.save(new Admin(
-            "Admin_" + System.nanoTime(),
-            "admin_" + System.nanoTime() + "@secure.com",
-            "adminpw"
-        ));
-    }
+public class AuthInfoServiceTest extends ServiceTestHelper{
 
     @Test
     void testHashPassword() {
