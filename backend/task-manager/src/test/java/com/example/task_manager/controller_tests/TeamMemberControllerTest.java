@@ -1,7 +1,5 @@
 package com.example.task_manager.controller_tests;
 
-import java.awt.PageAttributes;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -14,7 +12,6 @@ import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.controller.TeamMemberController;
-import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.service.TeamMemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

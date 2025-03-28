@@ -9,7 +9,6 @@ import com.example.task_manager.DTO.NotificationDTO;
 import com.example.task_manager.controller.NotificationController;
 import com.example.task_manager.enums.NotificationType;
 import com.example.task_manager.service.NotificationService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -35,9 +34,6 @@ public class NotificationControllerTest {
 
     @InjectMocks
     private NotificationController notificationController;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     /**
      * Test Get Unread Notifications

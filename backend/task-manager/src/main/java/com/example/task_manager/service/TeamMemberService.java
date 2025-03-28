@@ -282,8 +282,8 @@ public class TeamMemberService {
 				.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
 		//create new salt and new password
-		String newSalt = authInfoService.generateSalt();
-		String newHashedPassword = authInfoService.hashPassword(newPassword, newSalt);
+		String newSalt = AuthInfoService.generateSalt();
+		String newHashedPassword = AuthInfoService.hashPassword(newPassword, newSalt);
 
 		//set the new salt and hashed password
 		teamMember.getAuthInfo().setSalt(newSalt);

@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TeamDTO;
-import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.DTO.TeamRequestDTO;
 import com.example.task_manager.controller.TeamController;
 import com.example.task_manager.enums.RoleType;
@@ -32,7 +31,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.example.task_manager.DTO.TeamMemberInTeamDTO;
-import com.example.task_manager.entity.TeamMember;
 
 @WebMvcTest(TeamController.class)
 @ActiveProfiles("test")
