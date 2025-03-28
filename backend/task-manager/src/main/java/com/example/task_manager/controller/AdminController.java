@@ -26,17 +26,9 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    private final AuthInfoRepository authInfoRepository;
-
-    private final AuthController authController;
-
-    private final AdminRepository adminRepository;
-
     public AdminController(AdminService adminService, AdminRepository adminRepository, AuthController authController, AuthInfoRepository authInfoRepository) {
         this.adminService = adminService;
-        this.adminRepository = adminRepository;
-        this.authController = authController;
-        this.authInfoRepository = authInfoRepository;
+
     }
 
     // Create Admin entity
