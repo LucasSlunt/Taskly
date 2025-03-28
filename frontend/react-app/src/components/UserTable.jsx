@@ -74,7 +74,7 @@ function UserTable({teams}){
         } catch (error) {
             
         }
-        
+        window.location.reload();
 
     }
     
@@ -83,10 +83,15 @@ function UserTable({teams}){
         console.log(userID, event.target.value)
         try {
             const response = await changeRole(userID, event.target.value)
-            alert(response)
+            if(response){
+                alert("ROLE CHANGED ID WILL CHANGE ALSO CHECK LIST FOR ID")
+            }else{
+                throw Error("FAILED TO UPDATE ROLE")
+            }
         } catch (error) {
-            console.log(error)
+            alert(error)
         }
+        window.location.reload();
     }
     
 
