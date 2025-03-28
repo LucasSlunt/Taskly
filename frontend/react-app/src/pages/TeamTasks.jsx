@@ -39,45 +39,8 @@ function setUpDataCompleted(results) {
       isLocked: taskItem.isLocked.toString()
     }));
 }
-const headerAndAccessors = [
-      {
-        Header: "Task Name",
-        accessor: "name",
-        Cell: (original) => (
-            <Link to="/view-task" state={{taskToSee: original.value, teamMembers: original.cell.row.values.assignees}}>{original.value.title}</Link>
-          )
-      },
-      {
-        Header: "ID",
-        accessor:"id",
-      },
-      {
-          Header: "Assignee(s)",
-          accessor: "assignees",
-      },
-      {
-        Header: "Priority",
-        accessor: "priority",
-      },
-      {
-          Header: "Status",
-          accessor: "status",
-      },
 
-      {
-          Header: "Due Date",
-          accessor: "dueDate",
-      },
-      {
-        Header: "Is Locked",
-        accessor: "isLocked",
-      }
-]
-
-
-
-
-const headerAndAccessorsComplete = [
+const commonColumns= [
   {
     Header: "Task Name",
     accessor: "name",
@@ -97,6 +60,25 @@ const headerAndAccessorsComplete = [
       Header: "Due Date",
       accessor: "dueDate",
   },
+]
+const headerAndAccessors = [
+    ...commonColumns,
+    {
+      Header: "Priority",
+      accessor: "priority",
+    },
+    {
+        Header: "Status",
+        accessor: "status",
+    },
+    {
+      Header: "Is Locked",
+      accessor: "isLocked",
+    }
+]
+
+const headerAndAccessorsComplete = [
+  ...commonColumns,
   {
       Header: "Date Completed",
       accessor: "dateCompteted",
