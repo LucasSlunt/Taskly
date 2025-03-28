@@ -42,7 +42,7 @@
 #loginFormWrapper {
     display: flex;
     justify-content: center;
-    height: 100%; /* Forces it to take full height */
+    height: 100%;
     width: 100%;
     /* background-color: #5f577a; */
     background-color: #1f6e76;
