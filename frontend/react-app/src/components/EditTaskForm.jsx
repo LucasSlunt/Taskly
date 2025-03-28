@@ -46,7 +46,6 @@ function EditTaskForm({task, team}){
             const response = await editTask(task.taskId, data.name, data.description, null,null, data.dueDate, data.priority)
             console.log(response)
             if(JSON.stringify(data.teamMembers) !== JSON.stringify(task.assignedMembers)){
-                console.log('Compare: ',task.assignedMembers, data.teamMembers)
                 let teamMembersToAdd = []
                 let teamMembersToDelete = []
                 data.teamMembers.map((teamMemberOfChoice)=>{
@@ -71,8 +70,6 @@ function EditTaskForm({task, team}){
                     if(deleteTeamMember){
                         teamMembersToDelete = [...teamMembersToDelete, teamMemberToDelete.accountId]}
                 })
-                console.log('To add:', teamMembersToAdd)
-                console.log('TO del', teamMembersToDelete)
                 if(teamMembersToAdd.length >0){
                     const addedTeamMembersAPIResponse = await massAssignMemberToTask(task.taskId, teamMembersToAdd);
                     console.log(addedTeamMembersAPIResponse)
@@ -84,7 +81,7 @@ function EditTaskForm({task, team}){
             }
 
             await alert('Task Has Been Edited')
-            //window.location.href="/home";
+            window.location.href="/home";
         } catch (error) {
             alert(error)
         }
