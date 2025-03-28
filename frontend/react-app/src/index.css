@@ -2,6 +2,7 @@ html {
     margin:0;
     padding:0;
     background-color: #4e456e;
+    font-family: Calibri;
  }
  .rowFlexbox{
   display: flex;
@@ -34,7 +35,6 @@ html {
   padding-bottom: 10px;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: Calibri;
   width: 90%;
   margin-left: 5%;
   margin-right: 5%;
