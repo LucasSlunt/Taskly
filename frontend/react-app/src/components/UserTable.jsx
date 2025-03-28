@@ -4,6 +4,7 @@ import "../css/TaskList.css"
 import SearchFilterSort from './SearchFilterSort';
 import { useState} from 'react';
 import { getTeamMembers } from '../api/teamApi';
+import {Link} from 'react-router-dom'
 import { changeRole, deleteAdmin, deleteTeamMember } from '../api/adminApi';
 const AllTeams = [
     {
@@ -162,6 +163,17 @@ function UserTable({teams}){
                 <button id= {"delete " + original.value} value={original.value} onClick={(e)=>deleteUser(e, original.cell.row.values.role)}>
                     Delete
                 </button>
+              )
+        },
+        {
+            Header: "",
+            accessor: "edit",
+            Cell: (original) => (
+                <Link to='/edit-user-details' state={{accountToEdit: original.cell.row.values.del}}>
+                <button key= {"edit" + original.cell.row.values.del} id ={"edit" + original.cell.row.values.del}>
+                    Edit
+                </button>
+                </Link>
               )
         }
     ],[searchQuery, loadThisTeam]
