@@ -316,10 +316,12 @@ public class TeamMemberService {
 				.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
 		return teamMember.getTeams().stream()
-				.map(isMemberOf -> new TeamDTO(
-						isMemberOf.getTeam().getTeamId(),
-						isMemberOf.getTeam().getTeamName(),
-						isMemberOf.getTeam().getTeamLead().getAccountId()))
+                .map(isMemberOf -> {
+                    Team team = isMemberOf.getTeam();
+                    TeamMember lead = team.getTeamLead();
+                    int leadId = (lead != null) ? lead.getAccountId() : -1; // 👈 sentinel for no lead
+                    return new TeamDTO(team.getTeamId(), team.getTeamName(), leadId);
+                })
 				.collect(Collectors.toList());
 	}
 			
