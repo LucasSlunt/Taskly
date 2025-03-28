@@ -165,14 +165,6 @@ public class TeamMemberControllerTest {
 //             .andExpect(jsonPath("$.taskId").value(taskId))
 //             .andExpect(status().isOk());
 //     }
-
-    /**
-     * Placeholder: Change Password
-     */
-    @Test
-    void testChangePassword() throws Exception {
-            // TODO: Implement Change Password Test
-    }
     
     @Test
     void testResetPassword() throws Exception {
