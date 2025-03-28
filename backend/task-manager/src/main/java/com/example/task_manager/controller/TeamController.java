@@ -1,7 +1,6 @@
 package com.example.task_manager.controller;
 
 import com.example.task_manager.DTO.TeamDTO;
-import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.DTO.TeamRequestDTO;
 import com.example.task_manager.service.TeamService;
 
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import com.example.task_manager.DTO.TaskDTO;
+import com.example.task_manager.DTO.TeamMemberInTeamDTO;
 
 @RestController
 @RequestMapping("/api/teams")
@@ -57,7 +57,7 @@ public class TeamController {
 
     // Get Team Members
     @GetMapping("/{teamId}/members")
-    public ResponseEntity<List<TeamMemberDTO>> getTeamMembers(@PathVariable int teamId) {
+    public ResponseEntity<List<TeamMemberInTeamDTO>> getTeamMembers(@PathVariable int teamId) {
         try {
             return ResponseEntity.ok(teamService.getTeamMembers(teamId));
         } catch (RuntimeException e) {
