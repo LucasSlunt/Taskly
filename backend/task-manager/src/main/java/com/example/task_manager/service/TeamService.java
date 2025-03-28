@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.DTO.TeamMemberInTeamDTO;
 import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.IsMemberOf;
 import com.example.task_manager.entity.Task;
@@ -99,20 +100,34 @@ public class TeamService {
         return new TeamDTO(team.getTeamId(), team.getTeamName(), team.getTeamLead().getAccountId());
     }
 
-    /**
-     * Retrieves all members of a specified team.
-     *
-     * @param teamId The ID of the team.
-     * @return A list of TeamMembers belonging to the team.
-     */
-    public List<TeamMemberDTO> getTeamMembers(int teamId) {
-        Team team = teamRepository.findById(teamId)
+	/**
+	 * Retrieves all members of a specified team.
+	 *
+	 * @param teamId The ID of the team.
+	 * @return A list of TeamMembers belonging to the team.
+	 */
+	public List<TeamMemberInTeamDTO> getTeamMembers(int teamId) {
+		Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
-        return isMemberOfRepository.findMembersByTeamId(teamId).stream()
-                .map(IsMemberOf::getTeamMember)
-                .map(this::convertToDTO)
+
+        int teamLeadId = team.getTeamLead().getAccountId();
+
+		return isMemberOfRepository.findMembersByTeamId(teamId).stream()
+                .map(isMember -> {
+                    TeamMember teamMember = isMember.getTeamMember();
+                    boolean isTeamLead;
+                    
+                    if (teamMember.getAccountId() == teamLeadId) {
+                        isTeamLead = true;
+                    }
+                    else {
+                        isTeamLead = false;
+                    }
+                    
+                    return convertToDTO(teamMember, isTeamLead);
+                })
                 .collect(Collectors.toList());
-    }
+	}
 
     /*
 	 * Returns all tasks attached to a team
@@ -163,11 +178,25 @@ public class TeamService {
                 team.getTeamLead() != null ? team.getTeamLead().getAccountId() : null
         );
     }
-
+    
     /**
-     * Converts a TeamMember entity to a TeamMemberDTO.
-     */
+	 * Converts a TeamMember entity to a TeamMemberDTO.
+	 */
     private TeamMemberDTO convertToDTO(TeamMember teamMember) {
-        return new TeamMemberDTO(teamMember.getAccountId(), teamMember.getUserName(), teamMember.getUserEmail(), teamMember.getRole());
+        return new TeamMemberDTO(
+                teamMember.getAccountId(),
+                teamMember.getUserName(),
+                teamMember.getUserEmail(),
+                teamMember.getRole());
+    }
+    
+    private TeamMemberInTeamDTO convertToDTO(TeamMember teamMember, boolean isTeamLead) {
+        return new TeamMemberInTeamDTO(
+            teamMember.getAccountId(), 
+            teamMember.getUserName(), 
+            teamMember.getUserEmail(),
+            teamMember.getRole(),
+            isTeamLead
+        );
     }
 }

@@ -13,12 +13,14 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.example.task_manager.DTO.TaskDTO;
+
 import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.DTO.TeamMemberInTeamDTO;
 import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
@@ -89,7 +91,7 @@ public class TeamServiceTest {
 
         TeamDTO newTeam = teamService.createTeam(teamName, teamLead.getAccountId());
 
-        List<TeamMemberDTO> members = teamService.getTeamMembers(newTeam.getTeamId());
+        List<TeamMemberInTeamDTO> members = teamService.getTeamMembers(newTeam.getTeamId());
 
         assertTrue(members.stream().anyMatch(member -> member.getAccountId() == teamLead.getAccountId()),
             "Team lead should be included in the team's member list."
@@ -177,7 +179,7 @@ public class TeamServiceTest {
 
         isMemberOfService.addMemberToTeam(member.getAccountId(), team.getTeamId());
 
-        List<TeamMemberDTO> teamMembers = teamService.getTeamMembers(team.getTeamId());
+        List<TeamMemberInTeamDTO> teamMembers = teamService.getTeamMembers(team.getTeamId());
 
         assertNotNull(teamMembers);
         assertFalse(teamMembers.isEmpty());
@@ -209,7 +211,7 @@ public class TeamServiceTest {
         TeamMember teamLead = createUniqueTeamMember("Lead");
         Team team = createUniqueTeam(teamLead);
 
-        List<TeamMemberDTO> members = teamService.getTeamMembers(team.getTeamId());
+        List<TeamMemberInTeamDTO> members = teamService.getTeamMembers(team.getTeamId());
         assertTrue(members.isEmpty());
     }
 
