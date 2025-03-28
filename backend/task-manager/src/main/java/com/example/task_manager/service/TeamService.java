@@ -132,7 +132,7 @@ public class TeamService {
 	 * Returns all tasks attached to a team
      */
     public List<TaskDTO> getTeamTasks(int teamId) {
-        Team team = teamRepository.findById(teamId)
+        teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
 
         return taskRepository.findByTeam_TeamId(teamId).stream()

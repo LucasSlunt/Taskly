@@ -23,7 +23,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import com.example.task_manager.enums.TaskPriority;
 
 import java.time.LocalDate;
@@ -211,7 +210,7 @@ public class TeamMemberControllerTest {
 
         when(teamMemberService.getAssignedTasks(1)).thenReturn(mockTasks);
 
-        MvcResult result = mockMvc.perform(get("/api/tasks/1/tasks"))
+        mockMvc.perform(get("/api/tasks/1/tasks"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].priority").value("MEDIUM"))
                 .andExpect(jsonPath("$[1].priority").value("MEDIUM"))
