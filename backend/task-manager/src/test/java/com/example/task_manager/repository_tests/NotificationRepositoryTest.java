@@ -128,4 +128,25 @@ public class NotificationRepositoryTest extends RepositoryTestHelper{
         assertNotNull(notifs);
         assertEquals(0, notifs.size());
     }
+
+    @Test
+    void testDeleteAllNotificationsByTaskId() {
+        Team team = createUniqueTeam();
+        TeamMember member = createUniqueTeamMember();
+        Task task = createUniqueTask(team);
+
+        Notification n1 = new Notification(NotificationType.TASK_ASSIGNED, "Assigned", task, member);
+        Notification n2 = new Notification(NotificationType.TASK_UNASSIGNED, "Unassigned", task, member);
+        notificationRepository.save(n1);
+        notificationRepository.save(n2);
+
+        List<Notification> found = notificationRepository.findAll();
+        assertEquals(2, found.size());
+
+        notificationRepository.deleteAllByTask_TaskId(task.getTaskId());
+
+        List<Notification> remaining = notificationRepository.findAll();
+        assertEquals(0, remaining.size());
+    }
+
 }
