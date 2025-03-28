@@ -56,9 +56,9 @@ public class IsAssigned {
     }
 
     public void setTeamMember(TeamMember teamMember) {
-        if (teamMember == null) {
-            throw new IllegalArgumentException("TeamMember cannot be null.");
-        }
+        // if (teamMember == null) {
+        //     throw new IllegalArgumentException("TeamMember cannot be null.");
+        // }
         this.teamMember = teamMember;
     }
 
