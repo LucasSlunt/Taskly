@@ -15,10 +15,10 @@ function getAssigneesNames(taskItem) {
 
 function setUpData(results) {
     return results
-    .filter((taskItem) => taskItem.status !== "done")
+    .filter((taskItem) => taskItem.status !== "Done")
       .map((taskItem) => ({
         id: taskItem.taskId,
-        name: taskItem.title,
+        name: taskItem,
         team: taskItem.teamId,
         assignees: getAssigneesNames(taskItem),
         status: taskItem.status,
@@ -30,10 +30,10 @@ function setUpData(results) {
 
 function setUpDataCompleted(results) {
     return results
-      .filter((taskItem) => taskItem.status === "done")
+      .filter((taskItem) => taskItem.status === "Done")
       .map((taskItem) => ({
         id: taskItem.taskId,
-        name: taskItem.title,
+        name: taskItem,
         assignees: getAssigneesNames(taskItem),
         priority: taskItem.priority,
         status: taskItem.status,
@@ -73,118 +73,98 @@ useEffect(()=>{
 useEffect(() => {
     
     console.log("Tasks To Do (after state update):", tasksToDo);
-  }, [tasksToDo]);
+}, [tasksToDo]);
+
+const commonColumns = [
+    {
+        Header: "Task Name",
+        accessor: "name",
+        Cell: (original) => (
+            <Link to="/view-task" state={{taskToSee: original.value, teamMembers: original.cell.row.values.assignees}}>{original.value.title}</Link>
+          )
+    },
+    {
+        Header: "Team ID",
+        accessor:"team",
+    },
+    {
+        Header: "Task ID",
+        accessor:"id",
+    },
+    {
+        Header: "Assignee(s)",
+        accessor: "assignees",
+    },
+    {
+        Header: "Due Date",
+        accessor: "dueDate",
+    },
+]
 
 
-  
-
-    const headerAndAccessors = [
-        {
-            Header: "Task Name",
-            accessor: "name",
-            Cell: (original) => (
-                <Link to="/view-task" state={{taskToSee: original.cell.row.values.id}}>{original.value}</Link>
-              )
-        },
-        {
-            Header: "TeamId",
-            accessor:"team",
-        },
-        {
-            Header: "ID",
-            accessor:"id",
-        },
-        {
-            Header: "Assignee(s)",
-            accessor: "assignees",
-        },
-        {
-            Header: "Status",
-            accessor: "status",
-        },
-        {
-            Header: "Priority",
-            accessor: "priority",
-        },
-        {
-            Header: "Due Date",
-            accessor: "dueDate",
-        },
-        {
-            Header: "Is Locked",
-            accessor: "isLocked",
-          }
-    ]
-    const headerAndAccessorsComplete = [
-        {
-            Header: "Task Name",
-            accessor: "name",
-            Cell: (original) => (
-                <Link to="/view-task" state={{taskToSee: original.cell.row.values.id}}>{original.value}</Link>
-              )
-        },
-        {
-            Header: "Team",
-            accessor:"team",
-        },
-        {
-            Header: "ID",
-            accessor:"id",
-        },
-        {
-            Header: "Assignee(s)",
-            accessor: "assignees",
-        },
-        {
-            Header: "Due Date",
-            accessor: "dueDate",
-        },
-        {
-            Header: "Date Completed",
-            accessor: "dateCompteted",
-        }
-    ]
-    if(loading){
-        return (<div>Loading...</div>)
+const headerAndAccessors = [
+    ...commonColumns,
+    {
+        Header: "Status",
+        accessor: "status",
+    },
+    {
+        Header: "Priority",
+        accessor: "priority",
+    },
+    {
+        Header: "Is Locked",
+        accessor: "isLocked",
     }
-    return (
+]
+const headerAndAccessorsComplete = [
+    ...commonColumns,
+    {
+        Header: "Date Completed",
+        accessor: "dateCompteted",
+    }
+]
+if(loading){
+    return (<div>Loading...</div>)
+}
+return (
 
-        <div className='pageContainer'>
-            <Header/>
-            <div className='pageBody'>
-            <div class="content-wrapper flexbox">
+    <div className='pageContainer'>
+        <Header/>
+        <div className='pageBody'>
+        <div class="content-wrapper flexbox">
+                
+                <h1>My Tasks</h1>
+                <span class ="taskBox">
+                {setUpData(tasksToDo).length > 0 ? (
+                    <TaskList
+                    dataToUse={setUpData(tasksToDo)}
+                    headersAndAccessors={headerAndAccessors}
+                    />
+                ) : (
+                    <p>No tasks to do</p>
+                )}
                     
-                    <h1>My Tasks</h1>
-                    <span class ="taskBox">
-                    {setUpData(tasksToDo).length > 0 ? (
-                        <TaskList
-                        dataToUse={setUpData(tasksToDo)}
-                        headersAndAccessors={headerAndAccessors}
-                        />
-                    ) : (
-                        <p>No tasks to do</p>
-                    )}
-                        
 
-                    </span>
-                    <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
-                    
-                    <h2>My Completed Tasks</h2>
-                    {setUpDataCompleted(tasksToDo).length > 0 ? (
-                        <TaskList
-                        dataToUse={setUpDataCompleted(tasksToDo)}
-                        headersAndAccessors={headerAndAccessorsComplete}
-                        />
-                    ) : (
-                        <h2>No tasks completed</h2>
-                    )}
-                   
-                    
-                    
-            </div>
-            </div>
+                </span>
+                <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
+                
+                <h2>My Completed Tasks</h2>
+                {setUpDataCompleted(tasksToDo).length > 0 ? (
+                    <TaskList
+                    dataToUse={setUpDataCompleted(tasksToDo)}
+                    headersAndAccessors={headerAndAccessorsComplete}
+                    />
+                ) : (
+                    <h2>No tasks completed</h2>
+                )}
+                
+                
+                
         </div>
-      );
+        </div>
+    </div>
+    );
       
 
 }
