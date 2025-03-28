@@ -26,7 +26,7 @@ export const createTeamMember = async (name, email, password) => {
 //Delete team member
 export const deleteTeamMember = async (teamMemberId) => {
     try {
-        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}`, {
+        const response = await fetch(`${BASE_URL}/${teamMemberId}`, {
             method: 'DELETE',
         });
 
@@ -88,7 +88,7 @@ export const modifyTeamMemberEmail = async (teamMemberId, newEmail) => {
 //Get a team member with their ID
 export const getTeamMemberById = async (teamMemberId) => {
     try {
-        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}`, {
+        const response = await fetch(`${BASE_URL}/${teamMemberId}`, {
             method: 'GET'
         });
 

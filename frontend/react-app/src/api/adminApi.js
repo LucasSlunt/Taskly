@@ -23,7 +23,7 @@ export const assignTeamMemberToTeam = async (teamMemberId, teamId) => {
 //Changing the role of a team member or admin
 export const changeRole = async (teamMemberId, newRole) => {
     try {
-        const response = await fetch(`${BASE_URL}/${teamMemberId}/change-role`, {
+        const response = await fetch(`${BASE_URL}/${teamMemberId}/role`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ role: newRole })

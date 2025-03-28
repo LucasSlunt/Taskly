@@ -1,4 +1,4 @@
-import { createTeam, deleteTeam, changeTeamLead, getTeamMembers, getTeamTasks } from '../../api/teamApi';
+import { createTeam, deleteTeam, changeTeamLead, getTeamMembers, getTeamTasks, getTeams } from '../../api/teamApi';
 
 const BASE_URL = "http://localhost:8080/api/teams";
 
@@ -64,6 +64,21 @@ describe('Team API', () => {
         });
 
         expect(result).toEqual(updatedTeam);
+    });
+
+    //test: getting all teams
+    test('getTeams should return list of team members on success', async () => {
+        const mockTeams = [
+            { teamId: 1, teamName: "Team Alpha", teamLeadId: 3 },
+            { teamId: 2, teamName: "Team Beta", teamLeadId: 4 }
+        ];
+
+        fetch.mockResponseOnce(JSON.stringify(mockTeams), { status: 200 });
+
+        const result = await getTeams();
+
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}`, { method: 'GET' });
+        expect(result).toEqual(mockTeams);
     });
 
     //test: getting all team members
