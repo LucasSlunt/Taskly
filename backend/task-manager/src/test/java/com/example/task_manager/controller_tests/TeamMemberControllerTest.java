@@ -180,10 +180,7 @@ public class TeamMemberControllerTest {
             int teamMemberId = 1;
             String newPassword = "trustmethisissecure";
         
-        String request = objectMapper.writeValueAsString(new Object() {
-                public final String newPassword = "BrainStew_GreenDay";
-        });
-
+        String request = "{\"newPassword\":\"BrainStew_GreenDay\"}";
         doNothing().when(teamMemberService).resetPassword(teamMemberId, newPassword);
 
         mockMvc.perform(post("/api/tasks/team-members/{teamMemberId}/reset-password", teamMemberId)
@@ -200,12 +197,10 @@ public class TeamMemberControllerTest {
 
         when(teamMemberService.getTeamsForMember(1)).thenReturn(mockTeams);
 
-        MvcResult result = mockMvc.perform(get("/api/tasks/1/teams"))
+        mockMvc.perform(get("/api/tasks/1/teams"))
         .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
-
-        // System.out.println("Response: " + result.getResponse().getContentAsString());
     }
 
     @Test
