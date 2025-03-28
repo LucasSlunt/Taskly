@@ -143,6 +143,17 @@ public class AdminService extends TeamMemberService {
         String oldEmail = teamMember.getUserEmail();
         String oldHashedPassword = teamMember.getAuthInfo().getHashedPassword();
         String oldSalt = teamMember.getAuthInfo().getSalt();
+
+        //extract memberships and assigned tasks
+        Set<Task> oldTasks = teamMember.getAssignedTasks()
+            .stream()
+            .map(IsAssigned::getTask)
+            .collect(Collectors.toSet());
+
+        Set<Team> oldTeams = teamMember.getTeams()
+            .stream()
+            .map(IsMemberOf::getTeam)
+            .collect(Collectors.toSet());
     
         // Delete Notifications explicitly
         notificationRepository.deleteAll(teamMember.getNotifications());
@@ -169,13 +180,21 @@ public class AdminService extends TeamMemberService {
         // Delete old TeamMember safely
         deleteTeamMember(teamMember.getAccountId());
         teamMemberRepository.flush();
+
+        //print assigned tasks and memberships
+        System.out.println();
     
         // NOW create the new Admin safely
         Admin newAdmin = new Admin(oldName, oldEmail);
     
         // Set new relationships as empty sets initially (you can add if needed)
-        newAdmin.setAssignedTasks(new HashSet<>());
-        newAdmin.setTeams(new HashSet<>());
+        Set<IsAssigned> newAssignments = oldTasks.stream()
+            .map(task -> new IsAssigned(task, newAdmin, task.getTeam()))
+            .collect(Collectors.toSet());
+
+        Set<IsMemberOf> newMemberships = oldTeams.stream()
+            .map(team -> new IsMemberOf(newAdmin, team))
+            .collect(Collectors.toSet());
     
         // Set new AuthInfo
         AuthInfo newAuthInfo = new AuthInfo();
@@ -187,6 +206,14 @@ public class AdminService extends TeamMemberService {
         // Save new Admin entity
         Admin savedAdmin = adminRepository.save(newAdmin);
     
+        for (IsAssigned isAssigned : newAssignments) {
+            isAssigned.setTeamMember(savedAdmin);
+        }
+
+        for (IsMemberOf isMemberOf : newMemberships) {
+            isMemberOf.setTeamMember(savedAdmin);
+        }
+
         return convertToDTO(savedAdmin);
     }
     
@@ -200,6 +227,17 @@ public class AdminService extends TeamMemberService {
         String oldEmail = admin.getUserEmail();
         String oldHashedPassword = admin.getAuthInfo().getHashedPassword();
         String oldSalt = admin.getAuthInfo().getSalt();
+
+        //extract memberships and assigned tasks
+        Set<Task> oldTasks = admin.getAssignedTasks()
+            .stream()
+            .map(IsAssigned::getTask)
+            .collect(Collectors.toSet());
+
+        Set<Team> oldTeams = admin.getTeams()
+            .stream()
+            .map(IsMemberOf::getTeam)
+            .collect(Collectors.toSet());
 
         // Delete Notifications explicitly
         notificationRepository.deleteAll(admin.getNotifications());
@@ -231,8 +269,16 @@ public class AdminService extends TeamMemberService {
         TeamMember newTeamMember = new TeamMember(oldName, oldEmail);
 
         // Set new relationships as empty sets initially (you can add if needed)
-        newTeamMember.setAssignedTasks(new HashSet<>());
-        newTeamMember.setTeams(new HashSet<>());
+        Set<IsAssigned> newAssignments = oldTasks.stream()
+            .map(task -> new IsAssigned(task, newTeamMember, task.getTeam()))
+            .collect(Collectors.toSet());
+
+        Set<IsMemberOf> newMemberships = oldTeams.stream()
+            .map(team -> new IsMemberOf(newTeamMember, team))
+            .collect(Collectors.toSet());
+
+        isAssignedRepository.saveAll(newAssignments);
+        isMemberOfRepository.saveAll(newMemberships);
 
         // Set new AuthInfo
         AuthInfo newAuthInfo = new AuthInfo();
@@ -243,6 +289,14 @@ public class AdminService extends TeamMemberService {
 
         // Save new TeamMember entity
         TeamMember savedTeamMember = teamMemberRepository.save(newTeamMember);
+
+        for (IsAssigned isAssigned : newAssignments) {
+            isAssigned.setTeamMember(savedTeamMember);
+        }
+
+        for (IsMemberOf isMemberOf : newMemberships) {
+            isMemberOf.setTeamMember(savedTeamMember);
+        }
 
         return convertToDTO(savedTeamMember);
     }
