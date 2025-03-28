@@ -280,9 +280,6 @@ public class AdminService extends TeamMemberService {
             .map(team -> new IsMemberOf(newTeamMember, team))
             .collect(Collectors.toSet());
 
-        isAssignedRepository.saveAll(newAssignments);
-        isMemberOfRepository.saveAll(newMemberships);
-
         // Set new AuthInfo
         AuthInfo newAuthInfo = new AuthInfo();
         newAuthInfo.setHashedPassword(oldHashedPassword);
