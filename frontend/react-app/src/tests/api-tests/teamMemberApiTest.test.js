@@ -130,7 +130,7 @@ describe('Team Member API', () => {
 
     //test: changing a password
     test('chanegPassword should return success on valid password change', async () => {
-        const mockResponse = { sucess: true };
+        const mockResponse = true;
 
         fetch.mockResponseOnce(JSON.stringify(mockResponse), { status: 200 });
 
@@ -147,7 +147,7 @@ describe('Team Member API', () => {
 
     //test: resetting a password
     test('resetPassword should return success on valid password reset', async () => {
-        const mockResponse = { success: true };
+        const mockResponse = true;
 
         fetch.mockResponseOnce(JSON.stringify(mockResponse), { status: 200 });
 
