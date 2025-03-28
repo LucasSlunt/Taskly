@@ -24,6 +24,7 @@ function LoginForm(){
         } 
     };
     return(
+        <div id="loginFormWrapper">
         <form onSubmit = {handleSubmit(onSubmit)} id="loginForm" >
                     <label>Log in</label>
                     
@@ -44,6 +45,7 @@ function LoginForm(){
                     <button type="submit" >Login</button>
                 
                 </form>
+            </div>
     )
 
 }

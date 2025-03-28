@@ -14,7 +14,7 @@ div.MyTasksPage{
     flex-direction: column;
 }
 div.content-wrapper{
-    color: #bfcde0;
+    /* color: #bfcde0; */
     margin-left: 5%;
     margin-right: 5%;
     font-family: Calibri;
@@ -32,8 +32,8 @@ div.flexbox{
 }
 
 .create-task-btn {
-    background-color: #eaeaea;
-    color: rgb(0, 0, 0);
+    background-color: #238de3;
+    color: white;
     border: none;
     padding: 15px 30px;
     text-align: center;
