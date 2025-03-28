@@ -214,6 +214,9 @@ public class AdminService extends TeamMemberService {
             isMemberOf.setTeamMember(savedAdmin);
         }
 
+        isAssignedRepository.saveAll(newAssignments);
+        isMemberOfRepository.saveAll(newMemberships);
+
         return convertToDTO(savedAdmin);
     }
     
@@ -297,6 +300,9 @@ public class AdminService extends TeamMemberService {
         for (IsMemberOf isMemberOf : newMemberships) {
             isMemberOf.setTeamMember(savedTeamMember);
         }
+
+        isAssignedRepository.saveAll(newAssignments);
+        isMemberOfRepository.saveAll(newMemberships);
 
         return convertToDTO(savedTeamMember);
     }
