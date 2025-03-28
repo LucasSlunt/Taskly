@@ -6,7 +6,7 @@ import { unassignTeamMemberFromTask } from '../api/isAssignedApi';
 const customStyles = {
     control: (provided) => ({
       ...provided,
-      width: '65vw',
+      width: '100%',
     minWidth: '100px',
     maxWidth: '100%',
     minHeight: '30px',
@@ -16,7 +16,12 @@ const customStyles = {
       paddingLeft: '8px',
       backgroundColor: '#BFCDE0',
       margin: '10px 0px',
+      cursor: 'pointer'
     }),
+    option: (provided, state) =>({
+        ...provided,
+        cursor: state.isSelected ? 'default' : 'pointer',
+    })
   };
   function formatTeamData(myTeamMembers){
     return myTeamMembers.map((teamMember)=>(
@@ -85,7 +90,7 @@ function EditTaskForm({task, team}){
         }
     };
     return(
-        <form onSubmit={handleSubmit(onSubmit)} className='body'>
+        <form onSubmit={handleSubmit(onSubmit)} className='CreateTaskForm'>
                         <label className='majorLabel'>
                                 Task Name
                                 <div>
