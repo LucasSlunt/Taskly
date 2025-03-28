@@ -214,6 +214,9 @@ public class AdminService extends TeamMemberService {
             isMemberOf.setTeamMember(savedAdmin);
         }
 
+        isAssignedRepository.saveAll(newAssignments);
+        isMemberOfRepository.saveAll(newMemberships);
+
         return convertToDTO(savedAdmin);
     }
     
@@ -277,9 +280,6 @@ public class AdminService extends TeamMemberService {
             .map(team -> new IsMemberOf(newTeamMember, team))
             .collect(Collectors.toSet());
 
-        isAssignedRepository.saveAll(newAssignments);
-        isMemberOfRepository.saveAll(newMemberships);
-
         // Set new AuthInfo
         AuthInfo newAuthInfo = new AuthInfo();
         newAuthInfo.setHashedPassword(oldHashedPassword);
@@ -297,6 +297,9 @@ public class AdminService extends TeamMemberService {
         for (IsMemberOf isMemberOf : newMemberships) {
             isMemberOf.setTeamMember(savedTeamMember);
         }
+
+        isAssignedRepository.saveAll(newAssignments);
+        isMemberOfRepository.saveAll(newMemberships);
 
         return convertToDTO(savedTeamMember);
     }
