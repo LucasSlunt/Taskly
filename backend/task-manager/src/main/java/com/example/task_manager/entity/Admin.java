@@ -13,5 +13,11 @@ public class Admin extends TeamMember {
         super(userName, userEmail, userPassword);
         this.setRole(RoleType.ADMIN);
     }
+
+    public Admin(String userName, String userEmail) {
+        super(userName, userEmail); // this constructor must exist in TeamMember
+        this.setRole(RoleType.ADMIN);
+    }
+
     //inherits all attributes from TeamMember
 }

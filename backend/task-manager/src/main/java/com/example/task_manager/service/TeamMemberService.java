@@ -18,6 +18,7 @@ import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.repository.IsAssignedRepository;
 import com.example.task_manager.repository.IsMemberOfRepository;
+import com.example.task_manager.repository.NotificationRepository;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
@@ -33,7 +34,8 @@ public class TeamMemberService {
 	protected final TeamRepository teamRepository;
 	protected final IsMemberOfRepository isMemberOfRepository;
 	protected final TaskRepository taskRepository;
-	protected final IsAssignedRepository isAssignedRepository;
+    protected final IsAssignedRepository isAssignedRepository;
+    protected final NotificationRepository notifRepository;
 	protected final AuthInfoService authInfoService;
 	protected final NotificationService notifService;
 
@@ -44,14 +46,16 @@ public class TeamMemberService {
 							 IsMemberOfRepository isMemberOfRepository, 
 							 IsAssignedRepository isAssignedRepository,
 							 AuthInfoService authInfoService,
-							 NotificationService notifService) {
+							 NotificationService notifService,
+                             NotificationRepository notifRepository) {
 		this.teamMemberRepository = teamMemberRepository;
 		this.teamRepository = teamRepository;
 		this.isMemberOfRepository = isMemberOfRepository;
 		this.taskRepository = taskRepository;
 		this.isAssignedRepository = isAssignedRepository;
 		this.authInfoService = authInfoService;
-		this.notifService = notifService;
+        this.notifService = notifService;
+        this.notifRepository = notifRepository;
 	}
 	
 	/**
@@ -113,10 +117,10 @@ public class TeamMemberService {
 				.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
 	
 		// Ensure all assignments are removed before deleting the task
-		isAssignedRepository.deleteById(taskId);
-	
-		taskRepository.delete(task);
+        isAssignedRepository.deleteAllByTask_TaskId(taskId);
+	    notifRepository.deleteAllByTask_TaskId(taskId); // 👈 add this
 
+		taskRepository.delete(task);
 	}    
 
 	/**
