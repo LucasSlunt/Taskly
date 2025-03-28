@@ -32,8 +32,6 @@ import com.example.task_manager.test_helpers.ServiceTestHelper;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AdminServiceTest extends ServiceTestHelper{
 
-    
-
     @Test
     void testCreateAdmin() {
         AdminDTO adminDTO = adminService.createAdmin("Admin" + System.nanoTime(),

@@ -27,15 +27,7 @@ import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.test_helpers.ServiceTestHelper;
 
 import com.example.task_manager.enums.TaskPriority;
-import com.example.task_manager.repository.TeamMemberRepository;
-import com.example.task_manager.repository.TeamRepository;
-import com.example.task_manager.repository.AdminRepository;
-import com.example.task_manager.repository.AuthInfoRepository;
-import com.example.task_manager.repository.IsAssignedRepository;
-import com.example.task_manager.repository.IsMemberOfRepository;
-import com.example.task_manager.repository.TaskRepository;
-import com.example.task_manager.service.IsMemberOfService;
-import com.example.task_manager.service.TeamService;
+
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

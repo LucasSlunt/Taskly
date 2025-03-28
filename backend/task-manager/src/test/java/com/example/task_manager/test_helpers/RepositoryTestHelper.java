@@ -97,4 +97,17 @@ public class RepositoryTestHelper {
         IsAssigned assignment = new IsAssigned(task, teamMember, team);
         return isAssignedRepository.save(assignment);
     }
+
+    
+    // Helper methods to create unique entities for each test
+    protected Team createAndSaveUniqueTeam() {
+        Team team = new Team();
+        team.setTeamName("QA Team_" + System.nanoTime());
+        return teamRepository.save(team);
+    }
+
+    protected TeamMember createAndSaveUniqueTeamMember() {
+        TeamMember teamMember = new TeamMember("Alice_" + System.nanoTime(), "alice" + System.nanoTime() + "@example.com", "password123");
+        return teamMemberRepository.save(teamMember);
+    }
 }

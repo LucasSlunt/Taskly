@@ -22,19 +22,6 @@ import com.example.task_manager.test_helpers.RepositoryTestHelper;
 @ActiveProfiles("test")
 public class NotificationRepositoryTest extends RepositoryTestHelper{
 
-    // Helper methods to create unique entities for each test
-    private Team createAndSaveUniqueTeam() {
-        Team team = new Team();
-        team.setTeamName("QA Team_" + System.nanoTime());
-        return teamRepository.save(team);
-    }
-
-    private TeamMember createAndSaveUniqueTeamMember() {
-        TeamMember teamMember = new TeamMember("Alice_" + System.nanoTime(), "alice" + System.nanoTime() + "@example.com", "password123");
-        return teamMemberRepository.save(teamMember);
-    }
-
-
     @Test
     void testSaveNotification() {
         Team team = createAndSaveUniqueTeam();
@@ -131,9 +118,9 @@ public class NotificationRepositoryTest extends RepositoryTestHelper{
 
     @Test
     void testDeleteAllNotificationsByTaskId() {
-        Team team = createUniqueTeam();
-        TeamMember member = createUniqueTeamMember();
-        Task task = createUniqueTask(team);
+        Team team = createAndSaveUniqueTeam();
+        TeamMember member = createAndSaveUniqueTeamMember();
+        Task task = createAndSaveUniqueTask(team);
 
         Notification n1 = new Notification(NotificationType.TASK_ASSIGNED, "Assigned", task, member);
         Notification n2 = new Notification(NotificationType.TASK_UNASSIGNED, "Unassigned", task, member);

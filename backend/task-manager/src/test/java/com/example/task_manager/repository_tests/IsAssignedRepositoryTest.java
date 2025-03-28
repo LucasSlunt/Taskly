@@ -128,11 +128,11 @@ public class IsAssignedRepositoryTest extends RepositoryTestHelper{
     
     @Test
     void testDeleteAllAssignmentsByTaskId() {
-        Team team = createUniqueTeam();
-        Task task = createUniqueTask(team);
+        Team team = createAndPersistUniqueTeam();
+        Task task = createAndSaveUniqueTask(team);
 
-        TeamMember member1 = createUniqueTeamMember();
-        TeamMember member2 = createUniqueTeamMember();
+        TeamMember member1 = createAndPersistUniqueTeamMember();
+        TeamMember member2 = createAndPersistUniqueTeamMember();
 
         isAssignedRepository.save(new IsAssigned(task, member1, team));
         isAssignedRepository.save(new IsAssigned(task, member2, team));

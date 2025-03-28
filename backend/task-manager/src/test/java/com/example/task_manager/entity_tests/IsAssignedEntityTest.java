@@ -19,7 +19,6 @@ import com.example.task_manager.test_helpers.EntityTestHelper;
 @ActiveProfiles("test")
 public class IsAssignedEntityTest extends EntityTestHelper{
 
-
     @Test
     void testIsAssignedDefaultConstructor() {
         IsAssigned isAssigned = new IsAssigned();
