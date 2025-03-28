@@ -1,8 +1,11 @@
 import {useTable, useSortBy} from 'react-table'
-import React from 'react';
+import React, { useEffect } from 'react';
 import "../css/TaskList.css"
 import SearchFilterSort from './SearchFilterSort';
 import { useState} from 'react';
+import { getTeamMembers } from '../api/teamApi';
+import {Link} from 'react-router-dom'
+import { changeRole, deleteAdmin, deleteTeamMember } from '../api/adminApi';
 const AllTeams = [
     {
         name: "Team1",
@@ -54,17 +57,44 @@ const AllTeams = [
         }]
     }
     ]
-function UserTable(){
-    const deleteUser=((event)=>{
+function UserTable({teams}){
+
+    const [loading, setLoading] = useState(true);
+
+    const deleteUser = async (event, role)=>{
         console.log("delete THIS USER ")
         console.log(event.target.value)
-    })
+        try {
+            if(role === 'ADMIN'){
+                const response = await deleteAdmin(event.target.value)
+                alert('ADMIN DELETED')
+            }else{
+                const response = await deleteTeamMember(event.target.value)
+                alert('TEAM MEMBER DELETED')
+            }
+        } catch (error) {
+            
+        }
+        window.location.reload();
+
+    }
     
-    const changeRole = ((userID, event)=>{
+    const changeUserRole = async (userID, event)=>{
         console.log("rolesChanged")
         console.log(userID, event.target.value)
+        try {
+            const response = await changeRole(userID, event.target.value)
+            if(response){
+                alert("ROLE CHANGED ID WILL CHANGE ALSO CHECK LIST FOR ID")
+            }else{
+                throw Error("FAILED TO UPDATE ROLE")
+            }
+        } catch (error) {
+            alert(error)
+        }
+        window.location.reload();
     }
-    )
+    
 
     const [loadThisTeam, setTeam] = useState(()=>{
         let firstSetOfData = []
@@ -73,21 +103,28 @@ function UserTable(){
         })
         return firstSetOfData
     })
-    const changeSearch =(event) =>{
+    
+    const changeSearch = async(event) =>{
+        setLoading(true);
         console.log("seeing a new team")
-        let membersValue = []
-        let arrReturn = []
-        for(let i = 0; i<AllTeams.length;i++){
-            if(event.target.value === AllTeams[i].id){
-                membersValue = AllTeams[i].members
-                membersValue.map((member)=>{
-                    arrReturn = [...arrReturn,{name: member.name, role: member.role, del: member.memberID}]
-                })
-                break;
-            }
+        try {
+            let arrReturn = []
+        const teamMembers = await getTeamMembers(event.target.value)
+        console.log(teamMembers)
+        if(teamMembers.length <1){
+            arrReturn = [...arrReturn,{name: teamMembers.userName, role: teamMembers.role, id: teamMembers.accountId, del: teamMembers.accountId}]
+        }else{
+            teamMembers.map((member)=>{
+                arrReturn = [...arrReturn,{name: member.userName, role: member.role, id: teamMembers.accountId, del: member.accountId}]
+             })
         }
         console.log(arrReturn)
         setTeam(()=>(arrReturn))
+        } catch (error) {
+            alert(error)
+        }finally{
+            setLoading(false)
+        }
       }
 
     
@@ -106,32 +143,73 @@ function UserTable(){
             Header: "Role",
             accessor:"role",
             Cell: (original) => (
-                <select className="cellSelect" id={"role "+original.cell.row.values.del} defaultValue={original.value} onChange={(e)=>changeRole(original.cell.row.values.del, e)}>
-                    <option value="teamLead">Team Lead</option>
-                    <option value="admin">Admin</option>
-                    <option value="teamMember">Team Member</option>
+                <select className="cellSelect" id={"role "+original.cell.row.values.del} defaultValue={original.value} onChange={(e)=>changeUserRole(original.cell.row.values.del, e)}>
+                    <option value="ADMIN">Admin</option>
+                    <option value="TEAM_MEMBER">Team Member</option>
                 </select>
               )
+        },
+        {
+            Header: 'ID',
+            accessor: 'id',
+            Cell:(original) =>(
+                <div>{original.cell.row.values.del}</div>
+            )
         },
         {
             Header: "",
             accessor: "del",
             Cell: (original) => (
-                <button id= {"delete " + original.value} value={original.value} onClick={(e)=>deleteUser(e)}>
+                <button id= {"delete " + original.value} value={original.value} onClick={(e)=>deleteUser(e, original.cell.row.values.role)}>
                     Delete
                 </button>
+              )
+        },
+        {
+            Header: "",
+            accessor: "edit",
+            Cell: (original) => (
+                <Link to='/edit-user-details' state={{accountToEdit: original.cell.row.values.del}}>
+                <button key= {"edit" + original.cell.row.values.del} id ={"edit" + original.cell.row.values.del}>
+                    Edit
+                </button>
+                </Link>
               )
         }
     ],[searchQuery, loadThisTeam]
     )
+    useEffect(()=>{
+        async function getFirstTeam() {
+            try {
+                const teamMembers = await getTeamMembers(teams[0].teamId)
+                let arrReturn = [];
+                console.log(teamMembers)
+                if(teamMembers.length <1){
+                    arrReturn = [...arrReturn,{name: teamMembers.userName, role: teamMembers.role, id: teamMembers.accountId, del: teamMembers.accountId}]
+                }else{
+                    teamMembers.map((member)=>{
+                        arrReturn = [...arrReturn,{name: member.userName, role: member.role, id: teamMembers.accountId, del: member.accountId}]
+                     })
+                }
+                console.log(arrReturn)
+                setTeam(()=>(arrReturn))
+
+            } catch (error) {
+                alert(error)
+            }finally{
+                setLoading(false)
+            }
+        }
+        getFirstTeam();
+    },[])
 
     const { getTableBodyProps, getTableProps, rows, prepareRow, headerGroups} = useTable({columns,data: data}, useSortBy)
     return(
         
         <div className='container'>
             <select name="searchThis" id="searchThis" onChange={changeSearch}>
-                    {AllTeams.map((team)=>(
-                        <option value={team.id}>{team.name}</option>
+                    {teams.map((team)=>(
+                        <option value={team.teamId}>{team.teamName}</option>
                     ))}
              </select>
             
@@ -141,8 +219,8 @@ function UserTable(){
                 setSearchQuery={setSearchQuery}
             />
             
-
-            <table {...getTableProps()}>
+            {loading && (<div>...loading</div>)}
+            {!loading && (<table {...getTableProps()}>
                 <thead>
                     {headerGroups.map((headerGroup) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
@@ -169,7 +247,7 @@ function UserTable(){
                             )
                         })}
                 </tbody>
-            </table>
+            </table>)}
         </div>
 
     );

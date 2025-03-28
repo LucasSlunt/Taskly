@@ -1,9 +1,8 @@
-.page{
-    position: absolute;
-    height: 100%;
+.userTable .container table{
     width: 100%;
-    background-color: #5d5d81;
-    margin: 0 0;
-    top: 0;
-    left: 0;
+    height: 50%;
+    overflow-y: scroll;
+}
+.container{
+    height: 50%;
 }

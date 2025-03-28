@@ -1,42 +1,22 @@
 package com.example.task_manager.entity_tests;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.time.LocalDate;
-
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.example.task_manager.entity.IsAssigned;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.test_helpers.EntityTestHelper;
 import com.example.task_manager.entity.IsMemberOf;
-import com.example.task_manager.enums.TaskPriority;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
-public class TeamEntityTest {
-
-    @Autowired
-    private TestEntityManager entityManager;
-
-    private TeamMember createUniqueTeamMember() {
-        return new TeamMember("User_" + System.nanoTime(), "user_" + System.nanoTime() + "@example.com", "defaultpw");
-    }
-
-    private Team createUniqueTeam(TeamMember teamLead) {
-        return new Team("Team_" + System.nanoTime(), teamLead);
-    }
-
-    private Task createUniqueTask(Team team) {
-        return new Task("Task_" + System.nanoTime(), "Description", team, false, "Open", LocalDate.now(), TaskPriority.LOW);
-    }
+public class TeamEntityTest extends EntityTestHelper{
 
     @Test
     void testTeamPersistence() {

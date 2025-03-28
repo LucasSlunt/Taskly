@@ -3,7 +3,6 @@ package com.example.task_manager.service_tests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -12,73 +11,19 @@ import jakarta.transaction.Transactional;
 
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
-import com.example.task_manager.repository.AdminRepository;
-import com.example.task_manager.repository.AuthInfoRepository;
-import com.example.task_manager.repository.IsAssignedRepository;
-import com.example.task_manager.repository.IsMemberOfRepository;
-import com.example.task_manager.repository.TaskRepository;
-import com.example.task_manager.repository.TeamMemberRepository;
-import com.example.task_manager.repository.TeamRepository;
-import com.example.task_manager.service.AdminService;
-import com.example.task_manager.service.IsMemberOfService;
-import com.example.task_manager.service.TeamService;
+import com.example.task_manager.test_helpers.ServiceTestHelper;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class IsMemberOfServiceTest {
-
-    @Autowired
-    private TeamService teamService;
-
-    @Autowired
-    private AdminService adminService;
-
-    @Autowired
-    private IsMemberOfService isMemberOfService;
-
-    @Autowired
-    private AdminRepository adminRepository;
-
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private IsAssignedRepository isAssignedRepository;
-
-    @Autowired
-    private IsMemberOfRepository isMemberOfRepository;
-
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
-
-    private TeamMemberDTO createUniqueTeamMember() {
-        return adminService.createTeamMember(
-            "TeamMember_" + System.nanoTime(),
-            "team_member" + System.nanoTime() + "@example.com",
-            "defaultpw"
-        );
-    }
-
-    private TeamDTO createUniqueTeam(TeamMemberDTO teamLead) {
-        return teamService.createTeam(
-            "Team_" + System.nanoTime(),
-            teamLead.getAccountId()
-        );
-    }
+public class IsMemberOfServiceTest extends ServiceTestHelper{
 
     @Test
     void testAddMemberToTeam() {
-        TeamMemberDTO teamLead = createUniqueTeamMember();
-        TeamDTO team = createUniqueTeam(teamLead);
-        TeamMemberDTO teamMember = createUniqueTeamMember();
+        TeamMemberDTO teamLead = createUniqueTeamMemberDTO();
+        TeamDTO team = createUniqueTeamDTO(teamLead);
+        TeamMemberDTO teamMember = createUniqueTeamMemberDTO();
 
         isMemberOfService.addMemberToTeam(teamMember.getAccountId(), team.getTeamId());
 
@@ -87,7 +32,7 @@ public class IsMemberOfServiceTest {
 
     @Test
     void testAddMemberToNonExistentTeam() {
-        TeamMemberDTO teamMember = createUniqueTeamMember();
+        TeamMemberDTO teamMember = createUniqueTeamMemberDTO();
 
         Exception exception = assertThrows(RuntimeException.class,
             () -> isMemberOfService.addMemberToTeam(teamMember.getAccountId(), 9999));
@@ -97,8 +42,8 @@ public class IsMemberOfServiceTest {
 
     @Test
     void testAddNonExistentMemberToTeam() {
-        TeamMemberDTO teamLead = createUniqueTeamMember();
-        TeamDTO team = createUniqueTeam(teamLead);
+        TeamMemberDTO teamLead = createUniqueTeamMemberDTO();
+        TeamDTO team = createUniqueTeamDTO(teamLead);
 
         Exception exception = assertThrows(RuntimeException.class,
             () -> isMemberOfService.addMemberToTeam(9999, team.getTeamId()));
@@ -108,9 +53,9 @@ public class IsMemberOfServiceTest {
 
     @Test
     void testAddMemberToSameTeamTwice() {
-        TeamMemberDTO teamLead = createUniqueTeamMember();
-        TeamDTO team = createUniqueTeam(teamLead);
-        TeamMemberDTO teamMember = createUniqueTeamMember();
+        TeamMemberDTO teamLead = createUniqueTeamMemberDTO();
+        TeamDTO team = createUniqueTeamDTO(teamLead);
+        TeamMemberDTO teamMember = createUniqueTeamMemberDTO();
 
         isMemberOfService.addMemberToTeam(teamMember.getAccountId(), team.getTeamId());
 
@@ -122,9 +67,9 @@ public class IsMemberOfServiceTest {
 
     @Test
     void testRemoveMemberFromTeam() {
-        TeamMemberDTO teamLead = createUniqueTeamMember();
-        TeamDTO team = createUniqueTeam(teamLead);
-        TeamMemberDTO teamMember = createUniqueTeamMember();
+        TeamMemberDTO teamLead = createUniqueTeamMemberDTO();
+        TeamDTO team = createUniqueTeamDTO(teamLead);
+        TeamMemberDTO teamMember = createUniqueTeamMemberDTO();
 
         isMemberOfService.addMemberToTeam(teamMember.getAccountId(), team.getTeamId());
         isMemberOfService.removeMemberFromTeam(teamMember.getAccountId(), team.getTeamId());
@@ -134,8 +79,8 @@ public class IsMemberOfServiceTest {
 
     @Test
     void testRemoveNonExistentMemberFromTeam() {
-        TeamMemberDTO teamLead = createUniqueTeamMember();
-        TeamDTO team = createUniqueTeam(teamLead);
+        TeamMemberDTO teamLead = createUniqueTeamMemberDTO();
+        TeamDTO team = createUniqueTeamDTO(teamLead);
 
         Exception exception = assertThrows(RuntimeException.class,
             () -> isMemberOfService.removeMemberFromTeam(9999, team.getTeamId()));
@@ -145,7 +90,7 @@ public class IsMemberOfServiceTest {
 
     @Test
     void testRemoveMemberFromNonExistentTeam() {
-        TeamMemberDTO teamMember = createUniqueTeamMember();
+        TeamMemberDTO teamMember = createUniqueTeamMemberDTO();
 
         Exception exception = assertThrows(RuntimeException.class,
             () -> isMemberOfService.removeMemberFromTeam(teamMember.getAccountId(), 9999));
@@ -155,9 +100,9 @@ public class IsMemberOfServiceTest {
 
     @Test
     void testRemoveMemberNotInTeam() {
-        TeamMemberDTO teamLead = createUniqueTeamMember();
-        TeamDTO team = createUniqueTeam(teamLead);
-        TeamMemberDTO teamMember = createUniqueTeamMember();
+        TeamMemberDTO teamLead = createUniqueTeamMemberDTO();
+        TeamDTO team = createUniqueTeamDTO(teamLead);
+        TeamMemberDTO teamMember = createUniqueTeamMemberDTO();
 
         Exception exception = assertThrows(RuntimeException.class,
             () -> isMemberOfService.removeMemberFromTeam(teamMember.getAccountId(), team.getTeamId()));
@@ -167,9 +112,9 @@ public class IsMemberOfServiceTest {
 
     @Test
     void testIsMemberOfTeam() {
-        TeamMemberDTO teamLead = createUniqueTeamMember();
-        TeamDTO team = createUniqueTeam(teamLead);
-        TeamMemberDTO teamMember = createUniqueTeamMember();
+        TeamMemberDTO teamLead = createUniqueTeamMemberDTO();
+        TeamDTO team = createUniqueTeamDTO(teamLead);
+        TeamMemberDTO teamMember = createUniqueTeamMemberDTO();
 
         isMemberOfService.addMemberToTeam(teamMember.getAccountId(), team.getTeamId());
 
@@ -182,14 +127,14 @@ public class IsMemberOfServiceTest {
 
     @Test
     void testIsMemberOfNonExistentTeam() {
-        TeamMemberDTO teamMember = createUniqueTeamMember();
+        TeamMemberDTO teamMember = createUniqueTeamMemberDTO();
         assertFalse(isMemberOfService.isMemberOfTeam(teamMember.getAccountId(), 9999));
     }
 
     @Test
     void testIsMemberOfNonExistentMember() {
-        TeamMemberDTO teamLead = createUniqueTeamMember();
-        TeamDTO team = createUniqueTeam(teamLead);
+        TeamMemberDTO teamLead = createUniqueTeamMemberDTO();
+        TeamDTO team = createUniqueTeamDTO(teamLead);
         assertFalse(isMemberOfService.isMemberOfTeam(9999, team.getTeamId()));
     }
 }

@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -18,13 +17,7 @@ import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.enums.NotificationType;
-import com.example.task_manager.enums.TaskPriority;
-import com.example.task_manager.repository.NotificationRepository;
-import com.example.task_manager.repository.TaskRepository;
-import com.example.task_manager.repository.TeamMemberRepository;
-import com.example.task_manager.repository.TeamRepository;
-import com.example.task_manager.repository.IsAssignedRepository;
-import com.example.task_manager.service.NotificationService;
+import com.example.task_manager.test_helpers.ServiceTestHelper;
 
 import jakarta.transaction.Transactional;
 
@@ -32,53 +25,7 @@ import jakarta.transaction.Transactional;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class NotificationServiceTest {
-
-    @Autowired
-    private NotificationService notificationService;
-
-    @Autowired
-    private NotificationRepository notificationRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-
-    @Autowired
-    private IsAssignedRepository isAssignedRepository;
-
-    private TeamMember createUniqueTeamMember() {
-        return teamMemberRepository.save(new TeamMember(
-            "User_" + System.nanoTime(),
-            "user_" + System.nanoTime() + "@example.com",
-            "defaultpw"
-        ));
-    }
-
-    private Team createUniqueTeam() {
-        return teamRepository.save(new Team(
-            "Team_" + System.nanoTime(),
-            null
-        ));
-    }
-
-    private Task createUniqueTask(Team team) {
-        Task task = new Task(
-            "Task_" + System.nanoTime(),
-            "Task Description",
-            team,
-            false,
-            "Open",
-            LocalDate.now(), 
-            TaskPriority.MEDIUM
-        );
-        return taskRepository.save(task);
-    }
+public class NotificationServiceTest extends ServiceTestHelper{
 
     @Test
     void testNotifyTaskTitleChange() {

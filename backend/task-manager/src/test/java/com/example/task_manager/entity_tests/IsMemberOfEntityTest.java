@@ -3,31 +3,19 @@ package com.example.task_manager.entity_tests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.example.task_manager.entity.IsMemberOf;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.test_helpers.EntityTestHelper;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
-public class IsMemberOfEntityTest {
-
-    @Autowired
-    private TestEntityManager entityManager;
-
-    private Team createUniqueTeam(TeamMember teamLead) {
-        return new Team("Team_" + System.nanoTime(), teamLead);
-    }
-
-    private TeamMember createUniqueTeamMember() {
-        return new TeamMember("Member_" + System.nanoTime(), "user_" + System.nanoTime() + "@example.com", "defaultpw");
-    }
+public class IsMemberOfEntityTest extends EntityTestHelper{
 
     @Test
     void testIsMemberOfPersistence() {

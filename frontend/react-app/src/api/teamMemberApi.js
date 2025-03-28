@@ -112,6 +112,7 @@ export const massAssignMemberToTask = async(taskId, teamMemberIds) => {
 //Change password
 export const changePassword = async (teamMemberId, oldPassword, newPassword) => {
     try {
+        console.log(JSON.stringify({oldPassword, newPassword}))
         const response = await fetch(`${BASE_URL}/team-members/${teamMemberId}/change-password`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
@@ -123,7 +124,7 @@ export const changePassword = async (teamMemberId, oldPassword, newPassword) => 
             return null;
         }
 
-        return await response.json();
+        return await true;
     }
     catch (error) {
         console.error("Error changing password: ", error);
@@ -145,7 +146,7 @@ export const resetPassword = async (teamMemberId, newPassword) => {
             return null;
         }
 
-        return await response.json();
+        return await true;
     }
     catch (error) {
         console.error("Error resetting password: ", error);

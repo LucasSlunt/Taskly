@@ -2,11 +2,7 @@ package com.example.task_manager.service_tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
-
-import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,60 +13,13 @@ import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
-import com.example.task_manager.repository.IsAssignedRepository;
-import com.example.task_manager.repository.TaskRepository;
-import com.example.task_manager.repository.TeamMemberRepository;
-import com.example.task_manager.repository.TeamRepository;
-import com.example.task_manager.service.IsAssignedService;
-import com.example.task_manager.enums.TaskPriority;
+import com.example.task_manager.test_helpers.ServiceTestHelper;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class IsAssignedServiceTest {
-
-    @Autowired
-    private IsAssignedService isAssignedService;
-
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private IsAssignedRepository isAssignedRepository;
-
-    private TeamMember createUniqueTeamMember() {
-        return teamMemberRepository.save(new TeamMember(
-            "TeamMember_" + System.nanoTime(),
-            "team_member" + System.nanoTime() + "@example.com",
-            "defaultpw"
-        ));
-    }
-
-    private Team createUniqueTeam(TeamMember teamLead) {
-        return teamRepository.save(new Team(
-            "Team_" + System.nanoTime(),
-            teamLead
-        ));
-    }
-
-    private Task createUniqueTask(Team team) {
-        return taskRepository.save(new Task(
-            "Task_" + System.nanoTime(),
-            "Description for task",
-            team,
-            false,
-            "Open",
-            LocalDate.now(),
-            TaskPriority.LOW
-        ));
-    }
+public class IsAssignedServiceTest extends ServiceTestHelper {
 
     @Test
     void testAssignToTask() {

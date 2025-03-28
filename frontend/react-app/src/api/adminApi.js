@@ -25,6 +25,7 @@ export const createAdmin = async (name, email, password) => {
 
 //Delete admin
 export const deleteAdmin = async (adminId) => {
+    console.log(`${BASE_URL}/${adminId}`)
     try {
         const response = await fetch(`${BASE_URL}/${adminId}`, {
             method: 'DELETE',
@@ -32,6 +33,7 @@ export const deleteAdmin = async (adminId) => {
 
         if (!response.ok) {
             console.error(`Failed to delete admin: ${response.status} ${response.statusText}`);
+            throw Error(response.body)
         }
 
         return true;
@@ -198,6 +200,7 @@ export const changeRole = async (teamMemberId, newRole) => {
 
         if (!response.ok) {
             console.error(`Failed to change the role: ${response.status} ${response.statusText}`);
+            throw Error("FAILED TO CHANGE ROLE");
         }
 
         return true;

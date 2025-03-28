@@ -4,10 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -25,45 +23,14 @@ import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.enums.RoleType;
-import com.example.task_manager.repository.*;
 import com.example.task_manager.enums.TaskPriority;
-
-import com.example.task_manager.service.AdminService;
-import com.example.task_manager.service.TeamService;
-
+import com.example.task_manager.test_helpers.ServiceTestHelper;
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class AdminServiceTest {
-
-    @Autowired
-    private AdminService adminService;
-
-    @Autowired
-    private TeamService teamService;
-
-    @Autowired
-    private AdminRepository adminRepository;
-
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private IsAssignedRepository isAssignedRepository;
-
-    @Autowired
-    private IsMemberOfRepository isMemberOfRepository;
-
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
+public class AdminServiceTest extends ServiceTestHelper{
 
     @Test
     void testCreateAdmin() {

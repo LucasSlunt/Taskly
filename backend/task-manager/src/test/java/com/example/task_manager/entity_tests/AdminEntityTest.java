@@ -5,15 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.example.task_manager.entity.Admin;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.test_helpers.EntityTestHelper;
 
 import jakarta.transaction.Transactional;
 
@@ -21,29 +20,17 @@ import jakarta.transaction.Transactional;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class AdminEntityTest {
-
-    @Autowired
-    private TestEntityManager entMan;
-
-    private Admin createUniqueAdmin() {
-        return new Admin("Admin_" + System.nanoTime(), "admin_" + System.nanoTime() + "@example.com", "defaultpw");
-    }
-
-    private TeamMember createUniqueTeamMember() {
-        return new TeamMember("TeamUser_" + System.nanoTime(), "team_user_" + System.nanoTime() + "@example.com", "defaultpw");
-    }
-
+public class AdminEntityTest extends EntityTestHelper{
     /**
      * Tests if an Admin entity can be persisted and retrieved correctly.
      */
     @Test
     void testAdminPersistence() {
         Admin admin = createUniqueAdmin();
-        entMan.persist(admin);
-        entMan.flush();
+        entityManager.persist(admin);
+        entityManager.flush();
 
-        Admin savedAdmin = entMan.find(Admin.class, admin.getAccountId());
+        Admin savedAdmin = entityManager.find(Admin.class, admin.getAccountId());
 
         assertNotNull(savedAdmin);
         assertEquals(admin.getUserName(), savedAdmin.getUserName());
@@ -56,10 +43,10 @@ public class AdminEntityTest {
     @Test
     void testAdminStoredAsTeamMember() {
         Admin admin = createUniqueAdmin();
-        entMan.persist(admin);
-        entMan.flush();
+        entityManager.persist(admin);
+        entityManager.flush();
 
-        TeamMember savedMember = entMan.find(TeamMember.class, admin.getAccountId());
+        TeamMember savedMember = entityManager.find(TeamMember.class, admin.getAccountId());
 
         assertNotNull(savedMember);
         assertTrue(savedMember instanceof Admin);
@@ -74,11 +61,11 @@ public class AdminEntityTest {
     void testAdminQueryFromTeamMember() {
         Admin admin = createUniqueAdmin();
         TeamMember teamMember = createUniqueTeamMember();
-        entMan.persist(admin);
-        entMan.persist(teamMember);
-        entMan.flush();
+        entityManager.persist(admin);
+        entityManager.persist(teamMember);
+        entityManager.flush();
 
-        List<TeamMember> teamMembers = entMan.getEntityManager()
+        List<TeamMember> teamMembers = entityManager.getEntityManager()
                 .createQuery("SELECT tm FROM TeamMember tm", TeamMember.class)
                 .getResultList();
 
@@ -91,13 +78,13 @@ public class AdminEntityTest {
     @Test
     void testAdminDeletion() {
         Admin admin = createUniqueAdmin();
-        entMan.persist(admin);
-        entMan.flush();
+        entityManager.persist(admin);
+        entityManager.flush();
 
-        entMan.remove(admin);
-        entMan.flush();
+        entityManager.remove(admin);
+        entityManager.flush();
 
-        Admin deletedAdmin = entMan.find(Admin.class, admin.getAccountId());
+        Admin deletedAdmin = entityManager.find(Admin.class, admin.getAccountId());
         assertNull(deletedAdmin);
     }
 
@@ -107,10 +94,10 @@ public class AdminEntityTest {
     @Test
     void testAdminQueryById() {
         Admin admin = createUniqueAdmin();
-        entMan.persist(admin);
-        entMan.flush();
+        entityManager.persist(admin);
+        entityManager.flush();
 
-        Admin foundAdmin = entMan.getEntityManager()
+        Admin foundAdmin = entityManager.getEntityManager()
                 .createQuery("SELECT a FROM Admin a WHERE a.accountId = :id", Admin.class)
                 .setParameter("id", admin.getAccountId())
                 .getSingleResult();
@@ -125,10 +112,10 @@ public class AdminEntityTest {
     @Test
     void testAdminInheritsTeamMemberBehavior() {
         Admin admin = createUniqueAdmin();
-        entMan.persist(admin);
-        entMan.flush();
+        entityManager.persist(admin);
+        entityManager.flush();
 
-        TeamMember foundMember = entMan.find(TeamMember.class, admin.getAccountId());
+        TeamMember foundMember = entityManager.find(TeamMember.class, admin.getAccountId());
 
         assertNotNull(foundMember);
         assertTrue(foundMember instanceof Admin);
