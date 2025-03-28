@@ -23,6 +23,9 @@ function Profile(){
                     <Teams team={team} key={team.id}/> 
                 ))}
             </div> 
+            <div>
+            <a href="/change-password"><button>Change Password</button></a>    
+            </div> 
             <SignOut/>
         </div>
     </div>
