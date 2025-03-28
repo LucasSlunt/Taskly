@@ -15,10 +15,10 @@ function getAssigneesNames(taskItem) {
 
 function setUpData(results) {
     return results
-    .filter((taskItem) => taskItem.status !== "done")
+    .filter((taskItem) => taskItem.status !== "Done")
       .map((taskItem) => ({
         id: taskItem.taskId,
-        name: taskItem.title,
+        name: taskItem,
         team: taskItem.teamId,
         assignees: getAssigneesNames(taskItem),
         status: taskItem.status,
@@ -30,10 +30,10 @@ function setUpData(results) {
 
 function setUpDataCompleted(results) {
     return results
-      .filter((taskItem) => taskItem.status === "done")
+      .filter((taskItem) => taskItem.status === "Done")
       .map((taskItem) => ({
         id: taskItem.taskId,
-        name: taskItem.title,
+        name: taskItem,
         assignees: getAssigneesNames(taskItem),
         priority: taskItem.priority,
         status: taskItem.status,
@@ -83,7 +83,7 @@ useEffect(() => {
             Header: "Task Name",
             accessor: "name",
             Cell: (original) => (
-                <Link to="/view-task" state={{taskToSee: original.cell.row.values.id}}>{original.value}</Link>
+                <Link to="/view-task" state={{taskToSee: original.value, teamMembers: original.cell.row.values.assignees}}>{original.value.title}</Link>
               )
         },
         {
@@ -120,7 +120,7 @@ useEffect(() => {
             Header: "Task Name",
             accessor: "name",
             Cell: (original) => (
-                <Link to="/view-task" state={{taskToSee: original.cell.row.values.id}}>{original.value}</Link>
+                <Link to="/view-task" state={{taskToSee: original.value, teamMembers: original.cell.row.values.assignees}}>{original.value.title}</Link>
               )
         },
         {

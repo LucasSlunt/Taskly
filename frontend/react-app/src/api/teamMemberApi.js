@@ -89,6 +89,7 @@ export const assignMemberToTask = async (taskId, teamMemberId) => {
 //Assign many members to a task
 export const massAssignMemberToTask = async(taskId, teamMemberIds) => {
     try {
+        console.log(JSON.stringify(teamMemberIds))
         const response = await fetch(`${BASE_URL}/${taskId}/mass-assign`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },

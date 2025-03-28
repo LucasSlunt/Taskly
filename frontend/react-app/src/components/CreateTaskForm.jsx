@@ -52,7 +52,7 @@ function CreateTaskForm(){
                      })
                     }  
             })
-            //window.location.href="/home";
+            window.location.href="/home";
         } catch (error) {
             console.log(error)
             alert("FAILED IN MAKING TASK");
@@ -84,7 +84,7 @@ function CreateTaskForm(){
                 <label>
                     Choose Team:
                     <div>
-                        <select name="" id="" onChange={teamSelected} {...register('team',{required:true})}>
+                        <select name="" id="" onChange={teamSelected}>
                             <option disabled selected value=''>Choose A Team To Assign</option>
                             {userTeams.map((team)=>(
                                 <option value = {team.teamId}>{team.teamName}</option>
