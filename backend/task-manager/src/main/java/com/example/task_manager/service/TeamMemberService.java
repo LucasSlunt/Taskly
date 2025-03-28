@@ -18,6 +18,7 @@ import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.repository.IsAssignedRepository;
 import com.example.task_manager.repository.IsMemberOfRepository;
+import com.example.task_manager.repository.NotificationRepository;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
@@ -33,7 +34,8 @@ public class TeamMemberService {
 	protected final TeamRepository teamRepository;
 	protected final IsMemberOfRepository isMemberOfRepository;
 	protected final TaskRepository taskRepository;
-	protected final IsAssignedRepository isAssignedRepository;
+    protected final IsAssignedRepository isAssignedRepository;
+    protected final NotificationRepository notifRepository;
 	protected final AuthInfoService authInfoService;
 	protected final NotificationService notifService;
 
@@ -44,14 +46,16 @@ public class TeamMemberService {
 							 IsMemberOfRepository isMemberOfRepository, 
 							 IsAssignedRepository isAssignedRepository,
 							 AuthInfoService authInfoService,
-							 NotificationService notifService) {
+							 NotificationService notifService,
+                             NotificationRepository notifRepository) {
 		this.teamMemberRepository = teamMemberRepository;
 		this.teamRepository = teamRepository;
 		this.isMemberOfRepository = isMemberOfRepository;
 		this.taskRepository = taskRepository;
 		this.isAssignedRepository = isAssignedRepository;
 		this.authInfoService = authInfoService;
-		this.notifService = notifService;
+        this.notifService = notifService;
+        this.notifRepository = notifRepository;
 	}
 	
 	/**
@@ -113,10 +117,10 @@ public class TeamMemberService {
 				.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
 	
 		// Ensure all assignments are removed before deleting the task
-		isAssignedRepository.deleteById(taskId);
-	
-		taskRepository.delete(task);
+        isAssignedRepository.deleteAllByTask_TaskId(taskId);
+	    notifRepository.deleteAllByTask_TaskId(taskId); // 👈 add this
 
+		taskRepository.delete(task);
 	}    
 
 	/**
@@ -197,24 +201,50 @@ public class TeamMemberService {
 	 * @param taskId       The ID of the task.
 	 * @param teamMemberId The ID of the team member to be assigned.
 	 */
-	public IsAssignedDTO assignToTask(int taskId, int teamMemberId) {
-		Task task = taskRepository.findById(taskId)
-			.orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+    public IsAssignedDTO assignToTask(int taskId, int teamMemberId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
 
-		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
-			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+        TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+                .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
-		// Ensure that the member is not already assigned to this task
-		boolean alreadyAssigned = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMemberId, taskId);
-		if (alreadyAssigned) {
-			throw new RuntimeException("Team Member is already assigned to this task.");
-		}
+        // Ensure that the member is not already assigned to this task
+        boolean alreadyAssigned = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMemberId, taskId);
+        if (alreadyAssigned) {
+            throw new RuntimeException("Team Member is already assigned to this task.");
+        }
 
-		IsAssigned isAssigned = new IsAssigned(task, teamMember, task.getTeam());
-		isAssigned = isAssignedRepository.save(isAssigned);
+        IsAssigned isAssigned = new IsAssigned(task, teamMember, task.getTeam());
+        isAssigned = isAssignedRepository.save(isAssigned);
 
-		return convertToDTO(isAssigned);	
-	}
+        return convertToDTO(isAssigned);
+    }
+    
+    public List<IsAssignedDTO> massAssignToTask(int taskId, List<Integer> teamMemberIds) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+
+        List<IsAssigned> newAssignments = new ArrayList<>();
+
+        for (Integer teamMemberId : teamMemberIds) {
+            TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+                    .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+
+            boolean alreadyAssigned = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMemberId,
+                    taskId);
+
+            if (!alreadyAssigned) {
+                IsAssigned isAssigned = new IsAssigned(task, teamMember, task.getTeam());
+                newAssignments.add(isAssigned);
+            }
+        }
+        
+        List<IsAssigned> savedAssignments = isAssignedRepository.saveAll(newAssignments);
+
+        return savedAssignments.stream()    
+            .map(this::convertToDTO)
+            .collect(Collectors.toList());
+    }
 
 	/**
 	 * Changes the password for a TeamMember.
@@ -236,6 +266,8 @@ public class TeamMemberService {
 			String salt = teamMember.getAuthInfo().getSalt();
 			String newHashedPassword = AuthInfoService.hashPassword(newPassword, salt);
 			teamMember.getAuthInfo().setHashedPassword(newHashedPassword);
+		}else{
+			throw new RuntimeException("password is incorrect" + oldPassword);
 		}
 	}
 	
@@ -290,10 +322,12 @@ public class TeamMemberService {
 				.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
 		return teamMember.getTeams().stream()
-				.map(isMemberOf -> new TeamDTO(
-						isMemberOf.getTeam().getTeamId(),
-						isMemberOf.getTeam().getTeamName(),
-						isMemberOf.getTeam().getTeamLead().getAccountId()))
+                .map(isMemberOf -> {
+                    Team team = isMemberOf.getTeam();
+                    TeamMember lead = team.getTeamLead();
+                    int leadId = (lead != null) ? lead.getAccountId() : -1; // 👈 sentinel for no lead
+                    return new TeamDTO(team.getTeamId(), team.getTeamName(), leadId);
+                })
 				.collect(Collectors.toList());
 	}
 			

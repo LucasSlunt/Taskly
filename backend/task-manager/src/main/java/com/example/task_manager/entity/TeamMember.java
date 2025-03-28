@@ -35,6 +35,9 @@ public class TeamMember {
     @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<IsAssigned> assignedTasks = new HashSet<>();
 
+    @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Notification> notifications = new HashSet<>();
+
     public TeamMember() {}
 
     public TeamMember(String userName, String userEmail, String rawPassword) {
@@ -42,11 +45,20 @@ public class TeamMember {
         this.userEmail = userEmail;
         this.role = RoleType.TEAM_MEMBER;
         String userSalt = AuthInfoService.generateSalt();
-        this.authInfo = new AuthInfo(AuthInfoService.hashPassword(rawPassword,userSalt), userSalt, this);
+        this.authInfo = new AuthInfo(AuthInfoService.hashPassword(rawPassword, userSalt), userSalt, this);
         this.teams = new HashSet<>();
         this.assignedTasks = new HashSet<>();
     }
 
+    public TeamMember(String userName, String userEmail) {
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.role = RoleType.TEAM_MEMBER;
+        this.teams = new HashSet<>();
+        this.assignedTasks = new HashSet<>();
+        this.notifications = new HashSet<>();
+    }    
+    
     //getters and setters
     public int getAccountId() {
         return accountId;
@@ -86,9 +98,9 @@ public class TeamMember {
     }
 
     public void setAuthInfo(AuthInfo authInfo) {
-        if (authInfo == null) {
-            throw new IllegalArgumentException("Auth Info cannot be null.");
-        }
+        // if (authInfo == null) {
+        //     throw new IllegalArgumentException("Auth Info cannot be null.");
+        // }
         this.authInfo = authInfo;
     }
 
@@ -120,4 +132,16 @@ public class TeamMember {
         this.role = role;
     }
 
+    public Set<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Set<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+    public void addNotification(Notification notification) {
+        this.notifications.add(notification);
+        notification.setTeamMember(this);
+    }    
 }

@@ -1,86 +1,51 @@
 package com.example.task_manager.service_tests;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import com.example.task_manager.DTO.TaskDTO;
+
 import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.transaction.Transactional;
 
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.DTO.TeamMemberInTeamDTO;
+import com.example.task_manager.entity.IsAssigned;
+import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
-import com.example.task_manager.repository.TeamMemberRepository;
-import com.example.task_manager.repository.TeamRepository;
-import com.example.task_manager.repository.AdminRepository;
-import com.example.task_manager.repository.AuthInfoRepository;
-import com.example.task_manager.repository.IsAssignedRepository;
-import com.example.task_manager.repository.IsMemberOfRepository;
-import com.example.task_manager.repository.TaskRepository;
-import com.example.task_manager.service.IsMemberOfService;
-import com.example.task_manager.service.TeamService;
+import com.example.task_manager.test_helpers.ServiceTestHelper;
+
+import com.example.task_manager.enums.TaskPriority;
+
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class TeamServiceTest {
-
-    @Autowired
-    private TeamService teamService;
-
-    @Autowired
-    private IsMemberOfService isMemberOfService;
-
-    @Autowired
-    private AdminRepository adminRepository;
-
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private IsAssignedRepository isAssignedRepository;
-
-    @Autowired
-    private IsMemberOfRepository isMemberOfRepository;
-
-    @Autowired
-    private AuthInfoRepository authInfoRepository;
-
-    private TeamMember createUniqueTeamMember(String role) {
-        return teamMemberRepository.save(new TeamMember(
-                role + "_" + System.nanoTime(),
-                role.toLowerCase() + System.nanoTime() + "@example.com",
-                "defaultpw"
-        ));
-    }
-
-    private Team createUniqueTeam(TeamMember teamLead) {
-        return teamRepository.save(new Team(
-                "Team_" + System.nanoTime(),
-                teamLead
-        ));
-    }
-
+public class TeamServiceTest extends ServiceTestHelper{
     @Test
     void testCreateTeam() {
         TeamMember teamLead = createUniqueTeamMember("Lead");
         String teamName = "QA Team " + System.nanoTime();
 
         TeamDTO newTeam = teamService.createTeam(teamName, teamLead.getAccountId());
+
+        List<TeamMemberInTeamDTO> members = teamService.getTeamMembers(newTeam.getTeamId());
+
+        assertTrue(members.stream().anyMatch(member -> member.getAccountId() == teamLead.getAccountId()),
+            "Team lead should be included in the team's member list."
+        );
 
         assertNotNull(newTeam);
         assertEquals(teamName, newTeam.getTeamName());
@@ -164,7 +129,7 @@ public class TeamServiceTest {
 
         isMemberOfService.addMemberToTeam(member.getAccountId(), team.getTeamId());
 
-        List<TeamMemberDTO> teamMembers = teamService.getTeamMembers(team.getTeamId());
+        List<TeamMemberInTeamDTO> teamMembers = teamService.getTeamMembers(team.getTeamId());
 
         assertNotNull(teamMembers);
         assertFalse(teamMembers.isEmpty());
@@ -196,7 +161,38 @@ public class TeamServiceTest {
         TeamMember teamLead = createUniqueTeamMember("Lead");
         Team team = createUniqueTeam(teamLead);
 
-        List<TeamMemberDTO> members = teamService.getTeamMembers(team.getTeamId());
+        List<TeamMemberInTeamDTO> members = teamService.getTeamMembers(team.getTeamId());
         assertTrue(members.isEmpty());
     }
+
+    @Test
+    void testGetTeamTasks() {
+        TeamMember teamMember = createUniqueTeamMember("ADMIN");
+        Team team = createUniqueTeam(teamMember);
+
+        Task task = new Task("Dire Straits", "Die Straits fan club.", team, false, "Open", LocalDate.now(), TaskPriority.HIGH);
+
+        taskRepository.save(task);
+
+        IsAssigned isAssigned = new IsAssigned(task, teamMember, team);
+
+        isAssignedRepository.save(isAssigned);
+
+        task.getAssignedMembers().add(isAssigned);
+        taskRepository.save(task);
+
+        List<TaskDTO> teamTasks = teamService.getTeamTasks(team.getTeamId());
+
+        TaskDTO taskDTO = teamTasks.get(0);
+        assertEquals(task.getTaskId(), taskDTO.getTaskId());
+        assertEquals("Dire Straits", taskDTO.getTitle());
+        assertEquals(team.getTeamId(), taskDTO.getTeamId());
+        assertEquals(1, taskDTO.getAssignedMembers().size());
+
+        TeamMemberDTO teamMemberDTO = taskDTO.getAssignedMembers().get(0);
+        assertEquals(teamMember.getAccountId(), teamMemberDTO.getAccountId());
+        assertEquals(teamMember.getUserName(), teamMemberDTO.getUserName());
+
+    }
+
 }

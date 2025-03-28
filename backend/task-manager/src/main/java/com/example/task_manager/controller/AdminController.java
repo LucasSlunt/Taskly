@@ -7,6 +7,7 @@ import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
 import com.example.task_manager.DTO.UpdateEmailRequestDTO;
 import com.example.task_manager.DTO.UpdateNameRequestDTO;
+import com.example.task_manager.entity.Admin;
 import com.example.task_manager.repository.AdminRepository;
 import com.example.task_manager.repository.AuthInfoRepository;
 import com.example.task_manager.service.AdminService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -62,10 +64,29 @@ public class AdminController {
         try {
             adminService.deleteAdmin(adminId);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.status(404).body("Admin not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Unexpected error: " + e.getMessage());
         }
     }
+
+    // @DeleteMapping("/debug-delete/{adminId}")
+    // public ResponseEntity<?> debugDelete(@PathVariable int adminId) {
+    //     return ResponseEntity.ok("Received DELETE request for ID: " + adminId);
+    // }
+
+        
+    // @GetMapping("/admin/debug/{id}")
+    // public ResponseEntity<?> debugAdmin(@PathVariable int id) {
+    //     try {
+    //         Optional<Admin> admin = adminRepository.findById(id);
+    //         return admin.map(a -> ResponseEntity.ok("FOUND: " + a.getUserName()))
+    //                     .orElse(ResponseEntity.status(404).body("Not found"));
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(500).body("Exception: " + e.getMessage());
+    //     }
+    // }
 
     // Modify Admin Name
     @PutMapping("/{adminId}/update-name")

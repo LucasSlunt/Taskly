@@ -27,7 +27,7 @@ export default function CreateAccountForm({teams}){
         } catch (error) {
             alert(error)
         }
-        //window.location.href="/home";
+        window.location.href="/home";
     }
     async function addToTeams(id, teams) {
         const data = await Promise.all(
@@ -86,7 +86,7 @@ export default function CreateAccountForm({teams}){
                         }
                     })}
                     />
-                    <select {...register('role',{required:true})}>
+                    <select id = 'selectorRole' {...register('role',{required:true})}>
                         <option disabled selected value={''}>Select Role</option>
                         <option value="teamMember">Team Member</option>
                         <option value="admin">Admin</option>
@@ -95,6 +95,7 @@ export default function CreateAccountForm({teams}){
                     control={control}
                     defaultValue={[]}
                     className='Select'
+                    id = 'selectTeam'
                     name="teams"
                     rules={{required:true}}
                      render={({field}) => (

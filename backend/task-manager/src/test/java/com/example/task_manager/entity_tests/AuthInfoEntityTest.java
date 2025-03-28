@@ -3,14 +3,13 @@ package com.example.task_manager.entity_tests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.example.task_manager.entity.AuthInfo;
 import com.example.task_manager.entity.TeamMember;
+import com.example.task_manager.test_helpers.EntityTestHelper;
 
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
@@ -19,15 +18,7 @@ import jakarta.transaction.Transactional;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test")
-public class AuthInfoEntityTest {
-
-    @Autowired
-    private TestEntityManager entityManager;
-
-    private TeamMember createUniqueTeamMember() {
-        return new TeamMember("User_" + System.nanoTime(), 
-            "user_" + System.nanoTime() + "@example.com", "password123");
-    }
+public class AuthInfoEntityTest extends EntityTestHelper {
 
     /**
      * Tests if an AuthInfo entity can be persisted and retrieved correctly.
