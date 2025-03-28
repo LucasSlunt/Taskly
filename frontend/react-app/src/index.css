@@ -2,6 +2,7 @@ html {
     margin:0;
     padding:0;
     background-color: #4e456e;
+    font-family: Calibri;
  }
  .rowFlexbox{
   display: flex;
@@ -23,6 +24,9 @@ html {
    flex-direction: column;
   
  }
+ .center{
+  text-align: center;
+ }
 
  h1.inHeader{
   align-self: start;
@@ -31,7 +35,6 @@ html {
   padding-bottom: 10px;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: Calibri;
   width: 90%;
   margin-left: 5%;
   margin-right: 5%;
@@ -62,4 +65,21 @@ li.logo a{
 .pageBody{
   margin-left: 5%;
   margin-right: 5%;
+}
+.collumFlexBox{
+  display:flex;
+  flex-direction: column;
+}
+.importButton{
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 1.2em;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 10px;
+  background-color: #3f5d8b;
+  cursor: pointer;
 }
