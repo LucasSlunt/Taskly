@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import Select from 'react-select'
-import { createTeamMember, createAdmin} from '../api/adminApi';
+import {createAdmin } from '../api/adminAccountApi';
+import { createTeamMember } from '../api/teamMemberAccountApi';
 import { addMemberToTeam } from '../api/isMemberOfApi';
 export default function CreateAccountForm({teams}){
     const { register, handleSubmit, formState: {errors},control} = useForm();

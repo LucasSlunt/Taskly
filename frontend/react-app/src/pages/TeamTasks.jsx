@@ -10,7 +10,6 @@ import { getTeamMembers } from "../api/teamApi";
 import { useLocation } from 'react-router-dom';
 import { getTeamTasks } from "../api/teamApi";
 
-
 function getAssigneesNames(taskItem) {
   return taskItem.assignedMembers.map((member) => member.userName).join(", ");
 }

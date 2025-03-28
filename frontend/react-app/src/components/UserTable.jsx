@@ -5,7 +5,10 @@ import SearchFilterSort from './SearchFilterSort';
 import { useState} from 'react';
 import { getTeamMembers } from '../api/teamApi';
 import {Link} from 'react-router-dom'
-import { changeRole, deleteAdmin, deleteTeamMember } from '../api/adminApi';
+import { changeRole } from '../api/adminApi';
+import { deleteAdmin } from '../api/adminAccountApi';
+import { deleteTeamMember } from '../api/teamMemberAccountApi';
+
 const AllTeams = [
     {
         name: "Team1",

@@ -1,4 +1,4 @@
-import {assignTeamMemberToTeam, lockTask, changeRole, unlockTask, getAdmins, resetPassword } from '../../api/adminApi';
+import { assignTeamMemberToTeam, lockTask, unlockTask, changeRole, getAdmins, resetPassword } from '../../api/adminApi';
 
 const BASE_URL = "http://localhost:8080/api/admins/actions";
 

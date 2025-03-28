@@ -1,10 +1,11 @@
 import { useEffect, useState} from "react"
 import Header from "../components/Header"
 import {useLocation} from 'react-router-dom'
-import { getTeamMemberById, modifyAdminEmail, modifyAdminName, modifyTeamMemberEmail, modifyTeamMemberName } from "../api/adminApi"
+import { modifyAdminEmail, modifyAdminName } from "../api/adminAccountApi"
+import {getTeamMemberById, modifyTeamMemberEmail, modifyTeamMemberName } from "../api/teamMemberAccountApi"
 import {useForm} from 'react-hook-form'
-import { isAdmin } from "../api/authInfo"
-import { resetPassword } from "../api/teamMemberApi"
+import { isAdmin } from "../api/authInfoApi"
+import { resetPassword } from "../api/adminApi"
 
 export default function EditUserDetails(){
     const {register, handleSubmit} = useForm();

@@ -1,4 +1,4 @@
-import { createTeamMember, modifyTeamMemberEmail, modifyTeamMemberName, getTeamMemberById, deleteTeamMember} from '../../api/teamMemberAccount';
+import { createTeamMember, modifyTeamMemberEmail, modifyTeamMemberName, getTeamMemberById, deleteTeamMember} from '../../api/teamMemberAccountApi';
 
 const BASE_URL = "http://localhost:8080/api/members";
 
