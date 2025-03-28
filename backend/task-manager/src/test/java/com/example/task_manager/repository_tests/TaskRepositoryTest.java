@@ -1,26 +1,28 @@
 package com.example.task_manager.repository_tests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.example.task_manager.entity.Task;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 import com.example.task_manager.entity.Team;
 import com.example.task_manager.entity.TeamMember;
 import com.example.task_manager.enums.TaskPriority;
+import com.example.task_manager.entity.Task;
 import com.example.task_manager.test_helpers.RepositoryTestHelper;
 
-@SpringBootTest
+
+@DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
-public class TaskRepositoryTest extends RepositoryTestHelper{
+public class TaskRepositoryTest extends RepositoryTestHelper {
 
     @Test
     void testFindByTeam_TeamId() {
@@ -41,3 +43,4 @@ public class TaskRepositoryTest extends RepositoryTestHelper{
         assertEquals(team.getTeamId(), results.get(0).getTeam().getTeamId());
     }
 }
+
