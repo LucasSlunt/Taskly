@@ -28,11 +28,10 @@ function AdminAllUsers(){
     return(
         <div className='pageContainer'>
             <Header/>
-            <div className='pageBody'>
-                <UserTable
+            <div className='pageBody collumFlexBox'>
+                    <UserTable
                 teams={teamData}
                 />
-                <a href="create-account"><button >Create New Account</button></a>
             </div>
 
         </div>
