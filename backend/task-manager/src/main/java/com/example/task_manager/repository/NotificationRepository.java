@@ -17,4 +17,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
 
     @Query("SELECT n FROM Notification n WHERE n.teamMember.accountId = :teamMemberId AND n.isRead = true")
     List<Notification> findByTeamMemberIdAndIsReadTrue(@Param("teamMemberId") int teamMemberId);
+
+    void deleteAllByTask_TaskId(int taskId);
+
 }

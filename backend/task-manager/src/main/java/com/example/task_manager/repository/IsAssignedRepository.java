@@ -20,4 +20,7 @@ public interface IsAssignedRepository extends JpaRepository<IsAssigned, Integer>
     Collection<IsAssigned> findByTeamMember_AccountId(int teamMemberId);
 
     Collection<IsAssigned> findByTask(Task task);
+
+    void deleteAllByTask_TaskId(int taskId);
+
 }
