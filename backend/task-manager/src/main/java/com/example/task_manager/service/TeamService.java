@@ -110,7 +110,7 @@ public class TeamService {
 		Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
 
-        int teamLeadId = team.getTeamLead().getAccountId();
+        int teamLeadId = (team.getTeamLead() != null) ? team.getTeamLead().getAccountId() : -1;
 
 		return isMemberOfRepository.findMembersByTeamId(teamId).stream()
                 .map(isMember -> {
