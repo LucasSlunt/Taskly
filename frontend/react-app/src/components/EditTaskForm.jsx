@@ -1,18 +1,95 @@
 
-import {useForm} from 'react-hook-form'
+import {useForm, Controller} from 'react-hook-form'
+import Select from 'react-select'
+import { assignMemberToTask, editTask, massAssignMemberToTask } from '../api/teamMemberApi';
+import { unassignTeamMemberFromTask } from '../api/isAssignedApi';
+const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      width: '65vw',
+    minWidth: '100px',
+    maxWidth: '100%',
+    minHeight: '30px',
+    maxHeight: '100%',
+      border: '2px solid grey',
+      borderRadius: '10px',
+      paddingLeft: '8px',
+      backgroundColor: '#BFCDE0',
+      margin: '10px 0px',
+    }),
+  };
+  function formatTeamData(myTeamMembers){
+    return myTeamMembers.map((teamMember)=>(
+        
+            
+        {
+            value: teamMember.accountId,
+            label: teamMember.userName
+         }
+            
+        
+    ))
+  }
 function EditTaskForm({task, team}){
-    const { register, handleSubmit, formState: {errors}} = useForm();
-    const onSubmit = data => {
-        console.log(data)
-        alert("Your task was updated")
-        window.location.href="/home";
+    console.log(formatTeamData(task.assignedMembers))
+    const { register, handleSubmit, formState: {errors}, control} = useForm();
+
+    const onSubmit = async(data) => {
+        console.log(task.assignedMembers)
+        try {
+            console.log(task.taskId, data.name, data.description, null,null, data.dueDate, data.priority)
+            const response = await editTask(task.taskId, data.name, data.description, null,null, data.dueDate, data.priority)
+            console.log(response)
+            if(JSON.stringify(data.teamMembers) !== JSON.stringify(task.assignedMembers)){
+                console.log('Compare: ',task.assignedMembers, data.teamMembers)
+                let teamMembersToAdd = []
+                let teamMembersToDelete = []
+                data.teamMembers.map((teamMemberOfChoice)=>{
+                    let addToTeam = true;
+                    task.assignedMembers.map((teamMember)=>{
+                        if(teamMemberOfChoice.value === teamMember.accountId){
+                            addToTeam = false;
+                        }
+                    })
+                    if(addToTeam){
+                        teamMembersToAdd = [...teamMembersToAdd, teamMemberOfChoice.value]
+                    }
+                })
+                
+                task.assignedMembers.map((teamMemberToDelete)=>{
+                    let deleteTeamMember = true
+                    data.teamMembers.map((teamMember)=>{
+                        if(teamMemberToDelete.accountId === teamMember.value){
+                            deleteTeamMember = false;
+                        }
+                    })
+                    if(deleteTeamMember){
+                        teamMembersToDelete = [...teamMembersToDelete, teamMemberToDelete.accountId]}
+                })
+                console.log('To add:', teamMembersToAdd)
+                console.log('TO del', teamMembersToDelete)
+                if(teamMembersToAdd.length >0){
+                    const addedTeamMembersAPIResponse = await massAssignMemberToTask(task.taskId, teamMembersToAdd);
+                    console.log(addedTeamMembersAPIResponse)
+                }if(teamMembersToDelete.length >0 && teamMembersToDelete[0]!== undefined){
+                    teamMembersToDelete.map(async(teamMemberToDel)=>{
+                        const delTeamMemberAPIResponse = await unassignTeamMemberFromTask(teamMemberToDel, task.taskId)
+                    })
+                }
+            }
+
+            await alert('Task Has Been Edited')
+            //window.location.href="/home";
+        } catch (error) {
+            alert(error)
+        }
     };
     return(
         <form onSubmit={handleSubmit(onSubmit)} className='body'>
                         <label className='majorLabel'>
                                 Task Name
                                 <div>
-                                <input type="text" name="name" id="name" className='input' defaultValue={task.name}{...register("name", { 
+                                <input type="text" name="name" id="name" className='input' defaultValue={task.title}{...register("name", { 
                                     required:{
                                         value: true,
                                         message: 'Please set a Task Name'
@@ -30,31 +107,53 @@ function EditTaskForm({task, team}){
                             </label>
                             <label className='majorLabel'>
                                 Assign To:
-                                <div className='Checkboxs'>
+                                {/*<div className='Checkboxs'>
                                     {team.map((teamMember)=>(
                                         <div className='checkbox' key = {teamMember.name}>
-                                            {teamMember.name}
-                                            <input type="checkbox" name="" id="" value = {teamMember.name} {...register("assignees")}/>
+                                            {teamMember.userName}
+                                            <input type="checkbox" name="" id="" value = {teamMember.accountId} {...register("assignees")}/>
                                         </div>
-                                    ))}
-                                </div>
+                                    ))
+                                </div>}*/}
+                                <Controller
+                                    control={control}
+                                    className='Select'
+                                    name="teamMembers"
+                                    rules={{required:true}}
+                                    defaultValue={formatTeamData(task.assignedMembers)}
+                                    render={({field}) => (
+                                        <Select
+                                        {...field}
+                                        options={formatTeamData(team)}
+                                        isMulti
+                                        
+                                        styles={customStyles}
+                                        
+                                        />)}
+                                    />
                             </label>
                             <label>
                                 Priority
                                 <select name="" id="" defaultValue={task.priority}{...register("priority")}>
-                                    <option value="Low">Low</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="High">High</option>
+                                    <option value="LOW">Low</option>
+                                    <option value="MEDIUM">Medium</option>
+                                    <option value="HIGH">High</option>
                                 </select>
                             </label>
                             <label className='majorLabel'>
                             Description
                             
                             <div>
-                                <input type="text" name="input-discription" id="discription" className='input' defaultValue={task.discription}  {...register("discription", { required: false })}/>
+                                <input type="text" name="input-description" id="description" className='input' defaultValue={task.description}  {...register("description", { required: false })}/>
                             </div>
                             </label>
-                            <input type="submit" value="Create Task" id="button"/>
+                            <label className='majorLabel'>
+                                Due Date
+                                <div>
+                                    <input type='date' name="input-dueDate" id="dueDate" className='input' defaultValue={task.dueDate}  {...register("dueDate", { required: false })}/>
+                                </div>
+                            </label>
+                            <input type="submit" value="Edit Task" id="button"/>
                         
                     </form>
     )

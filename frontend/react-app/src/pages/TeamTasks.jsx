@@ -19,7 +19,7 @@ function setUpData(results) {
   .filter((taskItem) => taskItem.status !== "done")
     .map((taskItem) => ({
       id: taskItem.taskId,
-      name: taskItem.title,
+      name: taskItem,
       assignees: getAssigneesNames(taskItem),
       status: taskItem.status,
       priority: taskItem.priority,
@@ -32,7 +32,7 @@ function setUpDataCompleted(results) {
     .filter((taskItem) => taskItem.status === "done")
     .map((taskItem) => ({
       id: taskItem.taskId,
-      name: taskItem.title,
+      name: taskItem,
       assignees: getAssigneesNames(taskItem),
       dueDate: taskItem.dueDate || "No Due Date",
       dateCompleted: taskItem.dateCompleted,
@@ -44,7 +44,7 @@ const headerAndAccessors = [
         Header: "Task Name",
         accessor: "name",
         Cell: (original) => (
-            <Link to="/view-task" state={{taskToSee: original.cell.row.values.id}}>{original.value}</Link>
+            <Link to="/view-task" state={{taskToSee: original.value, teamMembers: original.cell.row.values.assignees}}>{original.value.title}</Link>
           )
       },
       {
@@ -82,7 +82,7 @@ const headerAndAccessorsComplete = [
     Header: "Task Name",
     accessor: "name",
     Cell: (original) => (
-        <Link to="/view-task" state={{taskToSee: original.cell.row.values.id}}>{original.value}</Link>
+        <Link to="/view-task" state={{taskToSee: original.value, teamMembers: original.cell.row.values.assignees}}>{original.value.title}</Link>
       )
   },
   {

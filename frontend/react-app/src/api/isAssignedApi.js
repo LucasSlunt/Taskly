@@ -28,8 +28,9 @@ export const unassignTeamMemberFromTask = async (teamMemberId, taskId) => {
         });
 
         if (!response.ok) {
-            console.error(`Failed unassigning team member to task: ${response.status} ${response.statusText}`);
-            return false;
+
+            throw Error(`Failed unassigning team member to task: ${response.status} ${response.statusText}`)
+            
         }
 
         return true;
