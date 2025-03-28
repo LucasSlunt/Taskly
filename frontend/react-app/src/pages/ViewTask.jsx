@@ -74,6 +74,7 @@ function ViewTask(){
                             <input type="button" value="SUBMIT" classNmae ="submit-comment"/>
                         </form>
                     </div>*/}
+                    {!taskToSee.isLocked &&(
                     <div className="update-class rowFlexbox" style={{justifyContent:'space-between'}}>
                         <div>
                             <select name="update status" id="newStatus" className = "updateSelector" defaultValue={taskToSee.status} onChange={changeStatus}>
@@ -87,7 +88,7 @@ function ViewTask(){
                         </div>
                         <input type="button" value="DELETE TASK" className="fotterbutton" onClick={deleteThisTask}/>
 
-                    </div>
+                    </div>)}
                 </div>
             </div>
         </div>
