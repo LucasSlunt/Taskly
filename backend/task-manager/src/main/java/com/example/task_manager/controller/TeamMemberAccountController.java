@@ -69,7 +69,7 @@ public class TeamMemberAccountController {
     }
 
     // Get a team member's info with their ID
-    @GetMapping("/team-member/{teamMemberId}")
+    @GetMapping("/{teamMemberId}")
     public ResponseEntity<?> getTeamMemberById(@PathVariable int teamMemberId) {
         try {
             TeamMemberDTO teamMember = adminService.getTeamMemberById(teamMemberId);

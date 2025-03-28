@@ -23,7 +23,7 @@ export const assignTeamMemberToTeam = async (teamMemberId, teamId) => {
 //Changing the role of a team member or admin
 export const changeRole = async (teamMemberId, newRole) => {
     try {
-        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}/change-role`, {
+        const response = await fetch(`${BASE_URL}/${teamMemberId}/change-role`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ role: newRole })
@@ -85,7 +85,7 @@ export const unlockTask = async (taskId) => {
 //Get all admins
 export const getAdmins = async () => {
     try {
-        const response = await fetch(`${BASE_URL}/admins`, {
+        const response = await fetch(`${BASE_URL}`, {
             method: 'GET'
         });
 
@@ -101,78 +101,24 @@ export const getAdmins = async () => {
     } 
 };
 
-//Get all team ememebrs
-export const getTeamMembers = async () => {
+//reset password
+export const resetPassword = async (teamMemberId, newPassword) => {
     try {
-        const response = await fetch(`${BASE_URL}/team-members`, {
-            method: 'GET'
+        const response = await fetch(`${BASE_URL}/${teamMemberId}/reset-password`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ newPassword })
         });
 
         if (!response.ok) {
-            console.error(`Failed to retrieve team members: ${response.status} ${response.statusText}`);
+            console.error(`Failed to reset password: ${response.status} ${response.statusText}`)
+            return null;
         }
 
-        return await response.json();
+        return await true;
     }
     catch (error) {
-        console.error(`Failed to retrieve all team members: `, error);
+        console.error("Error resetting password: ", error);
         throw error;
-    } 
-};
-
-//Get all teams
-export const getTeams = async () => {
-    try {
-        const response = await fetch(`${BASE_URL}/all-teams`, {
-            method: 'GET'
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to retrieve teams: ${response.status} ${response.statusText}`);
-        }
-
-        return await response.json();
     }
-    catch (error) {
-        console.error(`Failed to retrieve all teams: `, error);
-        throw error;
-    } 
-};
-
-//Get an admin with their ID
-export const getAdminById = async (adminId) => {
-    try {
-        const response = await fetch(`${BASE_URL}/${adminId}`, {
-            method: 'GET'
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to retrieve admin: ${response.status} ${response.statusText}`);
-        }
-
-        return await response.json();
-    }
-    catch (error) {
-        console.error(`Failed to retrieve admin: `, error);
-        throw error;
-    } 
-};
-
-//Get a team member with their ID
-export const getTeamMemberById = async (teamMemberId) => {
-    try {
-        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}`, {
-            method: 'GET'
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to retrieve team member: ${response.status} ${response.statusText}`);
-        }
-
-        return await response.json();
-    }
-    catch (error) {
-        console.error(`Failed to retrieve team member: `, error);
-        throw error;
-    } 
 };

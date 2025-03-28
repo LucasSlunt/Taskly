@@ -1,69 +1,4 @@
-const BASE_URL = "http://localhost:8080/api/tasks";
-
-//Create a task
-export const createTask = async (title, description, isLocked, status, dueDate, teamId, priority) => {
-    try {
-        console.log("Sending this: ", JSON.stringify({title, description, isLocked, status, dueDate, teamId, priority}))
-        const response = await fetch(`${BASE_URL}`, {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({title, description, isLocked, status, dueDate, teamId, priority})
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to create task: ${response.status} ${response.statusText}`);
-            return null;
-        }
-
-        return await response.json();
-    }
-    catch (error) {
-        console.error("Error creating task: ", error);
-        throw error;
-    }
-};
-
-//Delete a task
-export const deleteTask = async (taskId) => {
-    try {
-        const response = await fetch(`${BASE_URL}/${taskId}`, {
-            method: 'DELETE'
-        }); 
-
-        if (!response.ok) {
-            console.error(`Failed to delete task: ${response.status} ${response.statusText}`);
-            return null;
-        }
-
-        return true;
-    }
-    catch (error) {
-        console.error("Error deleting task: ", error);
-        throw error;
-    }
-};
-
-//Edit task
-export const editTask = async (taskId, title, description, isLocked, status, dueDate, priority) => {
-    try {
-        const response = await fetch(`${BASE_URL}/${taskId}`, {
-            method: 'PUT',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({title, description, isLocked, status, dueDate, priority})
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to edit task: ${response.status} ${response.statusText}`);
-            return null;
-        }
-
-        return await response.json();
-    }
-    catch (error) {
-        console.error("Error editing task: ", error);
-        throw error;
-    }
-};
+const BASE_URL = "http://localhost:8080/api/members/actions";
 
 //Assign member to task
 export const assignMemberToTask = async (taskId, teamMemberId) => {
@@ -112,7 +47,7 @@ export const massAssignMemberToTask = async(taskId, teamMemberIds) => {
 export const changePassword = async (teamMemberId, oldPassword, newPassword) => {
     try {
         console.log(JSON.stringify({oldPassword, newPassword}))
-        const response = await fetch(`${BASE_URL}/team-members/${teamMemberId}/change-password`, {
+        const response = await fetch(`${BASE_URL}/${teamMemberId}/change-password`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({oldPassword, newPassword})
@@ -131,27 +66,7 @@ export const changePassword = async (teamMemberId, oldPassword, newPassword) => 
     }
 };
 
-//reset password
-export const resetPassword = async (teamMemberId, newPassword) => {
-    try {
-        const response = await fetch(`${BASE_URL}/team-members/${teamMemberId}/reset-password`, {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ newPassword })
-        });
 
-        if (!response.ok) {
-            console.error(`Failed to reset password: ${response.status} ${response.statusText}`)
-            return null;
-        }
-
-        return await true;
-    }
-    catch (error) {
-        console.error("Error resetting password: ", error);
-        throw error;
-    }
-};
 
 //getting all teams for a specific team member
 export const getTeamsForMember = async (accountId) => {

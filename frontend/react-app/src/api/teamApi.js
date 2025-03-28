@@ -64,6 +64,25 @@ export const changeTeamLead = async (teamId, teamLeadId, teamName) => {
     }
 };
 
+//Get all teams
+export const getTeams = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve teams: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve all teams: `, error);
+        throw error;
+    } 
+};
+
 //Get all team members of team
 export const getTeamMembers = async (teamId) => {
     try {
