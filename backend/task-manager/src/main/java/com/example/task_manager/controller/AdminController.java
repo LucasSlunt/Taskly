@@ -3,6 +3,7 @@ package com.example.task_manager.controller;
 import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.ChangeRoleRequestDTO;
 import com.example.task_manager.DTO.ResetPasswordRequestDTO;
+
 import com.example.task_manager.service.AdminService;
 import com.example.task_manager.service.TeamMemberService;
 
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/admins/actions")
 public class AdminController {
