@@ -14,30 +14,39 @@ import { getTeamTasks } from "../api/teamApi";
 function getAssigneesNames(taskItem) {
   return taskItem.assignedMembers.map((member) => member.userName).join(", ");
 }
+
+function mapTaskItem(taskItem) {
+  return {
+    name: taskItem,
+    id: taskItem.taskId,
+    assignees: getAssigneesNames(taskItem),
+    dueDate: taskItem.dueDate || "No Due Date",
+  };
+}
 function setUpData(results) {
   return results
   .filter((taskItem) => taskItem.status !== "Done")
-    .map((taskItem) => ({
-      id: taskItem.taskId,
-      name: taskItem,
-      assignees: getAssigneesNames(taskItem),
-      status: taskItem.status,
-      priority: taskItem.priority,
-      dueDate: taskItem.dueDate || "No Due Date",
-      isLocked: taskItem.isLocked.toString()
-    }));
+    .map((taskItem) => {
+      const baseItem = mapTaskItem(taskItem);
+      return{
+        ...baseItem,
+        status: taskItem.status,
+        priority: taskItem.priority,
+        isLocked: taskItem.isLocked.toString()
+      };
+      
+    });
 }
 function setUpDataCompleted(results) {
   return results
     .filter((taskItem) => taskItem.status === "Done")
-    .map((taskItem) => ({
-      id: taskItem.taskId,
-      name: taskItem,
-      assignees: getAssigneesNames(taskItem),
-      dueDate: taskItem.dueDate || "No Due Date",
-      dateCompleted: taskItem.dateCompleted,
-      isLocked: taskItem.isLocked.toString()
-    }));
+    .map((taskItem) => {
+      const baseItem = mapTaskItem(taskItem);
+      return{
+        ...baseItem,
+        dateCompleted: taskItem.dateCompleted,
+      };
+    });
 }
 
 const commonColumns= [
