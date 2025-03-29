@@ -143,7 +143,7 @@ public class NotificationService {
 
     //get unread notifications for a team member
     public List<NotificationDTO> getUnreadNotifications(int teamMemberId) {
-        TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+        teamMemberRepository.findById(teamMemberId)
                 .orElseThrow(() -> new RuntimeException("TeamMember not found"));
         
         return notifRepository.findByTeamMemberIdAndIsReadFalse(teamMemberId)
@@ -154,7 +154,7 @@ public class NotificationService {
 
     //get read notifications for a team member
     public List<NotificationDTO> getReadNotifications(int teamMemberId) {
-        TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+        teamMemberRepository.findById(teamMemberId)
                 .orElseThrow(() -> new RuntimeException("TeamMember not found"));
 
         return notifRepository.findByTeamMemberIdAndIsReadTrue(teamMemberId)

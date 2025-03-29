@@ -5,8 +5,6 @@ import com.example.task_manager.DTO.PasswordChangeRequestDTO;
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.service.TeamMemberService;
-import com.example.task_manager.service.AdminService;
-
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;

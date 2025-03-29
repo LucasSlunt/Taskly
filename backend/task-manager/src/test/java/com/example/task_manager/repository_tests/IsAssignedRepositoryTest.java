@@ -53,7 +53,7 @@ public class IsAssignedRepositoryTest extends RepositoryTestHelper{
         Team team = createAndPersistUniqueTeam();
         TeamMember teamMember = createAndPersistUniqueTeamMember();
         Task task = createAndSaveUniqueTask(team);
-        IsAssigned assignment = createAndSaveUniqueAssignment(task, teamMember, team);
+        createAndSaveUniqueAssignment(task, teamMember, team);
 
 
         boolean exists = isAssignedRepository.existsByTeamMember_AccountIdAndTask_TaskId(teamMember.getAccountId(), task.getTaskId());
@@ -65,7 +65,7 @@ public class IsAssignedRepositoryTest extends RepositoryTestHelper{
         Team team = createAndPersistUniqueTeam();
         Task task = createAndSaveUniqueTask(team);
         TeamMember teamMember = createAndPersistUniqueTeamMember();
-        IsAssigned assignment = createAndSaveUniqueAssignment(task, teamMember, team);
+        createAndSaveUniqueAssignment(task, teamMember, team);
 
 
         Collection<IsAssigned> assignments = isAssignedRepository.findByTeamMember_AccountId(teamMember.getAccountId());

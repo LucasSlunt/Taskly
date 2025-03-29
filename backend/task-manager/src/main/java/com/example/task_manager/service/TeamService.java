@@ -18,7 +18,6 @@ import com.example.task_manager.repository.IsMemberOfRepository;
 import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.TeamMemberRepository;
 import com.example.task_manager.repository.TeamRepository;
-import com.sun.source.util.TaskListener;
 
 import jakarta.transaction.Transactional;
 
@@ -133,7 +132,7 @@ public class TeamService {
 	 * Returns all tasks attached to a team
      */
     public List<TaskDTO> getTeamTasks(int teamId) {
-        Team team = teamRepository.findById(teamId)
+        teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
 
         return taskRepository.findByTeam_TeamId(teamId).stream()
@@ -144,7 +143,7 @@ public class TeamService {
     /*
 	 * Converts a Task entity to a TaskDTO entity
      */
-    private TaskDTO convertToDTO(Task task) {
+    public TaskDTO convertToDTO(Task task) {
         List<TeamMemberDTO> members = task.getAssignedMembers().stream()
                 .map(IsAssigned::getTeamMember)
                 .map(member -> new TeamMemberDTO(
@@ -171,7 +170,7 @@ public class TeamService {
     /**
      * Converts a Team entity to a TeamDTO.
      */
-    private TeamDTO convertToDTO(Team team) {
+    public TeamDTO convertToDTO(Team team) {
         return new TeamDTO(
                 team.getTeamId(),
                 team.getTeamName(),
@@ -182,7 +181,7 @@ public class TeamService {
     /**
 	 * Converts a TeamMember entity to a TeamMemberDTO.
 	 */
-    private TeamMemberDTO convertToDTO(TeamMember teamMember) {
+    public TeamMemberDTO convertToDTO(TeamMember teamMember) {
         return new TeamMemberDTO(
                 teamMember.getAccountId(),
                 teamMember.getUserName(),
@@ -190,7 +189,7 @@ public class TeamService {
                 teamMember.getRole());
     }
     
-    private TeamMemberInTeamDTO convertToDTO(TeamMember teamMember, boolean isTeamLead) {
+    public TeamMemberInTeamDTO convertToDTO(TeamMember teamMember, boolean isTeamLead) {
         return new TeamMemberInTeamDTO(
             teamMember.getAccountId(), 
             teamMember.getUserName(), 

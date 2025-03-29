@@ -17,7 +17,7 @@
 	<licenses>
 		<license/>
 	</licenses>
-	<developers>
+	<developers> 
 		<developer/>
 	</developers>
 	<scm>
@@ -27,7 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
 		<DBPASSWORD>${DBPASSWORDFROMYML}</DBPASSWORD>
 		<DBUSERNAME>${DBUSERNAMEFROMYML}</DBUSERNAME>
 	</properties>
