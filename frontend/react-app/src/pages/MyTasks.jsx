@@ -12,35 +12,40 @@ import { useState, useEffect } from 'react';
 function getAssigneesNames(taskItem) {
     return taskItem.assignedMembers.map((member) => member.userName).join(", ");
 }
+function mapTaskItem(taskItem) {
+    return {
+      name: taskItem,
+      id: taskItem.taskId,
+      team: taskItem.teamId,
+      assignees: getAssigneesNames(taskItem),
+      dueDate: taskItem.dueDate || "No Due Date",
+    };
+  }
 
-function setUpData(results) {
+  function setUpData(results) {
     return results
     .filter((taskItem) => taskItem.status !== "Done")
-      .map((taskItem) => ({
-        id: taskItem.taskId,
-        name: taskItem,
-        team: taskItem.teamId,
-        assignees: getAssigneesNames(taskItem),
-        status: taskItem.status,
-        priority: taskItem.priority,
-        dueDate: taskItem.dueDate || "No Due Date",
-        isLocked: taskItem.isLocked.toString()
-      }));
-}
-
-function setUpDataCompleted(results) {
+      .map((taskItem) => {
+        const baseItem = mapTaskItem(taskItem);
+        return{
+          ...baseItem,
+          status: taskItem.status,
+          priority: taskItem.priority,
+          isLocked: taskItem.isLocked.toString()
+        };
+        
+      });
+  }
+  function setUpDataCompleted(results) {
     return results
       .filter((taskItem) => taskItem.status === "Done")
-      .map((taskItem) => ({
-        id: taskItem.taskId,
-        name: taskItem,
-        assignees: getAssigneesNames(taskItem),
-        priority: taskItem.priority,
-        status: taskItem.status,
-        dueDate: taskItem.dueDate || "No Due Date",
-        dateCompleted: taskItem.dateCompleted,
-        isLocked: taskItem.isLocked.toString()
-      }));
+      .map((taskItem) => {
+        const baseItem = mapTaskItem(taskItem);
+        return{
+          ...baseItem,
+          dateCompleted: taskItem.dateCompleted,
+        };
+      });
   }
 
 function MyTasks(){
@@ -127,6 +132,8 @@ const headerAndAccessorsComplete = [
 if(loading){
     return (<div>Loading...</div>)
 }
+const tasksToDoData = setUpData(tasksToDo);
+const tasksCompletedData = setUpDataCompleted(tasksToDo);
 return (
 
     <div className='pageContainer'>
@@ -136,9 +143,9 @@ return (
                 
                 <h1>My Tasks</h1>
                 <span class ="taskBox">
-                {setUpData(tasksToDo).length > 0 ? (
+                {tasksToDoData.length > 0 ? (
                     <TaskList
-                    dataToUse={setUpData(tasksToDo)}
+                    dataToUse={tasksToDoData}
                     headersAndAccessors={headerAndAccessors}
                     />
                 ) : (
@@ -150,9 +157,9 @@ return (
                 <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
                 
                 <h2>My Completed Tasks</h2>
-                {setUpDataCompleted(tasksToDo).length > 0 ? (
+                {tasksCompletedData.length > 0 ? (
                     <TaskList
-                    dataToUse={setUpDataCompleted(tasksToDo)}
+                    dataToUse={tasksCompletedData}
                     headersAndAccessors={headerAndAccessorsComplete}
                     />
                 ) : (
