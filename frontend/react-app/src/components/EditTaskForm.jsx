@@ -1,7 +1,8 @@
 
 import {useForm, Controller} from 'react-hook-form'
 import Select from 'react-select'
-import { assignMemberToTask, editTask, massAssignMemberToTask } from '../api/teamMemberApi';
+import { assignMemberToTask, massAssignMemberToTask } from '../api/teamMemberApi';
+import {editTask} from '../api/taskApi'
 import { unassignTeamMemberFromTask } from '../api/isAssignedApi';
 const customStyles = {
     control: (provided) => ({

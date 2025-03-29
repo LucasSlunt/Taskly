@@ -1,7 +1,7 @@
 import "../css/ViewTask.css"
 import Header from "../components/Header.jsx"
 import {useLocation, Link} from 'react-router-dom'
-import { deleteTask, editTask } from "../api/teamMemberApi.js"
+import { deleteTask, editTask } from "../api/taskApi.js"
 
 
 function ViewTask(){
