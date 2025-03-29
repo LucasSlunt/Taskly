@@ -131,12 +131,7 @@ public class AdminService extends TeamMemberService {
                 .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
     
         // Find all teams led by this member
-        List<Team> teamsLed = teamRepository.findByTeamLead_AccountId(teamMember.getAccountId());
-        for (Team team : teamsLed) {
-            team.setTeamLead(null); // Explicitly remove team lead
-        }
-        teamRepository.saveAll(teamsLed);
-        teamRepository.flush();
+        removeIfTeamLead(teamMemberId);
     
         // Extract info
         String oldName = teamMember.getUserName();
@@ -145,56 +140,20 @@ public class AdminService extends TeamMemberService {
         String oldSalt = teamMember.getAuthInfo().getSalt();
 
         //extract memberships and assigned tasks
-        Set<Task> oldTasks = teamMember.getAssignedTasks()
-            .stream()
-            .map(IsAssigned::getTask)
-            .collect(Collectors.toSet());
-
-        Set<Team> oldTeams = teamMember.getTeams()
-            .stream()
-            .map(IsMemberOf::getTeam)
-            .collect(Collectors.toSet());
+        Set<Task> oldTasks = extractTasks(teamMember);
+        Set<Team> oldTeams = extractTeams(teamMember);
     
-        // Delete Notifications explicitly
-        notificationRepository.deleteAll(teamMember.getNotifications());
-        teamMember.getNotifications().clear();
-    
-        // DELETE OLD IsAssigned explicitly
-        isAssignedRepository.deleteAll(teamMember.getAssignedTasks());
-        teamMember.getAssignedTasks().clear();
-    
-        // DELETE OLD IsMemberOf explicitly
-        isMemberOfRepository.deleteAll(teamMember.getTeams());
-        teamMember.getTeams().clear();
-    
-        // DELETE AuthInfo explicitly
-        authInfoRepository.delete(teamMember.getAuthInfo());
-        teamMember.setAuthInfo(null);
-    
-        // Flush explicitly
-        authInfoRepository.flush();
-        isAssignedRepository.flush();
-        isMemberOfRepository.flush();
-        notificationRepository.flush();
+        clearMemberRelations(teamMember);
     
         // Delete old TeamMember safely
         deleteTeamMember(teamMember.getAccountId());
         teamMemberRepository.flush();
-
-        //print assigned tasks and memberships
-        System.out.println();
     
-        // NOW create the new Admin safely
+        // now create the new Admin safely
         Admin newAdmin = new Admin(oldName, oldEmail);
     
-        // Set new relationships as empty sets initially (you can add if needed)
-        Set<IsAssigned> newAssignments = oldTasks.stream()
-            .map(task -> new IsAssigned(task, newAdmin, task.getTeam()))
-            .collect(Collectors.toSet());
-
-        Set<IsMemberOf> newMemberships = oldTeams.stream()
-            .map(team -> new IsMemberOf(newAdmin, team))
-            .collect(Collectors.toSet());
+        Set<IsAssigned> newAssignments = connectOldTasks(newAdmin, oldTasks);
+        Set<IsMemberOf> newMemberships = connectOldTeams(newAdmin, oldTeams);
     
         // Set new AuthInfo
         AuthInfo newAuthInfo = new AuthInfo();
@@ -225,6 +184,9 @@ public class AdminService extends TeamMemberService {
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
 
+        // Find all teams led by this member
+        removeIfTeamLead(adminId);
+
         // Extract info
         String oldName = admin.getUserName();
         String oldEmail = admin.getUserEmail();
@@ -232,53 +194,21 @@ public class AdminService extends TeamMemberService {
         String oldSalt = admin.getAuthInfo().getSalt();
 
         //extract memberships and assigned tasks
-        Set<Task> oldTasks = admin.getAssignedTasks()
-            .stream()
-            .map(IsAssigned::getTask)
-            .collect(Collectors.toSet());
+        Set<Task> oldTasks = extractTasks(admin);
+        Set<Team> oldTeams = extractTeams(admin);
 
-        Set<Team> oldTeams = admin.getTeams()
-            .stream()
-            .map(IsMemberOf::getTeam)
-            .collect(Collectors.toSet());
-
-        // Delete Notifications explicitly
-        notificationRepository.deleteAll(admin.getNotifications());
-        admin.getNotifications().clear();
-
-        // DELETE OLD IsAssigned explicitly
-        isAssignedRepository.deleteAll(admin.getAssignedTasks());
-        admin.getAssignedTasks().clear();
-
-        // DELETE OLD IsMemberOf explicitly
-        isMemberOfRepository.deleteAll(admin.getTeams());
-        admin.getTeams().clear();
-
-        // DELETE AuthInfo explicitly
-        authInfoRepository.delete(admin.getAuthInfo());
-        admin.setAuthInfo(null);
-
-        // Flush all deletions
-        authInfoRepository.flush();
-        isAssignedRepository.flush();
-        isMemberOfRepository.flush();
-        notificationRepository.flush();
+        clearMemberRelations(admin);
 
         // Delete old Admin safely
         deleteAdmin(admin.getAccountId());
         adminRepository.flush();
 
-        // NOW create the new TeamMember safely
+        // create the new TeamMember safely
         TeamMember newTeamMember = new TeamMember(oldName, oldEmail);
 
         // Set new relationships as empty sets initially (you can add if needed)
-        Set<IsAssigned> newAssignments = oldTasks.stream()
-            .map(task -> new IsAssigned(task, newTeamMember, task.getTeam()))
-            .collect(Collectors.toSet());
-
-        Set<IsMemberOf> newMemberships = oldTeams.stream()
-            .map(team -> new IsMemberOf(newTeamMember, team))
-            .collect(Collectors.toSet());
+        Set<IsAssigned> newAssignments = connectOldTasks(newTeamMember, oldTasks);
+        Set<IsMemberOf> newMemberships = connectOldTeams(newTeamMember, oldTeams);
 
         // Set new AuthInfo
         AuthInfo newAuthInfo = new AuthInfo();
@@ -302,6 +232,58 @@ public class AdminService extends TeamMemberService {
         isMemberOfRepository.saveAll(newMemberships);
 
         return convertToDTO(savedTeamMember);
+    }
+
+    private void removeIfTeamLead(int memberId) {
+        List<Team> teamsLed = teamRepository.findByTeamLead_AccountId(memberId);
+
+        for (Team team : teamsLed) {
+            team.setTeamLead(null);
+        }
+
+        teamRepository.saveAll(teamsLed);
+        teamRepository.flush();
+    }
+
+    private void clearMemberRelations(TeamMember member) {
+        //delete and clear every relation explicitly
+
+        notificationRepository.deleteAll(member.getNotifications());
+        member.getNotifications().clear();
+
+        isAssignedRepository.deleteAll(member.getAssignedTasks());
+        member.getAssignedTasks().clear();
+
+        isMemberOfRepository.deleteAll(member.getTeams());
+        member.getTeams().clear();
+
+        authInfoRepository.delete(member.getAuthInfo());
+        member.setAuthInfo(null);
+
+        notificationRepository.flush();
+        isAssignedRepository.flush();
+        isMemberOfRepository.flush();
+        authInfoRepository.flush();
+    }
+
+    private Set<Task> extractTasks(TeamMember member) {
+        return member.getAssignedTasks().stream().map(IsAssigned::getTask).collect(Collectors.toSet());
+    }
+
+    private Set<Team> extractTeams(TeamMember member) {
+        return member.getTeams().stream().map(IsMemberOf::getTeam).collect(Collectors.toSet());
+    }
+
+    private Set<IsAssigned> connectOldTasks(TeamMember member, Set<Task> tasks) {
+        return tasks.stream()
+            .map(task -> new IsAssigned(task, member, task.getTeam()))
+            .collect(Collectors.toSet());
+    }
+
+    private Set<IsMemberOf> connectOldTeams(TeamMember member, Set<Team> teams) {
+        return teams.stream()
+            .map(team -> new IsMemberOf(member, team))
+            .collect(Collectors.toSet());
     }
     
     // Assigns a TeamMember to a Team by creating an IsMemberOf entry
