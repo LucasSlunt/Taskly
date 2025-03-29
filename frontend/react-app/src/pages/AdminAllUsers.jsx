@@ -2,7 +2,7 @@ import UserTable from '../components/UserTable'
 import Header from '../components/Header'
 import '../css/AdminAllUsers.css'
 import {useState, useEffect} from 'react'
-import { getTeams } from '../api/adminApi';
+import { getTeams } from '../api/teamApi';
 
 
 function AdminAllUsers(){

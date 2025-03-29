@@ -4,7 +4,8 @@ import {useForm} from "react-hook-form"
 import '../css/AdminPanel.css'
 import {useNavigate} from 'react-router-dom'
 import { useEffect, useState } from "react";
-import { getTeams } from "../api/adminApi";
+import { getTeams } from "../api/teamApi";
+
 export default function AdminPanel(){
     const { register, handleSubmit} = useForm();
     const [teams, setTeams] = useState();

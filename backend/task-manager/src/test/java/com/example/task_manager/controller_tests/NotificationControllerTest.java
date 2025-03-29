@@ -9,10 +9,8 @@ import com.example.task_manager.DTO.NotificationDTO;
 import com.example.task_manager.controller.NotificationController;
 import com.example.task_manager.enums.NotificationType;
 import com.example.task_manager.service.NotificationService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -33,12 +31,6 @@ public class NotificationControllerTest {
     @MockBean
     private NotificationService notificationService;
 
-    @InjectMocks
-    private NotificationController notificationController;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
     /**
      * Test Get Unread Notifications
      */
@@ -51,7 +43,7 @@ public class NotificationControllerTest {
 
         when(notificationService.getUnreadNotifications(17911)).thenReturn(mockNotifications);
 
-        mockMvc.perform(get("/notif/17911/unread-notifs"))
+        mockMvc.perform(get("/api/notifications/17911/unread"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].message").value("Task Assigned"))
@@ -69,7 +61,7 @@ public class NotificationControllerTest {
 
         when(notificationService.getReadNotifications(17911)).thenReturn(mockNotifications);
 
-        mockMvc.perform(get("/notif/17911/read-notifs"))
+        mockMvc.perform(get("/api/notifications/17911/read"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].message").value("Task Completed"));
@@ -82,7 +74,7 @@ public class NotificationControllerTest {
     void testMarkAsRead() throws Exception {
         doNothing().when(notificationService).markAsRead(1);
 
-        mockMvc.perform(put("/notif/1/mark-as-read"))
+        mockMvc.perform(put("/api/notifications/1/mark-as-read"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Notification marked as read."));
     }
@@ -94,7 +86,7 @@ public class NotificationControllerTest {
     void testMarkAsUnread() throws Exception {
         doNothing().when(notificationService).markAsUnread(1);
 
-        mockMvc.perform(put("/notif/1/mark-as-unread"))
+        mockMvc.perform(put("/api/notifications/1/mark-as-unread"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Notification marked as unread."));
     }
@@ -106,7 +98,7 @@ public class NotificationControllerTest {
     void testDeleteNotification() throws Exception {
         doNothing().when(notificationService).deleteNotification(1);
 
-        mockMvc.perform(delete("/notif/1"))
+        mockMvc.perform(delete("/api/notifications/1"))
                 .andExpect(status().isNoContent());
     }
 }

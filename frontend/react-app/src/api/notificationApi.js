@@ -1,9 +1,9 @@
-const BASE_URL = "http://localhost:8080/notif";
+const BASE_URL = "http://localhost:8080/api/notifications";
 
 //get all read notifications
 export const getReadNotifications = async (teamMemberId) => {
     try {
-        const response = await fetch(`${BASE_URL}/${teamMemberId}/read-notifs`, {
+        const response = await fetch(`${BASE_URL}/${teamMemberId}/read`, {
             method: 'GET'
         });
 
@@ -23,7 +23,7 @@ export const getReadNotifications = async (teamMemberId) => {
 //get all unread notifications
 export const getUnreadNotifications = async (teamMemberId) => {
     try {
-        const response = await fetch(`${BASE_URL}/${teamMemberId}/unread-notifs`, {
+        const response = await fetch(`${BASE_URL}/${teamMemberId}/unread`, {
             method: 'GET'
         });
 

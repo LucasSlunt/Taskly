@@ -2,11 +2,10 @@ package com.example.task_manager.controller;
 
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.DTO.PasswordChangeRequestDTO;
-import com.example.task_manager.DTO.ResetPasswordRequestDTO;
 import com.example.task_manager.DTO.TaskDTO;
-import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.service.TeamMemberService;
+import com.example.task_manager.service.AdminService;
 
 import java.util.List;
 
@@ -14,48 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/members/actions")
 public class TeamMemberController {
 
     private final TeamMemberService teamMemberService;
 
     public TeamMemberController(TeamMemberService teamMemberService) {
         this.teamMemberService = teamMemberService;
-    }
-
-    // Create a Task
-    @PostMapping
-    public ResponseEntity<?> createTask(@RequestBody TaskRequestDTO request) {
-        try {
-            TaskDTO task = teamMemberService.createTask(request);
-            return ResponseEntity.ok(task);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    // Delete Task
-    @DeleteMapping("/{taskId}")
-    public ResponseEntity<?> deleteTask(@PathVariable int taskId) {
-        try {
-            teamMemberService.deleteTask(taskId);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    // Edit Task
-    @PutMapping("/{taskId}")
-    public ResponseEntity<?> editTask(@PathVariable int taskId,
-                                    @RequestBody TaskDTO taskDTO) {
-        try {
-            TaskDTO updatedTask = teamMemberService.editTask(taskId, taskDTO);
-            return ResponseEntity.ok(updatedTask);
-        } 
-        catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
     }
 
     // Assign Member to Task
@@ -82,26 +46,13 @@ public class TeamMemberController {
     }
 
     // Change Password (Placeholder)
-    @PostMapping("/team-members/{teamMemberId}/change-password")
+    @PostMapping("/{teamMemberId}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable int teamMemberId,
             @RequestBody PasswordChangeRequestDTO request) {
         try {
             teamMemberService.changePassword(teamMemberId, request.getOldPassword(), request.getNewPassword());
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    //Reset Password
-    @PostMapping("/team-members/{teamMemberId}/reset-password")
-    public ResponseEntity<?> resetPassword(@PathVariable int teamMemberId,
-            @RequestBody ResetPasswordRequestDTO request) {
-        try {
-            teamMemberService.resetPassword(teamMemberId, request.getNewPassword());
-            return ResponseEntity.noContent().build();
-        }
-        catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

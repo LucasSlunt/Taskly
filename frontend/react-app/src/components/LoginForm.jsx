@@ -1,5 +1,5 @@
 import {useForm} from 'react-hook-form'
-import {isAdmin, login} from '../api/authInfo'
+import {login, isAdmin} from '../api/authInfoApi'
 import { useCookies } from 'react-cookie';
 function LoginForm(){
     const { register, handleSubmit, formState: {errors}} = useForm();

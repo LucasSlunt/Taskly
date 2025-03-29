@@ -1,6 +1,6 @@
-import {login, isAdmin} from '../../api/authInfo'; 
+import {login, isAdmin} from '../../api/authInfoApi'; 
 
-const BASE_URL = "http://localhost:8080/auth-info";
+const BASE_URL = "http://localhost:8080/api/auth";
 
 beforeEach(() => {
     fetchMock.resetMocks();
@@ -34,7 +34,7 @@ describe('AuthInfo API', () => {
 
         const response = await isAdmin(1);
 
-        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/is-admin`, {
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/1/is-admin`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ teamMemberId: 1 })
@@ -49,7 +49,7 @@ describe('AuthInfo API', () => {
 
         const response = await isAdmin(1);
 
-        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/is-admin`, {
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/1/is-admin`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ teamMemberId: 1 })

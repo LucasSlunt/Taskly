@@ -1,6 +1,6 @@
 import { getReadNotifications, getUnreadNotifications, markAsRead, markAsUnread, deleteNotification } from "../../api/notificationApi";
 
-const BASE_URL = "http://localhost:8080/notif";
+const BASE_URL = "http://localhost:8080/api/notifications";
 
 beforeEach(() => {
     fetch.resetMocks();
@@ -20,7 +20,7 @@ describe('Notification API', () => {
 
         const result = await getReadNotifications(101); //get notifications for teamMember with ID 101
 
-        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/101/read-notifs`, {
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/101/read`, {
             method: 'GET'
         });
 
@@ -33,7 +33,7 @@ describe('Notification API', () => {
 
         const result = await getUnreadNotifications(101); //get notifications for teamMember with ID 101
 
-        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/101/unread-notifs`, {
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/101/unread`, {
             method: 'GET'
         });
 

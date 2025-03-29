@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import {useForm} from 'react-hook-form'
 import '../css/CreateTaskForm.css'
-import {assignMemberToTask, createTask, getTeamsForMember} from '../api/teamMemberApi'
+import {assignMemberToTask, getTeamsForMember} from '../api/teamMemberApi'
+import { createTask } from '../api/taskApi';
 import { useCookies } from 'react-cookie';
 import { getTeamMembers } from '../api/teamApi';
 function CreateTaskForm(){
