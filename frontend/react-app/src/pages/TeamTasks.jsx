@@ -162,16 +162,19 @@ if(loadingNames || loadingTasks){
     { id: 5, name: "Joe Smith" },
   ];
   
-
+  const tasksToDoData = setUpData(tasksToDo);
+  const tasksCompletedData = setUpDataCompleted(tasksToDo);
 
     return (
+
+
       <div className='pageContainer'>
         <Header/>
         <div className='pageBody'>
         <h2>Team 1 Tasks</h2>
-          {setUpData(tasksToDo).length > 0 ? (
+          {tasksToDoData.length > 0 ? (
             <TaskList
-              dataToUse={setUpData(tasksToDo)}
+              dataToUse={tasksToDoData}
               headersAndAccessors={headerAndAccessors}
             />
           ) : (
@@ -181,9 +184,9 @@ if(loadingNames || loadingTasks){
 
             <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
             <h2>Completed Tasks</h2>
-            {setUpDataCompleted(tasksToDo).length > 0 ? (
+            {tasksCompletedData.length > 0 ? (
             <TaskList
-              dataToUse={setUpDataCompleted(tasksToDo)}
+              dataToUse={tasksCompletedData}
               headersAndAccessors={headerAndAccessorsComplete}
             />
           ) : (
