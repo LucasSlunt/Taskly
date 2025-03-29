@@ -132,6 +132,8 @@ const headerAndAccessorsComplete = [
 if(loading){
     return (<div>Loading...</div>)
 }
+const tasksToDoData = setUpData(tasksToDo);
+const tasksCompletedData = setUpDataCompleted(tasksToDo);
 return (
 
     <div className='pageContainer'>
@@ -141,9 +143,9 @@ return (
                 
                 <h1>My Tasks</h1>
                 <span class ="taskBox">
-                {setUpData(tasksToDo).length > 0 ? (
+                {tasksToDoData.length > 0 ? (
                     <TaskList
-                    dataToUse={setUpData(tasksToDo)}
+                    dataToUse={tasksToDoData}
                     headersAndAccessors={headerAndAccessors}
                     />
                 ) : (
@@ -155,9 +157,9 @@ return (
                 <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
                 
                 <h2>My Completed Tasks</h2>
-                {setUpDataCompleted(tasksToDo).length > 0 ? (
+                {tasksCompletedData.length > 0 ? (
                     <TaskList
-                    dataToUse={setUpDataCompleted(tasksToDo)}
+                    dataToUse={tasksCompletedData}
                     headersAndAccessors={headerAndAccessorsComplete}
                     />
                 ) : (
