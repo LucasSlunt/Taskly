@@ -103,3 +103,22 @@ export const getTeamMemberById = async (teamMemberId) => {
         throw error;
     } 
 };
+
+//Get all team ememebrs
+export const getTeamMembers = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/team-members`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to retrieve team members: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error(`Failed to retrieve all team members: `, error);
+        throw error;
+    } 
+};

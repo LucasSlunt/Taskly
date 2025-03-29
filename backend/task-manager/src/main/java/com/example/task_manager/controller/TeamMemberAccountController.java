@@ -1,5 +1,6 @@
 package com.example.task_manager.controller;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.task_manager.DTO.AdminRequestDTO;
 import com.example.task_manager.DTO.TeamMemberDTO;
+import com.example.task_manager.DTO.TeamMemberWithTeamLeadDTO;
 import com.example.task_manager.DTO.UpdateEmailRequestDTO;
 import com.example.task_manager.DTO.UpdateNameRequestDTO;
 import com.example.task_manager.service.AdminService;
@@ -74,6 +76,17 @@ public class TeamMemberAccountController {
         try {
             TeamMemberDTO teamMember = adminService.getTeamMemberById(teamMemberId);
             return ResponseEntity.ok(teamMember);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    //get all team members
+    @GetMapping
+    public ResponseEntity<?> getTeamMembers() {
+        try {
+            List<TeamMemberWithTeamLeadDTO> teamMembers = adminService.getAllTeamMembers();
+            return ResponseEntity.ok(teamMembers);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

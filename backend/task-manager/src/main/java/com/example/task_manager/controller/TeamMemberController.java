@@ -2,11 +2,10 @@ package com.example.task_manager.controller;
 
 import com.example.task_manager.DTO.IsAssignedDTO;
 import com.example.task_manager.DTO.PasswordChangeRequestDTO;
-import com.example.task_manager.DTO.ResetPasswordRequestDTO;
 import com.example.task_manager.DTO.TaskDTO;
-import com.example.task_manager.DTO.TaskRequestDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.service.TeamMemberService;
+import com.example.task_manager.service.AdminService;
 
 import java.util.List;
 
@@ -22,8 +21,6 @@ public class TeamMemberController {
     public TeamMemberController(TeamMemberService teamMemberService) {
         this.teamMemberService = teamMemberService;
     }
-
-
 
     // Assign Member to Task
     @PostMapping("/{taskId}/assign/{teamMemberId}")
