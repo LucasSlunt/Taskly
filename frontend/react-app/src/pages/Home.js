@@ -36,10 +36,10 @@ if(ansArr.length > 0){
 
 function setUpData(results) {
     return results
-    .filter((taskItem) => taskItem.status !== "done")
+    .filter((taskItem) => taskItem.status !== "Done")
       .map((taskItem) => ({
         id: taskItem.taskId,
-        name: taskItem.title,
+        name: taskItem,
         status: taskItem.status,
         team: taskItem.teamId,
         dueDate: taskItem.dueDate || "No Due Date", 
@@ -58,7 +58,7 @@ const Home = () => {
             Header: "Task Name",
             accessor: "name",
             Cell: (original) => (
-                <Link to="/view-task" className = "link" state={{taskToSee: original.cell.row.values.id}}>{original.value}</Link>
+                <Link to="/view-task" className = "link" state={{taskToSee: original.value, teamMembers: original.cell.row.values.assignees}}>{original.value.title}</Link>
               )
         },
         {

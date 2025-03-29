@@ -3,8 +3,7 @@ import UserInfo from "../components/UserInfo";
 
 test("renders user info with name, username, email, and profile picture", () => {
     const { getByAltText, getByText } = render(<UserInfo />);
-
-    //check if name, username, and email are displayed
+   //check if name, username, and email are displayed
     expect(getByText("Bobby Joe")).toBeInTheDocument();
     expect(getByText("bobbyjoe")).toBeInTheDocument();
     expect(getByText("bobbyjoe@example.com")).toBeInTheDocument();

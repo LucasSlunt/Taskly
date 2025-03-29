@@ -15,10 +15,10 @@ function getAssigneesNames(taskItem) {
 }
 function setUpData(results) {
   return results
-  .filter((taskItem) => taskItem.status !== "done")
+  .filter((taskItem) => taskItem.status !== "Done")
     .map((taskItem) => ({
       id: taskItem.taskId,
-      name: taskItem.title,
+      name: taskItem,
       assignees: getAssigneesNames(taskItem),
       status: taskItem.status,
       priority: taskItem.priority,
@@ -28,60 +28,23 @@ function setUpData(results) {
 }
 function setUpDataCompleted(results) {
   return results
-    .filter((taskItem) => taskItem.status === "done")
+    .filter((taskItem) => taskItem.status === "Done")
     .map((taskItem) => ({
       id: taskItem.taskId,
-      name: taskItem.title,
+      name: taskItem,
       assignees: getAssigneesNames(taskItem),
       dueDate: taskItem.dueDate || "No Due Date",
       dateCompleted: taskItem.dateCompleted,
       isLocked: taskItem.isLocked.toString()
     }));
 }
-const headerAndAccessors = [
-      {
-        Header: "Task Name",
-        accessor: "name",
-        Cell: (original) => (
-            <Link to="/view-task" state={{taskToSee: original.cell.row.values.id}}>{original.value}</Link>
-          )
-      },
-      {
-        Header: "ID",
-        accessor:"id",
-      },
-      {
-          Header: "Assignee(s)",
-          accessor: "assignees",
-      },
-      {
-        Header: "Priority",
-        accessor: "priority",
-      },
-      {
-          Header: "Status",
-          accessor: "status",
-      },
 
-      {
-          Header: "Due Date",
-          accessor: "dueDate",
-      },
-      {
-        Header: "Is Locked",
-        accessor: "isLocked",
-      }
-]
-
-
-
-
-const headerAndAccessorsComplete = [
+const commonColumns= [
   {
     Header: "Task Name",
     accessor: "name",
     Cell: (original) => (
-        <Link to="/view-task" state={{taskToSee: original.cell.row.values.id}}>{original.value}</Link>
+        <Link to="/view-task" state={{taskToSee: original.value, teamMembers: original.cell.row.values.assignees}}>{original.value.title}</Link>
       )
   },
   {
@@ -96,6 +59,25 @@ const headerAndAccessorsComplete = [
       Header: "Due Date",
       accessor: "dueDate",
   },
+]
+const headerAndAccessors = [
+    ...commonColumns,
+    {
+      Header: "Priority",
+      accessor: "priority",
+    },
+    {
+        Header: "Status",
+        accessor: "status",
+    },
+    {
+      Header: "Is Locked",
+      accessor: "isLocked",
+    }
+]
+
+const headerAndAccessorsComplete = [
+  ...commonColumns,
   {
       Header: "Date Completed",
       accessor: "dateCompteted",

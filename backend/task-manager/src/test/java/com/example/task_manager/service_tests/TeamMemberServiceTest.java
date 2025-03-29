@@ -180,8 +180,8 @@ public class TeamMemberServiceTest extends ServiceTestHelper{
     void testChangePasswordButSupplyWrongPassword() {
         TeamMember teamMember = createUniqueTeamMember();
         int teamMemberId = teamMember.getAccountId();
-
-        teamMemberService.changePassword(teamMemberId, "wrongpw", "coolnewpassword");
+        assertThrows(java.lang.RuntimeException.class, () -> teamMemberService.changePassword(teamMemberId, "wrongpw", "coolnewpassword"));
+        
 
         assertFalse(authInfoService.approveLogin(teamMemberId, "coolnewpassword"));
     }

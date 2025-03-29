@@ -1,4 +1,5 @@
 import { createTask, deleteTask, editTask} from '../../api/taskApi';
+import { notifyMembers} from '../../api/taskApi';
 
 const BASE_URL = "http://localhost:8080/api/tasks";
 
@@ -40,7 +41,7 @@ describe('Task API', () => {
         expect(result).toEqual(mockTask);
     });
 
-    //test: deleting a task
+    / //test: deleting a task
     test('deleteTask should return true on success', async () => {
         fetch.mockResponseOnce('', { status: 204 });
 
@@ -48,6 +49,19 @@ describe('Task API', () => {
 
         expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/1`, {
             method: 'DELETE'
+        });
+
+        expect(result).toBe(true);
+    });
+
+    //test: notifying members
+    test('notifyMembers should return true on success', async () => {
+        fetch.mockResponseOnce('', { status: 200 });
+
+        const result = await notifyMembers(1, 1);
+        expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/1/notify`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" }
         });
 
         expect(result).toBe(true);
