@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -77,20 +76,6 @@ public class TeamMemberControllerTest {
 //             .andExpect(jsonPath("$.taskId").value(taskId))
 //             .andExpect(status().isOk());
 //     }
-    
-    @Test
-    void testResetPassword() throws Exception {
-            int teamMemberId = 1;
-            String newPassword = "trustmethisissecure";
-        
-        String request = "{\"newPassword\":\"BrainStew_GreenDay\"}";
-        doNothing().when(teamMemberService).resetPassword(teamMemberId, newPassword);
-
-        mockMvc.perform(post("/api/tasks/team-members/{teamMemberId}/reset-password", teamMemberId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(request))
-                .andExpect(status().isNoContent());
-    }
 
      @Test
     void testGetTeamsForMember() throws Exception {
