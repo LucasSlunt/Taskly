@@ -26,6 +26,7 @@ public class TeamMemberAccountController {
     @PostMapping
     public ResponseEntity<?> createTeamMember(@RequestBody AdminRequestDTO request) {
         try {
+            System.out.println("enter try");
             TeamMemberDTO createTeamMember = adminService.createTeamMember(
                     request.getName(),
                     request.getEmail(),
@@ -41,6 +42,7 @@ public class TeamMemberAccountController {
     @DeleteMapping("/{teamMemberId}")
     public ResponseEntity<?> deleteTeamMember(@PathVariable int teamMemberId) {
         try {
+            System.out.println("enter try");
             adminService.deleteTeamMember(teamMemberId);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
@@ -52,6 +54,7 @@ public class TeamMemberAccountController {
     @PutMapping("/{teamMemberId}/name")
     public ResponseEntity<?> modifyTeamMemberName(@PathVariable int teamMemberId, @RequestBody UpdateNameRequestDTO request) {
         try {
+            System.out.println("enter try");
             return ResponseEntity.ok(adminService.modifyTeamMemberName(teamMemberId, request.getNewName()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -62,6 +65,7 @@ public class TeamMemberAccountController {
     @PutMapping("/{teamMemberId}/email")
     public ResponseEntity<?> modifyTeamMemberEmail(@PathVariable int teamMemberId, @RequestBody UpdateEmailRequestDTO request) {
         try {
+            System.out.println("enter try");
             return ResponseEntity.ok(adminService.modifyTeamMemberEmail(teamMemberId, request.getNewEmail()));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(404).body("Team member not found");
@@ -74,6 +78,7 @@ public class TeamMemberAccountController {
     @GetMapping("/{teamMemberId}")
     public ResponseEntity<?> getTeamMemberById(@PathVariable int teamMemberId) {
         try {
+            System.out.println("enter try");
             TeamMemberDTO teamMember = adminService.getTeamMemberById(teamMemberId);
             return ResponseEntity.ok(teamMember);
         } catch (RuntimeException e) {
@@ -85,6 +90,7 @@ public class TeamMemberAccountController {
     @GetMapping
     public ResponseEntity<?> getTeamMembers() {
         try {
+            System.out.println("enter try");
             List<TeamMemberWithTeamLeadDTO> teamMembers = adminService.getAllTeamMembers();
             return ResponseEntity.ok(teamMembers);
         } catch (RuntimeException e) {

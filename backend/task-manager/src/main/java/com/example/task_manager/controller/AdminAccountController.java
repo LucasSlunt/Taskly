@@ -24,6 +24,7 @@ public class AdminAccountController {
     @PostMapping
     public ResponseEntity<?> createAdmin(@RequestBody AdminRequestDTO request) {
         try {
+            System.out.println("enter try");
             AdminDTO createAdmin = adminService.createAdmin(
                     request.getName(),
                     request.getEmail(),
@@ -39,6 +40,7 @@ public class AdminAccountController {
     @DeleteMapping("/{adminId}")
     public ResponseEntity<?> deleteAdmin(@PathVariable int adminId) {
         try {
+            System.out.println("enter try");
             adminService.deleteAdmin(adminId);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
@@ -50,6 +52,7 @@ public class AdminAccountController {
     @PutMapping("/{adminId}/name")
     public ResponseEntity<?> updateAdminName(@PathVariable int adminId, @RequestBody UpdateNameRequestDTO request) {
         try {
+            System.out.println("enter try");
             AdminDTO updatedAdmin = adminService.modifyAdminName(adminId, request.getNewName());
             return ResponseEntity.ok(updatedAdmin);
         } catch (Exception e) {
@@ -61,6 +64,7 @@ public class AdminAccountController {
     @PutMapping("/{adminId}/email")
     public ResponseEntity<?> updateAdminEmail(@PathVariable int adminId, @RequestBody UpdateEmailRequestDTO request) {
         try {
+            System.out.println("enter try");
             AdminDTO updatedAdmin = adminService.modifyAdminEmail(adminId, request.getNewEmail());
             return ResponseEntity.ok(updatedAdmin);
         } catch (NoSuchElementException e) {
@@ -73,6 +77,7 @@ public class AdminAccountController {
     @GetMapping("/{adminId}")
     public ResponseEntity<?> getAdminById(@PathVariable int adminId) {
         try {
+            System.out.println("enter try");
             AdminDTO admin = adminService.getAdminById(adminId);
             return ResponseEntity.ok(admin);
         } catch (RuntimeException e) {
