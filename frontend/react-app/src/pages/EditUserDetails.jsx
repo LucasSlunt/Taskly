@@ -4,7 +4,6 @@ import {useLocation} from 'react-router-dom'
 import { modifyAdminEmail, modifyAdminName } from "../api/adminAccountApi"
 import {getTeamMemberById, modifyTeamMemberEmail, modifyTeamMemberName } from "../api/teamMemberAccountApi"
 import {useForm} from 'react-hook-form'
-import { isAdmin } from "../api/authInfoApi"
 import { resetPassword } from "../api/adminApi"
 
 export default function EditUserDetails(){
@@ -13,53 +12,52 @@ export default function EditUserDetails(){
     const { accountToEdit } = location.state
     const [accountInfo, setAccountInfo] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [isShown, setIsShown] = useState(false)
 
     const onSubmit = async(data)=>{
         //const admin = await isAdmin(accountToEdit); when is admin is fixed
-        const admin = true;
+        
+        const admin = accountInfo.role === 'ADMIN';
         try{
-            /*did UserDetails change is for messaging to user
-            -1 means custom message
-             0 means nothing was changed
-             1 means something was changed
-            */
-            let didUserDetailsChange = 0;
-            if(data.userName !== accountInfo.userName){
-                if(admin){
-                    await changeAdminName(data.userName)
-                }else{  
-                    await changeUserName(data.userName);
-                }
-                didUserDetailsChange = 1;
-                
-            }
-            if(data.password !== '' && data.passwordCon !== '' && data.password === data.passwordCon){
-                const resetPassResponse = await resetPassword(accountToEdit, data.password)
-                console.log(resetPassResponse)
-                didUserDetailsChange = 1;
-            }
-            if(data.password !== data.passwordCon){
-                throw Error("Passwords don't match")
-            }
-            if(data.userEmail !== accountInfo.userEmail){
-                if(admin){
-                    await changeAdminEmail(data.userEmail);
-                }else{  
-                    await changeUserEmail(data.userEmail);
-                }
-                didUserDetailsChange = 1;
-            }
-            if(didUserDetailsChange === 1){
-                await alert("User Details set");
-                window.location.href="/all-users";
-            }else if (didUserDetailsChange === 0){
-                throw Error("NOTHING HAS CHANGED")
-            }
+
+            await changeName(data, admin);
+            await changePassword(data, admin);
+            await changeEmail(data, admin);
+
+            await alert("User Details set");
+            window.location.href="/all-users";
+            
         }catch(error){
             alert(error)
         }
         
+    }
+    async function changeEmail(data, admin) {
+        if(data.userEmail !== accountInfo.userEmail){
+            if(admin){
+                await changeAdminEmail(data.userEmail);
+            }else{  
+                await changeUserEmail(data.userEmail);
+            }
+
+        }
+    }
+    async function changeName(data, admin) {
+        if(data.userName !== accountInfo.userName){
+                if(admin){
+                    await changeAdminName(data.userName)
+                }else{  
+                    await changeUserName(data.userName);
+            }}
+    }
+    async function changePassword(data, admin) {
+        if(data.password !== '' && data.passwordCon !== '' && data.password === data.passwordCon){
+            const resetPassResponse = await resetPassword(accountToEdit, data.password)
+            console.log(resetPassResponse)
+
+        }
+        if(data.password !== data.passwordCon){
+            throw Error("Passwords don't match")
+        }
     }
     async function changeAdminName(newUserName){
             await modifyAdminName(accountToEdit, newUserName);
