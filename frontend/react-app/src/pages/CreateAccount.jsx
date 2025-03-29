@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../css/CreateAccount.css';
 import Header from '../components/Header';
 import CreateAccountForm from '../components/CreateAccountForm';
-import { getTeams } from '../api/adminApi';
+import { getTeams } from '../api/teamApi';
 
 const CreateAccount = () => {
     const [loading, setLoading]= useState(true);

@@ -1,173 +1,4 @@
-const BASE_URL = "http://localhost:8080/api/admin";
-
-//Create admin
-export const createAdmin = async (name, email, password) => {
-    try {
-        console.log(JSON.stringify({ name, email, password }))
-        const response = await fetch(`${BASE_URL}`, {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email, password })
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to create admin: ${response.status} ${response.statusText}`);
-            throw Error ("FAILED TO CREATE ADMIN")
-        }
-
-        return await response.json();
-    } 
-    catch (error) {
-        console.error("Error creating admin: ", error);
-        throw error;
-    }
-};
-
-//Delete admin
-export const deleteAdmin = async (adminId) => {
-    console.log(`${BASE_URL}/${adminId}`)
-    try {
-        const response = await fetch(`${BASE_URL}/${adminId}`, {
-            method: 'DELETE',
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to delete admin: ${response.status} ${response.statusText}`);
-            throw Error(response.body)
-        }
-
-        return true;
-    }
-    catch (error) {
-        console.error("Error deleting admin: ", error);
-        throw error;
-    }
-};
-
-//Change admin name
-export const modifyAdminName = async (adminId, newName) => {
-    try {
-        const response = await fetch(`${BASE_URL}/${adminId}/update-name`, {
-            method: 'PUT',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({newName})
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to modify admin name: ${response.status} ${response.statusText}`);
-        }
-
-        return await response.json();
-    }
-    catch (error) {
-        console.error("Error modifying admin name: ", error);
-        throw error;
-    }
-};
-
-//Change admin email
-export const modifyAdminEmail = async (adminId, newEmail) => {
-    try {
-        const response = await fetch(`${BASE_URL}/${adminId}/update-email`, {
-            method: 'PUT',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ newEmail })
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to modify admin email: ${response.status} ${response.statusText}`);
-        }
-
-        return await response.json();
-    }
-    catch (error) {
-        console.error("Error modifying admin email: ", error);
-        throw error;
-    }
-};
-
-//Create team member
-export const createTeamMember = async (name, email, password) => {
-    try {
-        const response = await fetch(`${BASE_URL}/team-member`, {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email, password })
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to create team member: ${response.status} ${response.statusText}`);
-            throw Error ("FAILED TO CREATE Team Member")
-        }
-
-        return await response.json();
-    } 
-    catch (error) {
-        console.error("Error creating team member: ", error);
-        throw error;
-    }
-};
-
-//Change team member name
-export const modifyTeamMemberName = async (teamMemberId, newName) => {
-    try {
-        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}/update-name`, {
-            method: 'PUT',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({newName})
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to modify team member name: ${response.status} ${response.statusText}`);
-        }
-
-        return await response.json();
-    }
-    catch (error) {
-        console.error("Error modifying team member name: ", error);
-        throw error;
-    }
-};
-
-//Change team member email
-export const modifyTeamMemberEmail = async (teamMemberId, newEmail) => {
-    try {
-        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}/update-email`, {
-            method: 'PUT',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ newEmail })
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to modify team member email: ${response.status} ${response.statusText}`);
-        }
-
-        return await response.json();
-    }
-    catch (error) {
-        console.error("Error modifying team member email: ", error);
-        throw error;
-    }
-};
-
-//Delete team member
-export const deleteTeamMember = async (teamMemberId) => {
-    try {
-        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}`, {
-            method: 'DELETE',
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to delete team member: ${response.status} ${response.statusText}`);
-        }
-
-        return true;
-    }
-    catch (error) {
-        console.error("Error deleting team member: ", error);
-        throw error;
-    }
-};
+const BASE_URL = "http://localhost:8080/api/admins/actions";
 
 //Assign team member to a team
 export const assignTeamMemberToTeam = async (teamMemberId, teamId) => {
@@ -192,7 +23,7 @@ export const assignTeamMemberToTeam = async (teamMemberId, teamId) => {
 //Changing the role of a team member or admin
 export const changeRole = async (teamMemberId, newRole) => {
     try {
-        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}/change-role`, {
+        const response = await fetch(`${BASE_URL}/${teamMemberId}/role`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ role: newRole })
@@ -254,7 +85,7 @@ export const unlockTask = async (taskId) => {
 //Get all admins
 export const getAdmins = async () => {
     try {
-        const response = await fetch(`${BASE_URL}/admins`, {
+        const response = await fetch(`${BASE_URL}`, {
             method: 'GET'
         });
 
@@ -270,78 +101,24 @@ export const getAdmins = async () => {
     } 
 };
 
-//Get all team ememebrs
-export const getTeamMembers = async () => {
+//reset password
+export const resetPassword = async (teamMemberId, newPassword) => {
     try {
-        const response = await fetch(`${BASE_URL}/team-members`, {
-            method: 'GET'
+        const response = await fetch(`${BASE_URL}/${teamMemberId}/reset-password`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ newPassword })
         });
 
         if (!response.ok) {
-            console.error(`Failed to retrieve team members: ${response.status} ${response.statusText}`);
+            console.error(`Failed to reset password: ${response.status} ${response.statusText}`)
+            return null;
         }
 
-        return await response.json();
+        return await true;
     }
     catch (error) {
-        console.error(`Failed to retrieve all team members: `, error);
+        console.error("Error resetting password: ", error);
         throw error;
-    } 
-};
-
-//Get all teams
-export const getTeams = async () => {
-    try {
-        const response = await fetch(`${BASE_URL}/all-teams`, {
-            method: 'GET'
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to retrieve teams: ${response.status} ${response.statusText}`);
-        }
-
-        return await response.json();
     }
-    catch (error) {
-        console.error(`Failed to retrieve all teams: `, error);
-        throw error;
-    } 
-};
-
-//Get an admin with their ID
-export const getAdminById = async (adminId) => {
-    try {
-        const response = await fetch(`${BASE_URL}/${adminId}`, {
-            method: 'GET'
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to retrieve admin: ${response.status} ${response.statusText}`);
-        }
-
-        return await response.json();
-    }
-    catch (error) {
-        console.error(`Failed to retrieve admin: `, error);
-        throw error;
-    } 
-};
-
-//Get a team member with their ID
-export const getTeamMemberById = async (teamMemberId) => {
-    try {
-        const response = await fetch(`${BASE_URL}/team-member/${teamMemberId}`, {
-            method: 'GET'
-        });
-
-        if (!response.ok) {
-            console.error(`Failed to retrieve team member: ${response.status} ${response.statusText}`);
-        }
-
-        return await response.json();
-    }
-    catch (error) {
-        console.error(`Failed to retrieve team member: `, error);
-        throw error;
-    } 
 };

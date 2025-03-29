@@ -14,11 +14,11 @@ import com.example.task_manager.DTO.TeamRequestDTO;
 import com.example.task_manager.controller.TeamController;
 import com.example.task_manager.enums.RoleType;
 import com.example.task_manager.enums.TaskPriority;
+import com.example.task_manager.service.AdminService;
 import com.example.task_manager.service.TeamService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -42,8 +42,8 @@ public class TeamControllerTest {
     @MockitoBean
     private TeamService teamService;
 
-    @InjectMocks
-    private TeamController teamController;
+    @MockBean
+    private AdminService adminService;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -135,9 +135,10 @@ public class TeamControllerTest {
         int teamId = 1;
 
         List<TaskDTO> mockTasks = Arrays.asList(
-                new TaskDTO(1, "Task 1", "Thing 1", false, "Open", LocalDate.now(), null, teamId, null, TaskPriority.HIGH),
-                new TaskDTO(2, "Task 2", "Thing 2", false, "Open", LocalDate.now(), null, teamId, null, TaskPriority.HIGH)
-        );
+                new TaskDTO(1, "Task 1", "Thing 1", false, "Open", LocalDate.now(), null, teamId, null,
+                        TaskPriority.HIGH),
+                new TaskDTO(2, "Task 2", "Thing 2", false, "Open", LocalDate.now(), null, teamId, null,
+                        TaskPriority.HIGH));
 
         when(teamService.getTeamTasks(teamId)).thenReturn(mockTasks);
 
@@ -147,5 +148,22 @@ public class TeamControllerTest {
                 .andExpect(jsonPath("$[0].title").value("Task 1"))
                 .andExpect(jsonPath("$[1].status").value("Open"))
                 .andExpect(jsonPath("$[1].teamId").value(teamId));
+    }
+    
+    // Getting all teams
+    @Test
+    void getAllTeams() throws Exception {
+        List<TeamDTO> mockTeams = Arrays.asList(
+                new TeamDTO(1, "Team 1", 1),
+                new TeamDTO(2, "Team 2", 2));
+
+        when(adminService.getAllTeams()).thenReturn(mockTeams);
+
+        mockMvc.perform(get("/api/teams"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[0].teamId").value(1))
+                .andExpect(jsonPath("$[0].teamName").value("Team 1"))
+                .andExpect(jsonPath("$[1].teamLeadId").value("2"));
     }
 }
