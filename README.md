@@ -89,4 +89,8 @@ When a task is created due date does not go into the due date column of the data
 ### Solution
 Fix typo in service layer of backend for create task. It should set response.getDueDate to task.dueDate not task.expectCompletionDate
 
+## Coverage Testing Report
+Extensively detailed coverage report can be found by opening "COSC310_GroupProject\coverageTesting\jacoco\index.html" in a browser.
+Low coverage percentage in TaskManagerApplication.java is due to it being a single class to hold the main method.
+Low coverage percentage in Controller and Entity classes is due to setters, getters, and error throwing/printing code which is simple enough that it is unnecessary and time-consuming to test.
 
