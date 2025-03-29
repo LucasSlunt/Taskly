@@ -2,14 +2,6 @@ package com.example.task_manager.controller;
 
 import com.example.task_manager.DTO.AdminDTO;
 import com.example.task_manager.DTO.ChangeRoleRequestDTO;
-
-import com.example.task_manager.DTO.TeamDTO;
-import com.example.task_manager.DTO.TeamMemberDTO;
-import com.example.task_manager.DTO.UpdateEmailRequestDTO;
-import com.example.task_manager.DTO.UpdateNameRequestDTO;
-import com.example.task_manager.repository.AdminRepository;
-import com.example.task_manager.repository.AuthInfoRepository;
-
 import com.example.task_manager.DTO.ResetPasswordRequestDTO;
 
 import com.example.task_manager.service.AdminService;
@@ -19,12 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import java.util.NoSuchElementException;
-
-import com.example.task_manager.DTO.TeamMemberWithTeamLeadDTO;
-
-
 @RestController
 @RequestMapping("/api/admins/actions")
 public class AdminController {

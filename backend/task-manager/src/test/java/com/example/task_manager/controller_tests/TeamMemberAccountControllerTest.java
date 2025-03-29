@@ -13,10 +13,11 @@ import com.example.task_manager.service.AdminService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
 
 import com.example.task_manager.DTO.UpdateEmailRequestDTO;
 import com.example.task_manager.DTO.UpdateNameRequestDTO;
@@ -29,7 +30,7 @@ public class TeamMemberAccountControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private AdminService adminService;
 
     @Autowired

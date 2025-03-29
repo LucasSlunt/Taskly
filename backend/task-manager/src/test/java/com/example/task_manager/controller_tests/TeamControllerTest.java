@@ -42,7 +42,7 @@ public class TeamControllerTest {
     @MockitoBean
     private TeamService teamService;
 
-    @MockBean
+    @MockitoBean
     private AdminService adminService;
 
     @Autowired
