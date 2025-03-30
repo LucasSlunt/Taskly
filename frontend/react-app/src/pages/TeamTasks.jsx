@@ -3,12 +3,12 @@ import TaskList from "../components/TaskList";
 import Header from "../components/Header";
 import "../css/TeamTasks.css";
 import TeamMember from "../components/TeamMember";
-import fakeData from "../FakeData/fakeTaskData.json"
 import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
-import { getTeamMembers } from "../api/teamApi";
 import { useLocation } from 'react-router-dom';
-import { getTeamTasks } from "../api/teamApi";
+import { getTeamTasks, getTeamMembers } from "../api/teamApi";
+import {lockTask, unlockTask} from "../api/adminApi";
+import LockUnlockTask from "../components/LockUnlockTask";
 
 function getAssigneesNames(taskItem) {
   return taskItem.assignedMembers.map((member) => member.userName).join(", ");
@@ -31,7 +31,7 @@ function setUpData(results) {
         ...baseItem,
         status: taskItem.status,
         priority: taskItem.priority,
-        isLocked: taskItem.isLocked.toString()
+        isLocked: !!taskItem.isLocked
       };
       
     });
@@ -47,6 +47,12 @@ function setUpDataCompleted(results) {
       };
     });
 }
+
+
+
+
+
+
 
 const commonColumns= [
   {
@@ -69,21 +75,7 @@ const commonColumns= [
       accessor: "dueDate",
   },
 ]
-const headerAndAccessors = [
-    ...commonColumns,
-    {
-      Header: "Priority",
-      accessor: "priority",
-    },
-    {
-        Header: "Status",
-        accessor: "status",
-    },
-    {
-      Header: "Is Locked",
-      accessor: "isLocked",
-    }
-]
+
 
 const headerAndAccessorsComplete = [
   ...commonColumns,
@@ -119,13 +111,71 @@ function TeamTasks(){
       }
   }
   
-  
+
+
   useEffect(()=>{
       fetchData();
       console.log("Tasks To Do:", tasksToDo);
       
       
   },[]);
+
+  
+  const [lockedTasks, setLockedTasks] = useState({});
+  const handleLockUnlock = async (id, isLocked) => {
+    console.log("id " + id);
+    console.log("is locked" + isLocked);
+    try {
+      if (isLocked) {
+        console.log("task is locked");
+        const unlock = await unlockTask(id);
+        if (unlock) {
+          console.log(`Task unlocked successfully.`);
+          setLockedTasks((prevLockedTasks) => ({
+            ...prevLockedTasks,
+            [id]: false,
+          }));
+        }
+      } else {
+        console.log("task is unlocked");
+        const lock = await lockTask(id);
+        if (lock) {
+          console.log(`Task locked successfully.`);
+          setLockedTasks((prevLockedTasks) => ({
+            ...prevLockedTasks,
+            [id]: true,
+          }));
+        }
+      }
+    } catch (error) {
+      console.log(`error`);
+    }
+  };
+
+  const headerAndAccessors = [
+    ...commonColumns,
+    {
+      Header: "Priority",
+      accessor: "priority",
+    },
+    {
+        Header: "Status",
+        accessor: "status",
+    },
+    {
+
+      Header: "Is Locked",
+      accessor: "isLocked",
+      Cell: (original) => {
+        const taskId = original.row.original.id;
+        const isLocked = original.value;
+        return <LockUnlockTask initialIsLocked={isLocked} taskId={taskId} />;
+      }
+        
+    }
+];
+
+
 
 
 
