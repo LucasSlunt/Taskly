@@ -4,12 +4,10 @@ import Select from 'react-select'
 import '../css/CreateTaskForm.css'
 import {assignMemberToTask, getTeamsForMember, massAssignMemberToTask} from '../api/teamMemberApi'
 import { createTask } from '../api/taskApi';
-import { useCookies } from 'react-cookie';
 import { getTeamMembers } from '../api/teamApi';
 
-function CreateTaskForm(){
-    const [cookies] = useCookies(['userInfo'])
-    const userId = cookies.userInfo.accountId
+function CreateTaskForm({userId}){
+    
     const [userTeams, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [teamMembers, setTeamMembers] = useState([]);
