@@ -94,7 +94,7 @@ public class TeamMemberService {
 		task.setDateCreated(LocalDate.now());
 		task.setTeam(team);
 		task.setPriority(priority);
-
+		task.setDueDate(request.getDueDate());
 		if (request.getDescription() != null) {
 			task.setDescription(request.getDescription());
 		}

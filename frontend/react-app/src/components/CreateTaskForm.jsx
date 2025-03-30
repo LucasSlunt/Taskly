@@ -1,19 +1,55 @@
-import { useState, useEffect } from 'react';
-import {useForm} from 'react-hook-form'
+import { useState, useEffect, useMemo } from 'react';
+import {useForm, Controller} from 'react-hook-form'
+import Select from 'react-select'
 import '../css/CreateTaskForm.css'
-import {assignMemberToTask, getTeamsForMember} from '../api/teamMemberApi'
+import {assignMemberToTask, getTeamsForMember, massAssignMemberToTask} from '../api/teamMemberApi'
 import { createTask } from '../api/taskApi';
 import { useCookies } from 'react-cookie';
 import { getTeamMembers } from '../api/teamApi';
+
 function CreateTaskForm(){
     const [cookies] = useCookies(['userInfo'])
     const userId = cookies.userInfo.accountId
     const [userTeams, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [teamMembers, setTeamMembers] = useState([]);
-    const { register, handleSubmit, formState: {errors}} = useForm();
+    const { register, handleSubmit, formState: {errors}, control} = useForm();
+    function getTeamMemberIds(teamMembers){
+        return teamMembers.map((teamMember)=>(
+            teamMember.value
+        ))
+      }
+    const customStyles = {
+        control: (provided) => ({
+          ...provided,
+          width: '100%',
+        minWidth: '100px',
+        maxWidth: '100%',
+        minHeight: '30px',
+        maxHeight: '100%',
+          border: '2px solid grey',
+          borderRadius: '10px',
+          paddingLeft: '8px',
+          backgroundColor: '#BFCDE0',
+          margin: '10px 0px',
+          cursor: 'pointer'
+        }),
+        option: (provided, state) =>({
+            ...provided,
+            cursor: state.isSelected ? 'default' : 'pointer',
+        })
+      };
+    function formatTeamData(myTeamMembers){
+        return myTeamMembers.map((teamMember)=>(
+            {
+                value: teamMember.accountId,
+                label: teamMember.userName
+             }
+        ))
+      }
     //Once team is selected get the team members
     const teamSelected = ((event)=>{
+        setTeamMembers([])
         console.log(getTeamMembers(event.target.value))
         getTeamMembers(event.target.value).then((results)=>setTeamMembers(results))
     })
@@ -26,6 +62,7 @@ function CreateTaskForm(){
             setLoading(false)
         }
     },[]);
+    const data = useMemo(()=>(teamMembers),[teamMembers])
     const onSubmit =  async (data)=> {
         try {
             createTask(
@@ -39,21 +76,21 @@ function CreateTaskForm(){
 
             ).then((response)=>{
                 if(Array.isArray(data.assignees)){
-                    data.assignees.map((assignee)=>{
-                     assignMemberToTask(response.taskId ,assignee.accountId).then((result)=>{
+                    const assignees = getTeamMemberIds(data.assignees);
+                    massAssignMemberToTask(response.taskId ,assignees).then((result)=>{
                         //debugging
                          console.log(result)
                          alert("TASK CREATED")
-                     })
-                    })}else{
-                     assignMemberToTask(response.taskId ,data.assignees).then((result)=>{
+                     })    
+                }else{
+                     assignMemberToTask(response.taskId ,data.assignees.value).then((result)=>{
                         //debugging
                          console.log(result)
                          alert("TASK CREATED")
                      })
                     }  
             })
-            window.location.href="/home";
+            //window.location.href="/home";
         } catch (error) {
             console.log(error)
             alert("FAILED IN MAKING TASK");
@@ -95,15 +132,23 @@ function CreateTaskForm(){
                 </label>
                 <label className='majorLabel'>
                     Assigned To:
-                    {teamMembers.length !== 0&&(<p>  
-                        <select id="" {...register('assignees',{required: true})}>
-                            <option disabled selected value=''>Assign Users</option>
-                            <option value={userId}>Yourself</option>
-                            {teamMembers.map((teamMember)=>(
-                                <option value={teamMember.accountId}>{teamMember.userName}</option>
-                            ))}
-                        </select></p>)}
-                        {teamMembers.length===0&&(
+                    {data.length !== 0&&(<Controller
+                                    control={control}
+                                    className='Select'
+                                    name="assignees"
+                                    rules={{required:true}}
+                                    defaultValue={[]}
+                                    render={({field}) => (
+                                        <Select
+                                        {...field}
+                                        options={formatTeamData(data)}
+                                        isMulti
+                                        
+                                        styles={customStyles}
+                                        
+                                        />)}
+                                    />)}
+                        {(data.length===0)&&(
                             <select {...register('assignees',{required: true})}>
                                 <option disabled selected value =''>CHOOSE TEAM TO CHOOSE MEMBERS</option>
                             </select>
@@ -113,7 +158,7 @@ function CreateTaskForm(){
                     Add Discription
                 
                 <div>
-                    <input type="text" name="input-description" id="description" className='input'{...register("description", { required: false })}/>
+                    <input type="text" name="input-description" id="description" className='input'{...register("description", { required: true })}/>
                 </div>
                 </label>
                 <label>
