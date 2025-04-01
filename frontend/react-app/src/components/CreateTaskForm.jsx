@@ -153,7 +153,7 @@ function CreateTaskForm({userId}){
                         )}
                 </label>
                 <label className='majorLabel'>
-                    Add Discription
+                    Add Description
                 
                 <div>
                     <input type="text" name="input-description" id="description" className='input'{...register("description", { required: true })}/>
