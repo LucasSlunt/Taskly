@@ -88,7 +88,7 @@ function CreateTaskForm({userId}){
                      })
                     }  
             })
-            //window.location.href="/home";
+            window.location.href="/home";
         } catch (error) {
             console.log(error)
             alert("FAILED IN MAKING TASK");

@@ -43,6 +43,7 @@ export default function AdminPanel(){
             <div className="rowFlexbox buttonRow">
             <a href="create-account" ><button className='importButton'>Create New Account</button></a>
             <a href="/all-users"><button className="importButton">See/Edit All Users</button></a>
+            <a href="/create-team"><button className="importButton">Create Team</button></a>
             </div>
                 <form onSubmit={handleSubmit(onSubmit)} className="goToTeamTaskForm">
                     <select name="" id="" {...register("teamId")}>

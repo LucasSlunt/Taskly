@@ -2,7 +2,7 @@ const BASE_URL = "http://localhost:8080/api/teams";
 
 //Create a team
 export const createTeam = async (teamLeadId, teamName) => {
-    try {
+    console.log(teamLeadId, teamName)
         const response = await fetch(`${BASE_URL}`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
@@ -10,21 +10,14 @@ export const createTeam = async (teamLeadId, teamName) => {
         });
 
         if (!response.ok) {
-            console.error(`Failed to create team: ${response.status} ${response.statusText}`);
-            return null;
+            throw Error(response.statusText)
         }
 
         return await response.json();
-    }
-    catch (error) {
-        console.error("Error creating team: ", error);
-        return null;
-    }
 };
 
 //Delete a team
 export const deleteTeam = async (teamId) => {
-    try {
         const response = await fetch(`${BASE_URL}/${teamId}`, {
             method: 'DELETE'
         });
@@ -35,11 +28,7 @@ export const deleteTeam = async (teamId) => {
         }
 
         return true;
-    }
-    catch (error) {
-        console.error("Error deleting team: ", error);
-        return null;
-    }
+    
 };
 
 //Change team lead
