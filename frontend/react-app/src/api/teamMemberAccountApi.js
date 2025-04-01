@@ -107,7 +107,7 @@ export const getTeamMemberById = async (teamMemberId) => {
 //Get all team ememebrs
 export const getTeamMembers = async () => {
     try {
-        const response = await fetch(`${BASE_URL}/team-members`, {
+        const response = await fetch(`${BASE_URL}`, {
             method: 'GET'
         });
 
