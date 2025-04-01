@@ -1,15 +1,14 @@
 import "../css/Teams.css"
+import {Link} from 'react-router-dom'
 
 //team buttons (don't have onclick functionality yet)
 function Teams({team}){
     return(
         <div className="teams">
-            <button className="team-btn">
-                <div className="team-info">
-                    <h1>{team.id}</h1>
-                    <h1>{team.name}</h1>
-                </div>
-            </button>
+            <Link className="teamButton headerText1" to='/team-tasks' state={{ teamId: team.teamId}} key={team.teamId} >
+                            {team.teamName}
+            </Link>
+        
         </div>
     );
 }
