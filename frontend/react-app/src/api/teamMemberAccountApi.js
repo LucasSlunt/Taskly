@@ -87,21 +87,18 @@ export const modifyTeamMemberEmail = async (teamMemberId, newEmail) => {
 
 //Get a team member with their ID
 export const getTeamMemberById = async (teamMemberId) => {
-    try {
+
         const response = await fetch(`${BASE_URL}/${teamMemberId}`, {
             method: 'GET'
         });
 
         if (!response.ok) {
-            console.error(`Failed to retrieve team member: ${response.status} ${response.statusText}`);
+            throw Error(response)
         }
 
         return await response.json();
-    }
-    catch (error) {
-        console.error(`Failed to retrieve team member: `, error);
-        throw error;
-    } 
+    
+
 };
 
 //Get all team ememebrs

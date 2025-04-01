@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { getTeamMembers } from "../api/teamApi";
 import { useLocation } from 'react-router-dom';
 import { getTeamTasks } from "../api/teamApi";
+import DeleteTeamButton from "../components/DeleteTeamButton";
 
 function getAssigneesNames(taskItem) {
   return taskItem.assignedMembers.map((member) => member.userName).join(", ");
@@ -200,6 +201,13 @@ if(loadingNames || loadingTasks){
                 <TeamMember key={member.teamId} member={member} isAdminPage={isAdmin}/>
               ))}
             </div>
+            {cookies.userInfo.role === 'admin'&&
+            (
+              <DeleteTeamButton
+              teamId={teamId}
+              />
+            )
+            }
 
             
 
