@@ -7,9 +7,12 @@ import fakeData from "../FakeData/fakeTaskData.json"
 import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
 import { getTeamMembers } from "../api/teamApi";
+import { getTeamMembers as getAllTeamMembers}from "../api/teamMemberAccountApi";
 import { useLocation } from 'react-router-dom';
 import { getTeamTasks } from "../api/teamApi";
 import DeleteTeamButton from "../components/DeleteTeamButton";
+import { getAdmins } from "../api/adminApi";
+import AddToTeam from "../components/AddToTeam";
 
 function getAssigneesNames(taskItem) {
   return taskItem.assignedMembers.map((member) => member.userName).join(", ");
@@ -106,10 +109,13 @@ function TeamTasks(){
   console.log("teamId:", teamId);
 
   const [tasksToDo, setTasksToDo ] = useState([]);
-  
+  const [allUsers, setAllUsers] = useState();
   
   async function fetchData(){
       try{
+        if(cookies.userInfo.role === 'admin'){
+          await getAllUsers();
+        }
           const results = await getTeamTasks(teamId);
           console.log("Team Tasks Results:", results);
           setTasksToDo(results);
@@ -119,6 +125,18 @@ function TeamTasks(){
           setLoadingTasks(false)
       }
   }
+
+  async function getAllUsers() {
+    try {
+      const adminResponse = await getAdmins();
+      const teamMemberResposne = await getAllTeamMembers()
+      setAllUsers(adminResponse.concat(teamMemberResposne))
+      console.log(teamMemberResposne)
+    } catch (error) {
+      await alert("FAILED TO LOAD CONTACT NETWORK ADMIN")
+    }
+  }
+
   
   
   useEffect(()=>{
@@ -203,9 +221,22 @@ if(loadingNames || loadingTasks){
             </div>
             {cookies.userInfo.role === 'admin'&&
             (
-              <DeleteTeamButton
+              <div>
+                <div>
+                  <AddToTeam
+                  teamId={teamId}
+                  allTeamMembers={allUsers}
+                  currentMembers = {
+                    (teamMembers.map((member)=>member.accountId))
+                  }
+                  />
+                </div>
+                <div>
+                <DeleteTeamButton
               teamId={teamId}
               />
+                </div>
+              </div>
             )
             }
 
