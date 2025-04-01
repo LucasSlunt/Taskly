@@ -14,7 +14,7 @@ export default function AddToTeam({teamId, allTeamMembers, currentMembers, setTe
                 }
             })
             if(!isOnTeam){
-                returnArr= [...returnArr, {value: member.accountId, label: member.userName}]
+                returnArr= [...returnArr, {value: member.accountId, label: member.userName, role: member.role}]
             }
         })
         return returnArr;
@@ -23,7 +23,7 @@ export default function AddToTeam({teamId, allTeamMembers, currentMembers, setTe
         try {
             await data.assignees.map(async(assignee)=>{
                 const response = await addMemberToTeam(assignee.value, teamId);
-                setTeamMembers((prev)=>([...prev, {accountId: assignee.value, userName: assignee.label}]))
+                setTeamMembers((prev)=>([...prev, {accountId: assignee.value, userName: assignee.label, role: assignee.role}]))
             })
             reset({})
         } catch (error) {
