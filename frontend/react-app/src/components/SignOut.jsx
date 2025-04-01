@@ -7,6 +7,6 @@ export default function SignOut(){
     }
     return(
         
-        <button onClick={clearCookies}>Sign Out</button>
+        <button className="importButton" onClick={clearCookies}>Sign Out</button>
     )
 }
