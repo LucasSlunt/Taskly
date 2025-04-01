@@ -1,9 +1,9 @@
 import Select from 'react-select'
 import {useForm, Controller} from 'react-hook-form'
 import { addMemberToTeam } from '../api/isMemberOfApi';
-export default function AddToTeam({teamId, allTeamMembers, currentMembers}){
+export default function AddToTeam({teamId, allTeamMembers, currentMembers, setTeamMembers}){
     console.log('allMembers', allTeamMembers)
-    const { register, handleSubmit, formState: {errors}, control} = useForm();
+    const { reset, handleSubmit, formState: {errors}, control} = useForm();
     function formatTeamData(){
         let returnArr = []
         allTeamMembers.map((member)=>{
@@ -16,7 +16,6 @@ export default function AddToTeam({teamId, allTeamMembers, currentMembers}){
             if(!isOnTeam){
                 returnArr= [...returnArr, {value: member.accountId, label: member.userName}]
             }
-    
         })
         return returnArr;
     }
@@ -24,8 +23,9 @@ export default function AddToTeam({teamId, allTeamMembers, currentMembers}){
         try {
             await data.assignees.map(async(assignee)=>{
                 const response = await addMemberToTeam(assignee.value, teamId);
+                setTeamMembers((prev)=>([...prev, {accountId: assignee.value, userName: assignee.label}]))
             })
-            window.location.reload();
+            reset({})
         } catch (error) {
             console.log(error)
         }

@@ -13,6 +13,9 @@ html {
  .headerText1{
   font-size: calc(1rem + 1vw);
  }
+ .subHeader1{
+  font-size: calc(0.7rem + 0.7vw);
+ }
  .pageContainer{
   position: absolute;
   margin: 0;
