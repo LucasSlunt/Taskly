@@ -19,8 +19,6 @@ function setUpDataTasksToDo(obj){
             team: taskItem.team,
             dueDate: taskItem.dueDate
             
-
-
         }]
     
    }
