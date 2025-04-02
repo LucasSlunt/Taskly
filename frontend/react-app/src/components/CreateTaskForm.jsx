@@ -20,17 +20,15 @@ function CreateTaskForm({userId}){
     const customStyles = {
         control: (provided) => ({
           ...provided,
-          width: '100%',
-        minWidth: '100px',
-        maxWidth: '100%',
-        minHeight: '30px',
-        maxHeight: '100%',
-          border: '2px solid grey',
-          borderRadius: '10px',
-          paddingLeft: '8px',
-          backgroundColor: '#BFCDE0',
-          margin: '10px 0px',
-          cursor: 'pointer'
+        marginLeft: '25%',
+        width: '50%',
+        padding: '16px 20px',
+        border: 'none',
+        borderRadius: '4px',
+        backgroundColor: 'white',
+        cursor: 'pointer',
+        border: '1.5px solid #3B3355',
+        borderRadius: '10px'
         }),
         option: (provided, state) =>({
             ...provided,
@@ -101,14 +99,14 @@ function CreateTaskForm({userId}){
         <form onSubmit={handleSubmit(onSubmit)} className='CreateTaskForm'>
             <label className='majorLabel'>
                     Task Name
-                    <div>
+                    
                     <input type="text" name="name" id="name" className='input'{...register("title", { 
                         required:{
                             value: true,
                             message: 'Please set a Task Name'
                         }
-                        })}/>
-                    </div>
+                        })} placeholder="Enter a title" />
+                    
                     </label>
                 <label className='majorLabel'>
                 <div>
@@ -130,6 +128,7 @@ function CreateTaskForm({userId}){
                 </label>
                 <label className='majorLabel'>
                     Assigned To:
+                    <br/>
                     {data.length !== 0&&(<Controller
                                     control={control}
                                     className='Select'
@@ -152,11 +151,13 @@ function CreateTaskForm({userId}){
                             </select>
                         )}
                 </label>
+                <br/>
                 <label className='majorLabel'>
                     Add Description
                 
                 <div>
-                    <input type="text" name="input-description" id="description" className='input'{...register("description", { required: true })}/>
+                    {/* <input type="text" name="input-description" id="description" className='input'{...register("description", { required: true })}/> */}
+                    <textarea name="input-description" id="description" className='input'{...register("description", { required: true })} placeholder="Enter description" rows="4"/>
                 </div>
                 </label>
                 <label>
@@ -189,7 +190,7 @@ function CreateTaskForm({userId}){
                     <input type="file" name="input-photos" id="photos" multiple accept="image/*"/>
                 </div> 
                 </label>*/}
-                <input type="submit" value="Create Task"/>
+                <input type="submit" value="Create Task" id="createTaskBtn"/>
                 
         </form>
     );

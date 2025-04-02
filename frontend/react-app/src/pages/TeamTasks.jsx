@@ -3,13 +3,12 @@ import TaskList from "../components/TaskList";
 import Header from "../components/Header";
 import "../css/TeamTasks.css";
 import TeamMember from "../components/TeamMember";
-import fakeData from "../FakeData/fakeTaskData.json"
 import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
-import { getTeamMembers } from "../api/teamApi";
 import { getTeamMembers as getAllTeamMembers}from "../api/teamMemberAccountApi";
 import { useLocation } from 'react-router-dom';
-import { getTeamTasks } from "../api/teamApi";
+import { getTeamTasks, getTeamMembers } from "../api/teamApi";
+import LockUnlockTask from "../components/LockUnlockTask";
 import DeleteTeamButton from "../components/DeleteTeamButton";
 import { getAdmins } from "../api/adminApi";
 import AddToTeam from "../components/AddToTeam";
@@ -35,11 +34,12 @@ function setUpData(results) {
         ...baseItem,
         status: taskItem.status,
         priority: taskItem.priority,
-        isLocked: taskItem.isLocked.toString()
+        isLocked: !!taskItem.isLocked
       };
       
     });
 }
+
 function setUpDataCompleted(results) {
   return results
     .filter((taskItem) => taskItem.status === "Done")
@@ -73,32 +73,13 @@ const commonColumns= [
       accessor: "dueDate",
   },
 ]
-const headerAndAccessors = [
-    ...commonColumns,
-    {
-      Header: "Priority",
-      accessor: "priority",
-    },
-    {
-        Header: "Status",
-        accessor: "status",
-    },
-    {
-      Header: "Is Locked",
-      accessor: "isLocked",
-    }
-]
+
 
 const headerAndAccessorsComplete = [
-  ...commonColumns,
-  {
-      Header: "Date Completed",
-      accessor: "dateCompteted",
-  }
+  ...commonColumns
 ]
 function TeamTasks(){
   const [cookies] = useCookies(['userInfo']);
-  const userId = cookies.userInfo.accountId;
 
   const [teamMembers, setTeamMembers ] = useState([]);
   const [loadingNames, setLoadingNames] = useState(true);
@@ -142,8 +123,6 @@ function TeamTasks(){
     }
   }
 
-  
-  
   useEffect(()=>{
       fetchData();
       console.log("Tasks To Do:", tasksToDo);
@@ -151,9 +130,32 @@ function TeamTasks(){
       
   },[]);
 
+  const isAdmin = cookies.userInfo.role ==='admin';
+  const headerAndAccessors = [
+    ...commonColumns,
+    {
+      Header: "Priority",
+      accessor: "priority",
+    },
+    {
+        Header: "Status",
+        accessor: "status",
+    },
+    {
+      Header: "Is Locked",
+      accessor: "isLocked",
+      Cell: (original) => {
+        const isLocked = original.value;
+        return isAdmin ? (
+          <LockUnlockTask initialIsLocked={isLocked} taskId={original.row.original.id} />
+        ) : (
+          isLocked ? '🔒' : '🔓'
+        );
+      },
+    }
+];
 
-
-  useEffect(()=>{
+useEffect(()=>{
     async function loadAPIInfo() {
         try {
             const data = await getTeamMembers(teamId)
@@ -173,8 +175,6 @@ if(loadingNames || loadingTasks){
 
  
 console.log(teamLead)
-  //mock
-  const isAdmin = cookies.userInfo.role ==='admin';
 
   //mock 
   const members = [

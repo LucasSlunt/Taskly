@@ -1,8 +1,14 @@
 import { useCookies } from 'react-cookie'
-import { Home, ListTodo, UserCircle, Settings, ListCheck, ListChecks, ShieldAlert, ShieldUser } from "lucide-react";
+import { Home, UserCircle, ListChecks, ShieldUser, LogOut } from "lucide-react";
 
 function Header(){
-    const [cookies] = useCookies(['userInfo'])
+    const [cookies, removeCookie] = useCookies(['userInfo'])
+
+    function clearCookies() {
+        removeCookie("userInfo");
+        window.location.href = "/home";
+    }
+
     return(
         <div>
             <h1 className="inner-header">
@@ -17,6 +23,12 @@ function Header(){
 
                     {cookies.userInfo.role === 'admin' && (
                         <li><a href="/admin-panel" title="Admin Controls"><ShieldUser /></a></li>)}
+                    
+                    <li>
+                        <button className="logout-button" onClick={clearCookies} title="Sign Out">
+                        <LogOut/>
+                        </button>
+                    </li>
                 </ul>
             </h1>
         </div>
