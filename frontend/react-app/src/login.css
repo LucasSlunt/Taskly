@@ -94,8 +94,9 @@
 }
 
 #logoBox h1 {
-    font-weight: bold;
+    font-weight: 900;
     font-size: 3em;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     /* background-color: red; */
     gap: 0px;
 }
@@ -103,4 +104,9 @@
 #logoBox img {
     margin: 0;
     /* background-color: red; */
+}
+
+#siteName p {
+    font-size: 1.25em;
+    padding-left: 4%;
 }
