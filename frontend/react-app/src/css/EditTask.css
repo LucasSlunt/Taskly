@@ -71,3 +71,14 @@ select {
   input[type="checkbox"]:disabled:after {
     -webkit-filter: opacity(0.4);
   }
+
+  #editTaskButton {
+    background-color: #3f5d8b;
+    width: 25%;
+    margin-left: 38%;
+    margin-top: 2%;
+  }
+
+  #editTaskButton:hover {
+    background-color: #24416c;
+  }
