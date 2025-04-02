@@ -15,7 +15,7 @@ function LoginForm(){
                     userName:responseLogin.userName,
                     role:(responseLogin.role === 'ADMIN' ? "admin":"teamMember"),
                     password: responseLogin.password}
-                await setCookie("userInfo", dataToCokie,{secure: false});
+                await setCookie("userInfo", dataToCokie,{secure: false, maxAge: 1800});
                 window.location.href="/home";
                 
             }
