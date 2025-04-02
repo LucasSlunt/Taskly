@@ -26,11 +26,10 @@ export const login = async (accountId, password) => {
 export const isAdmin = async (teamMemberId) => {
     try {
         const response = await fetch(`${BASE_URL}/${teamMemberId}/is-admin`, {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({teamMemberId})
         });
 
         if (!response.ok) {
@@ -38,8 +37,8 @@ export const isAdmin = async (teamMemberId) => {
             return false;
         }
 
-        const data = await response.json();
-        return data.isAdmin === true;
+        const role = await response.json();
+        return role;
     }
     catch (error) {
         console.error("Error checking member role: ", error);
