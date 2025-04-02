@@ -47,7 +47,7 @@ function TaskList({dataToUse, headersAndAccessors}){
     const { getTableBodyProps, getTableProps, rows, prepareRow, headerGroups} = useTable({columns,data: filteredData}, useSortBy)
     return(
         
-        <div className='container'>
+        <div className='containerTaskList'>
             <div className='Selector-Search'>
                 <select name="searchThis" id="searchThis" className='selector' onChange={changeSearch}>
                     {headersAndAccessors.map((headerAndAccessor) =>(
