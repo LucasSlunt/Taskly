@@ -51,14 +51,14 @@ function mapTaskItem(taskItem) {
   }
 
 function MyTasks(){
-const [cookies] = useCookies(['userInfo'])
-const userId = cookies.userInfo.accountId
-const isAdmin =cookies.userInfo.role ==='admin';
+    const [cookies] = useCookies(['userInfo'])
+    const userId = cookies.userInfo.accountId
+    const isAdmin =cookies.userInfo.role ==='admin';
 
-const [tasksToDo, setTasksToDo ] = useState([]);
-const [loading, setLoading] = useState(true);
+    const [tasksToDo, setTasksToDo ] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-async function fetchData(){
+    async function fetchData(){
     try{
         const results = await getAssignedTasks(userId);
         console.log("API Results:", results);
@@ -136,45 +136,49 @@ const headerAndAccessorsComplete = [
 if(loading){
     return (<div>Loading...</div>)
 }
-const tasksToDoData = setUpData(tasksToDo);
-const tasksCompletedData = setUpDataCompleted(tasksToDo);
-return (
+    const tasksToDoData = setUpData(tasksToDo);
+    const tasksCompletedData = setUpDataCompleted(tasksToDo);
+    return (
+        <div className='pageContainer'>
+            <Header/>
+            <div className='pageBody'>
+                <div class="content-wrapper flexbox">                    
+                    <div className="column-box">
+                        <div className="my-tasks-row">
+                            <h1>My Tasks</h1>
+                            <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
+                        </div>
+                        <div className="section-divider"></div>
 
-    <div className='pageContainer'>
-        <Header/>
-        <div className='pageBody'>
-        <div class="content-wrapper flexbox">
-                
-                <h1>My Tasks</h1>
-                <span class ="taskBox">
-                {tasksToDoData.length > 0 ? (
-                    <TaskList
-                    dataToUse={tasksToDoData}
-                    headersAndAccessors={headerAndAccessors}
-                    />
-                ) : (
-                    <p>No tasks to do</p>
-                )}
-                    
-
-                </span>
-                <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
-                
-                <h2>My Completed Tasks</h2>
-                {tasksCompletedData.length > 0 ? (
-                    <TaskList
-                    dataToUse={tasksCompletedData}
-                    headersAndAccessors={headerAndAccessorsComplete}
-                    />
-                ) : (
-                    <h2>No tasks completed</h2>
-                )}
-                
-                
-                
+                        <div className ="taskBox">
+                        {tasksToDoData.length > 0 ? (
+                            <TaskList
+                            dataToUse={tasksToDoData}
+                            headersAndAccessors={headerAndAccessors}
+                            />
+                        ) : (
+                            <p>No tasks to do</p>
+                        )} 
+                        </div>
+                    </div>
+                        
+                    <div className="column-box">
+                        <h2>My Completed Tasks</h2>
+                        <div className="section-divider"></div>
+                        <div className ="taskBox">
+                            {tasksCompletedData.length > 0 ? (
+                                <TaskList
+                                dataToUse={tasksCompletedData}
+                                headersAndAccessors={headerAndAccessorsComplete}
+                                />
+                            ) : (
+                                <h2>No tasks completed</h2>
+                                )}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        </div>
-    </div>
     );
       
 
