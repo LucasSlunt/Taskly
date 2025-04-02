@@ -1,27 +1,87 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import '../css/Notifications.css';
 import Notification from "../components/Notification";
+import { getReadNotifications, getUnreadNotifications, markAsRead, markAsUnread, deleteNotification as deleteThisNotification} from '../api/notificationApi';
+import { useCookies } from 'react-cookie';
+import Header from '../components/Header'
 
 const Notifications = () => {
-    const [notifications, setNotifications] = useState([
-        { id: 1, team: "Team 2", message: 'Bob edited your task "Create wireframe"', read: false },
-        { id: 2, team: "Team 1", message: 'Mary completed your task "Code things"', read: false },
-        { id: 3, team: "Team 1", message: 'Adam assigned you to "Code more"', read: true }
-    ]);
+    const [cookies] = useCookies(['userInfo'])
 
-    const toggleRead = (id) => {
-        setNotifications(notifications.map(notif =>
-            notif.id === id ? { ...notif, read: !notif.read } : notif
-        ));
+    const [readNotifications, setReadNotifications] = useState();
+    const [unreadNotifications, setUnreadNotifications] = useState();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(()=>{
+        console.log('useEffect')
+        async function myNotifications() {
+            try {
+                const readNotificationsResponse = await getReadNotifications(cookies.userInfo.accountId);
+                const unreadNotificationsResponse = await getUnreadNotifications(cookies.userInfo.accountId);
+                setReadNotifications(readNotificationsResponse);
+                setUnreadNotifications(unreadNotificationsResponse);
+            } catch (error) {
+                await alert(error)
+            }finally{
+                setLoading(false);
+            }
+        }
+        myNotifications()
+
+    },[])
+
+    const memoizedUnReadNotifications = useMemo(()=>unreadNotifications,[unreadNotifications])
+    const memoizedReadNotifications = useMemo(()=>readNotifications,[readNotifications])
+
+    
+    const toggleRead = async(id, isRead) => {
+        console.log(id, isRead)
+        try {
+            if(isRead){
+                setReadNotifications(
+                    readNotifications.filter(async(notif)=>{
+                        if(notif.notificationId === id){
+                            setUnreadNotifications((prev)=>([...prev, notif]))
+                            const response = await markAsUnread(id);
+                            return false;
+                        }else{
+                            return true;
+                        }
+                    })
+                )
+            }else{
+                setUnreadNotifications(
+                    unreadNotifications.filter(async(notif)=>{
+                        if(notif.notificationId === id){
+                            setReadNotifications((prev)=>([...prev, notif]))
+                            const response = await markAsRead(id);
+                            return false;
+                        }else{
+                            return true;
+                        }
+                    })
+                )
+            }
+        } catch (error) {
+            await alert(error);
+        }
     };
 
-    const deleteNotification = (id) => {
-        setNotifications(notifications.filter(notif => notif.id !== id));
+    const deleteNotification = async(id, isRead) => {
+        if(isRead){
+            setReadNotifications(readNotifications.filter(notif => notif.notificationId !== id));}
+        else{
+            setUnreadNotifications(unreadNotifications.filter(notif => notif.notificationId !== id));}
+       try {
+        const response = await deleteThisNotification(id)
+       } catch (error) {
+        alert(error);
+       }
     };
 
     // Store filtered notifications to avoid redundant filtering
-    const unreadNotifications = notifications.filter(notif => !notif.read);
-    const readNotifications = notifications.filter(notif => notif.read);
+    //const unreadNotifications = notifications.filter(notif => !notif.read);
+    //const readNotifications = notifications.filter(notif => notif.read);
 
     // reusable section component
     const NotificationSection = ({ title, items }) => (
@@ -41,9 +101,14 @@ const Notifications = () => {
             </>
         )
     );
-
+    if(loading){
+        return(<div>...Loading</div>)
+    }
     return (
-        <div id="notifContainer">
+        <div className='pageContainer'>
+            <Header/>
+            <div className='pageBody'>
+            <div id="notifContainer">
             <table>
                 <thead>
                     <tr>
@@ -51,10 +116,12 @@ const Notifications = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <NotificationSection title="Unread" items={unreadNotifications} />
-                    <NotificationSection title="Read" items={readNotifications} />
+                    <NotificationSection title="Unread" items={memoizedUnReadNotifications} />
+                    <NotificationSection title="Read" items={memoizedReadNotifications} />
                 </tbody>
             </table>
+        </div>
+            </div>
         </div>
     );
 };
