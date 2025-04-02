@@ -237,6 +237,8 @@ public class TeamMemberService {
                 IsAssigned isAssigned = new IsAssigned(task, teamMember, task.getTeam());
                 newAssignments.add(isAssigned);
             }
+
+            notifService.notifyTaskAssignment(teamMember, task);
         }
         
         List<IsAssigned> savedAssignments = isAssignedRepository.saveAll(newAssignments);
