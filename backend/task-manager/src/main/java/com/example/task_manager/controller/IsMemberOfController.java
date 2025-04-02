@@ -30,7 +30,7 @@ public class IsMemberOfController {
     }
 
     //mass assign members to a team
-    @PostMapping("/team/{teamId}")
+    @PostMapping("/team/{teamId}/mass-assign")
     public ResponseEntity<?> massAssignToTeam(@PathVariable int teamId, @RequestBody List<Integer> teamMemberIds) {
         try {
             List<IsMemberOfDTO> isMemberOfDTOs = isMemberOfService.massAssignToTeam(teamId, teamMemberIds);

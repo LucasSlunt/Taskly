@@ -14,6 +14,29 @@ export const addMemberToTeam = async (teamMemberId, teamId) => {
         return true;
 };
 
+//Adding multiple members to a team at once
+export const massAssignToTeam = async (teamId, teamMemberIds) => {
+    try {
+        console.log(JSON.stringify(teamMemberIds));
+        const response = await fetch(`${BASE_URL}/team/${teamId}/mass-assign`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(teamMemberIds)
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to assign members to team: ${response.status} ${response.statusText}`);
+            return null;
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error("Error assigning members to team: ", error);
+        throw error;
+    }
+};
+
 //Remove a member from a team
 export const removeMemberFromTeam = async (teamMemberId, teamId) => {
     try {
