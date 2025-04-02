@@ -37,8 +37,8 @@ export default function CreateTeamForm({users}){
     return(
         <form id="createAccountForm" onSubmit={handleSubmit(onSumbit)}>
             <label>Team Name</label>
-            <input type="text" placeholder="Enter team name" {...register("teamName", {required:true})}/>
-            <label>Team Members (One Required, First Selected Will Be Team Lead)</label>
+            <input type="text" placeholder="Enter team name" style={{height: '50px', width: '48%'}} {...register("teamName", {required:true})}/>
+            <label style={{marginTop: '30px'}}>Team Members (One Required, First Selected Will Be Team Lead)</label>
             <Controller
                     control={control}
                     defaultValue={[]}
@@ -55,7 +55,7 @@ export default function CreateTeamForm({users}){
                         
                         />)}
                     />
-            <button type="submit" id="createTeamButton">Create Team</button>
+            <button type="submit" id="createTeamButton" style={{marginBottom: '10px', marginTop: '25px'}}>Create Team</button>
         </form>
     )
 }

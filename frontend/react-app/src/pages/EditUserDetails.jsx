@@ -6,6 +6,7 @@ import {getTeamMemberById, modifyTeamMemberEmail, modifyTeamMemberName } from ".
 import {useForm} from 'react-hook-form'
 import { resetPassword } from "../api/adminApi"
 import Loading from "./Loading"
+import '../css/EditUserDetails.css';
 
 export default function EditUserDetails(){
     const {register, handleSubmit} = useForm();
@@ -99,11 +100,13 @@ export default function EditUserDetails(){
         <div className="pageContainer">
             <Header/>
             <form onSubmit={handleSubmit(onSubmit)} id = 'createAccountForm' className="pageBody">
-                Change user info for: {accountInfo.userName}
+                <div id="editUserDetailsBody">
+                <h1>Change user info for: {accountInfo.userName}</h1>
                 <label htmlFor="">
                    <div>
-                        UserName:
-                        <input type="text" defaultValue={accountInfo.userName} id="" {...register("userName",
+                        Username
+                        <br/>
+                        <input type="text" defaultValue={accountInfo.userName} id="" placeholder="Enter username" {...register("userName",
                             {
                                 required: true
                             }
@@ -113,7 +116,8 @@ export default function EditUserDetails(){
                 <label htmlFor="">
                    <div>
                         Email:
-                        <input type="text" defaultValue={accountInfo.userEmail} id="" {...register("userEmail",
+                        <br/>
+                        <input type="text" defaultValue={accountInfo.userEmail} id="" placeholder="Enter email" {...register("userEmail",
                             {
                                 required: true
                             })}/>
@@ -122,19 +126,21 @@ export default function EditUserDetails(){
                 <label htmlFor="">
                    <div>
                         Set a new Password:
-                        <input type={'password'} id="" {...register("password")}/>
+                        <br/>
+                        <input type={'password'} id="" {...register("password")} placeholder="Enter a new password"/>
                    </div>
                 </label>
                 <div>
                 <label htmlFor="">
                    <div>
                         Confirm new Password:
-                        <input type={'password'} id="" {...register("passwordCon")}/>
+                        <br/>
+                        <input type={'password'} id="" {...register("passwordCon")} placeholder="Confirm new password"/>
                    </div>
                 </label>
                 </div>
-                <button type="submit">Change userInfo</button>
-                
+                <button type="submit">Update</button>
+                </div>
             </form>
         </div>
     )

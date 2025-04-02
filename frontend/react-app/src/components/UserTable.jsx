@@ -210,7 +210,7 @@ function UserTable({teams}){
     const { getTableBodyProps, getTableProps, rows, prepareRow, headerGroups} = useTable({columns,data: data}, useSortBy)
     return(
         
-        <div className='container'>
+        <div className='containerTaskList'>
             <select name="searchThis" id="searchThis" onChange={changeSearch}>
                     {teams.map((team)=>(
                         <option value={team.teamId}>{team.teamName}</option>

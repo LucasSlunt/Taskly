@@ -34,7 +34,7 @@ export default function ChangePassword(){
         <Header/>
         <div className='pageBody'>
             <form onSubmit = {handleSubmit(onSubmit)} className='formContainer'>
-                <div className='headerText1'>
+                <div className='changeHeader'>
                     Change Password
                 </div>
                 
