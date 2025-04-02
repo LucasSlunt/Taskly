@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import CreateTeamForm from '../components/CreateTeamForm';
 import { getTeamMembers } from '../api/teamMemberAccountApi';
 import { getAdmins } from '../api/adminApi';
+import Loading from './Loading';
 
 export default function CreatTeamPage(){
     const [loading, setLoading]= useState(true);
@@ -32,7 +33,7 @@ export default function CreatTeamPage(){
         getAllUsers();
     },[])
     if(loading){
-        return (<div>...Loading</div>)
+        return (<Loading/>)
     }
     return (
     <div className='pageContainer'>

@@ -18,6 +18,7 @@ import CreateTask from './pages/CreateTask';
 import ChangePassword from './pages/ChangePassword';
 import EditUserDetails from './pages/EditUserDetails';
 import CreatTeamPage from './pages/CreateTeamPage';
+import Loading from './pages/Loading';
 
 
 function App() {

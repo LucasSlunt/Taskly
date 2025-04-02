@@ -8,6 +8,7 @@ import { getAssignedTasks } from "../api/teamMemberApi";
 import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
 import LockUnlockTask from "../components/LockUnlockTask";
+import Loading from "./Loading";
 import { Lock, LockOpen } from 'lucide-react';
 
 function getAssigneesNames(taskItem) {
@@ -142,7 +143,7 @@ const headerAndAccessorsComplete = [
     ...commonColumns
 ]
 if(loading){
-    return (<div>Loading...</div>)
+    return (<Loading/>)
 }
     const tasksToDoData = setUpData(tasksToDo);
     const tasksCompletedData = setUpDataCompleted(tasksToDo);

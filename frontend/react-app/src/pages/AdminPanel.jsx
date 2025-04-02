@@ -5,6 +5,7 @@ import '../css/AdminPanel.css'
 import {useNavigate} from 'react-router-dom'
 import { useEffect, useState } from "react";
 import { getTeams } from "../api/teamApi";
+import Loading from "./Loading";
 
 export default function AdminPanel(){
     const { register, handleSubmit} = useForm();
@@ -38,7 +39,7 @@ export default function AdminPanel(){
     },[])
     
     if(loading){
-        return(<div>...Loading</div>)
+        return(<Loading/>)
     }
     return(
         <div className='pageContainer'>

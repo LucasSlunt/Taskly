@@ -4,6 +4,7 @@ import Notification from "../components/Notification";
 import { getReadNotifications, getUnreadNotifications, markAsRead, markAsUnread, deleteNotification as deleteThisNotification} from '../api/notificationApi';
 import { useCookies } from 'react-cookie';
 import Header from '../components/Header'
+import Loading from './Loading';
 
 const Notifications = () => {
     const [cookies] = useCookies(['userInfo'])
@@ -100,7 +101,7 @@ const Notifications = () => {
         )
     );
     if(loading){
-        return(<div>...Loading</div>)
+        return(<Loading/>)
     }
     return (
         <div className='pageContainer'>

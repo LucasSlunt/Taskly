@@ -3,6 +3,7 @@ import '../css/CreateAccount.css';
 import Header from '../components/Header';
 import CreateAccountForm from '../components/CreateAccountForm';
 import { getTeams } from '../api/teamApi';
+import Loading from './Loading';
 
 const CreateAccount = () => {
     const [loading, setLoading]= useState(true);
@@ -31,7 +32,7 @@ const CreateAccount = () => {
         getAllTeams();
     },[])
     if(loading){
-        return (<div>...Loading</div>)
+        return (<Loading/>)
     }
     return (
     <div className='pageContainer'>

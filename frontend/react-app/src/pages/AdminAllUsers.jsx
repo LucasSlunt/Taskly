@@ -3,6 +3,7 @@ import Header from '../components/Header'
 import '../css/AdminAllUsers.css'
 import {useState, useEffect} from 'react'
 import { getTeams } from '../api/teamApi';
+import Loading from './Loading';
 
 
 function AdminAllUsers(){
@@ -23,7 +24,7 @@ function AdminAllUsers(){
         
     },[])
     if(loading){
-        return(<div>...loading</div>)
+        return(<Loading/>)
     }
     return(
         <div className='pageContainer'>
