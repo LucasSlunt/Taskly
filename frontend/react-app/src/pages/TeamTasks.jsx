@@ -112,6 +112,7 @@ function TeamTasks(){
 
   const [tasksToDo, setTasksToDo ] = useState([]);
   const [allUsers, setAllUsers] = useState();
+  const [teamLead, setTeamLead] = useState(team.teamLeadId)
   
   async function fetchData(){
       try{
@@ -165,13 +166,13 @@ function TeamTasks(){
     }
     loadAPIInfo();
       
-},[])
+},[teamLead])
 if(loadingNames || loadingTasks){
   return (<div>Loading...</div>)
 }
 
  
-
+console.log(teamLead)
   //mock
   const isAdmin = cookies.userInfo.role ==='admin';
 
@@ -220,15 +221,16 @@ if(loadingNames || loadingTasks){
             <h2>Team Members</h2>
             <div className="team-list">
               {teamMembers.map((member) => (
-                <TeamMember key={member.teamId} member={member} teamLeadId = {team.teamLeadId}
+                <TeamMember key={member.teamId} member={member} teamLeadId = {teamLead}
                  setTeamMembers = {setTeamMembers}
                 teamId={teamId}
                 isAdminPage={isAdmin}
                 teamMembers={teamMembers}
+                setTeamLead = {setTeamLead}
                 />
               ))}
             </div>
-            {allUsersLoading&&(<div>..Loading</div>)}
+            {cookies.userInfo.role === 'admin'&&allUsersLoading&&(<div>..Loading</div>)}
             {cookies.userInfo.role === 'admin'&& !allUsersLoading &&
             (
                 <div style={{marginTop: '30px'}}>
