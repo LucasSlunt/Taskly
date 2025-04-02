@@ -1,38 +1,45 @@
 *{
     text-decoration: none;
 }
+
 html{
     height: 100%;
     margin: 0;
     padding: 0;
 }
+
 div.MyTasksPage{
     background-color: #5d5d81;
 }
+
 .pageFlexbox{
     display: flex;
     flex-direction: column;
 }
+
 div.content-wrapper{
     /* color: #bfcde0; */
-    margin-left: 5%;
-    margin-right: 5%;
     font-family: Calibri;
+    margin: 0 auto;
 }
+
 div.flexbox{
     margin-top: 2rem;
     margin-bottom: 2rem;
-    justify-content:space-between;
-    width: 90%;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 1600px;
 }
+
 .taskBox{
-    width: 90%;
+    width: 100%;
 }
 
 .create-task-btn {
-    background-color: #238de3;
+    background-color: #2d2644;
     color: white;
     border: none;
     padding: 15px 30px;
@@ -40,8 +47,34 @@ div.flexbox{
     font-size: 16px;
     cursor: pointer;
     border-radius: 10px;
-  }
+}
 
-  .pageContainer {
+.pageContainer {
     width: 100%;
-  }
+}
+
+.column-box {
+    background-color: #e6e4f7;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    width: 1200px;
+}
+
+.column-box h1, h2 {
+    font-size: 30px;
+}
+
+.my-tasks-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-divider {
+    border: none;
+    border-top: 2px solid #3f5d8b;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    width: 100%;
+}
