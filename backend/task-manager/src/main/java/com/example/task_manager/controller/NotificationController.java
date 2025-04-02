@@ -40,7 +40,7 @@ public class NotificationController {
     public ResponseEntity<?> markAsRead(@PathVariable int notificationId) {
         try {
             notifService.markAsRead(notificationId);
-            return ResponseEntity.ok("Notification marked as read.");
+            return ResponseEntity.ok().build();
         }
         catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -52,7 +52,7 @@ public class NotificationController {
     public ResponseEntity<?> markAsUnread(@PathVariable int notificationId) {
         try {
             notifService.markAsUnread(notificationId);
-            return ResponseEntity.ok("Notification marked as unread.");
+            return ResponseEntity.ok().build();
         }
         catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
