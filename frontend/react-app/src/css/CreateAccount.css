@@ -15,34 +15,36 @@
     height: 100%;
     justify-content: center;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #BFCDE0;
+    background-color: #e6e4f7;
     border: none;
-    border-radius: 10px;
+    border-radius: 15px;
+    margin: 3% 10% 10% 12%;
+    width: 75%;
 }
 
 #createAccountForm select{
-    width: 65vw;
+    width: 50%;
     min-width: 100px;
     max-width: 100%;
     min-height: 30px;
     max-height: 100%;
-    border: 2px solid grey;
+    border: 1.5px solid #2d2644;
     border-radius: 10px;
     padding-left: 8px;
-    background-color: #BFCDE0;
+    background-color: white;
     margin: 10px 0px;
 }
 #createAccountForm input {
-    width: 65vw;
+    width: 50%;
     height: 7vh;
     min-width: 100px;
     max-width: 100%;
     min-height: 30px;
     max-height: 100%;
-    border: 2px solid grey;
+    border: 1.5px solid #2d2644;
     border-radius: 10px;
     padding-left: 8px;
-    background-color: #BFCDE0;
+    background-color: white;
     margin: 10px 0px;
 }
 
@@ -53,13 +55,14 @@
 
 #createAccountForm button {
     width: 100px;
-    height: 30px;
+    height: 40px;
     font-size: 1em;
     margin-top: 20px;
     margin-bottom: 20px;
     border: none;
     border-radius: 10px;
     color: white;
+    font-size: 1.12em;
     background-color: #3f5d8b;
 }
 
@@ -67,3 +70,4 @@
     cursor: pointer;
     background-color: #2f486d;
 }
+

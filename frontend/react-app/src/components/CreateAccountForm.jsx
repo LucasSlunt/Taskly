@@ -45,15 +45,14 @@ export default function CreateAccountForm({teams}){
     const customStyles = {
         control: (provided) => ({
           ...provided,
-          width: '65vw',
+          width: '420px',
         minWidth: '100px',
-        maxWidth: '100%',
         minHeight: '30px',
-        maxHeight: '100%',
-          border: '2px solid grey',
+        // maxHeight: '100%',
+          border: '1.5px solid #2d2644;',
           borderRadius: '10px',
           paddingLeft: '8px',
-          backgroundColor: '#BFCDE0',
+          backgroundColor: 'white',
           margin: '10px 0px',
         }),
       };
