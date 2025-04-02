@@ -362,7 +362,8 @@ public class TeamMemberService {
 			task.getDueDate(),
 			task.getTeam().getTeamId(),
 			assignedMembers,
-			task.getPriority() != null ? task.getPriority() : TaskPriority.LOW
+			task.getPriority() != null ? task.getPriority() : TaskPriority.LOW,
+            task.getTeam().getTeamName()
 		);
 	}
 

@@ -93,8 +93,8 @@ public class TeamMemberControllerTest {
     @Test
     void testGetAssignedTasks() throws Exception {
         List<TaskDTO> mockTasks = Arrays.asList(
-                new TaskDTO(1, "Task Title 1", "Task 1 description", false, "Open", LocalDate.now(), null, 1, null, TaskPriority.MEDIUM),
-                new TaskDTO(2, "Task Title 2", "Task 2 description", true, "Closed", LocalDate.now(), null, 1, null, TaskPriority.MEDIUM));
+                new TaskDTO(1, "Task Title 1", "Task 1 description", false, "Open", LocalDate.now(), null, 1, null, TaskPriority.MEDIUM, null),
+                new TaskDTO(2, "Task Title 2", "Task 2 description", true, "Closed", LocalDate.now(), null, 1, null, TaskPriority.MEDIUM, null));
 
         when(teamMemberService.getAssignedTasks(1)).thenReturn(mockTasks);
         mockMvc.perform(get("/api/members/actions/1/tasks"))

@@ -13,12 +13,13 @@ public class TaskDTO {
     private LocalDate dateCreated;
     private LocalDate dueDate;
     private int teamId;
+    private String teamName;
     private TaskPriority priority;
     private List<TeamMemberDTO> assignedMembers;
 
     public TaskDTO() {}
 
-    public TaskDTO(int taskId, String title, String description, boolean isLocked, String status, LocalDate dateCreated, LocalDate dueDate, int teamId, List<TeamMemberDTO> assignedMembers, TaskPriority priority) {
+    public TaskDTO(int taskId, String title, String description, boolean isLocked, String status, LocalDate dateCreated, LocalDate dueDate, int teamId, List<TeamMemberDTO> assignedMembers, TaskPriority priority, String teamName) {
         this.taskId = taskId;
         this.title = title;
         this.description = description;
@@ -29,6 +30,7 @@ public class TaskDTO {
         this.teamId = teamId;
         this.assignedMembers = assignedMembers;
         this.priority = priority;
+        this.teamName = teamName;
     }
 
     //getters and setters
@@ -110,5 +112,13 @@ public class TaskDTO {
 
     public void setPriority(TaskPriority priority) {
         this.priority = priority;
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 }

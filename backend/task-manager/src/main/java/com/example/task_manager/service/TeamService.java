@@ -162,7 +162,8 @@ public class TeamService {
                 task.getDueDate(),
                 task.getTeam().getTeamId(),
                 members,
-                task.getPriority()
+                task.getPriority(),
+                task.getTeam().getTeamName()
         );
     }
 

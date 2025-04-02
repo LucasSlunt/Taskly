@@ -47,7 +47,7 @@ public class TaskControllerTest {
     void testCreateTask() throws Exception {
         int uniqueId = (int) System.nanoTime();
         int teamId = uniqueId + 1;
-        TaskDTO mockTask = new TaskDTO(uniqueId, "Task Title " + uniqueId, "Description", false, "Open", LocalDate.now(), null, teamId, null,  TaskPriority.LOW);
+        TaskDTO mockTask = new TaskDTO(uniqueId, "Task Title " + uniqueId, "Description", false, "Open", LocalDate.now(), null, teamId, null,  TaskPriority.LOW, null);
 
         TaskRequestDTO requestDTO = new TaskRequestDTO(
                 "Task Title " + uniqueId,
@@ -104,7 +104,8 @@ public class TaskControllerTest {
                 null,
                 teamId,
                 null,
-                TaskPriority.HIGH
+                TaskPriority.HIGH,
+                null
         );
 
         when(teamMemberService.editTask(eq(uniqueId), any(TaskDTO.class))).thenReturn(requestDTO);
