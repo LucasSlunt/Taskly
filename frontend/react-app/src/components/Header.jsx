@@ -11,12 +11,12 @@ function Header(){
                 </div>
 
                 <ul className ='icon-nav'>
-                    <li><a href="/home"><Home/></a></li>
-                    <li><a href="/my-tasks"><ListChecks/></a></li>
-                    <li><a href="/profile"><UserCircle/></a></li>
+                    <li><a href="/home" title="Home"><Home/></a></li>
+                    <li><a href="/my-tasks" title="My Tasks"><ListChecks/></a></li>
+                    <li><a href="/profile" title="Profile"><UserCircle/></a></li>
 
                     {cookies.userInfo.role === 'admin' && (
-                        <li><a href="/admin-panel"><ShieldUser /></a></li>)}
+                        <li><a href="/admin-panel" title="Admin Controls"><ShieldUser /></a></li>)}
                 </ul>
             </h1>
         </div>
