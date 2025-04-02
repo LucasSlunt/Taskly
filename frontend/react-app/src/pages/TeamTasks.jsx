@@ -144,11 +144,49 @@ function TeamTasks(){
     {
       Header: "Priority",
       accessor: "priority",
+      Cell: (original) => {
+        const prioirtyValue = original.value;
+        let color;
+        switch (prioirtyValue) {
+          case "HIGH":
+            color = "red";
+            break;
+          case "MEDIUM":
+            color = "orange";
+            break;
+          case "LOW":
+            color = "green";
+            break;
+          default:
+            color = "black";
+        }
+   
+        return <span style={{ color }}>{prioirtyValue}</span>;
+      }
+
     },
     {
-        Header: "Status",
-        accessor: "status",
-    },
+      Header: "Status",
+      accessor: "status",
+      Cell: (original) => {
+          const statusValue = original.value;
+          let formattedStatus;
+          switch (statusValue) {
+              case "InProgress":
+                  formattedStatus = "In Progress";
+                  break;
+              case "notStarted":
+                  formattedStatus = "Not Started";
+                  break;
+              case "done":
+                  formattedStatus = "Done";
+                  break;
+              default:
+                  formattedStatus = statusValue;
+          }
+          return <span>{formattedStatus}</span>;
+      } 
+  },
     {
       Header: "Is Locked",
       accessor: "isLocked",
