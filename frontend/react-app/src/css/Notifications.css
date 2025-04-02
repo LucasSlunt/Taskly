@@ -1,19 +1,21 @@
 #notifContainer {
-    background-color: white;
-    width: 600px;
+    background-color: white;;
+    width: 75%;
     height: 500px;
-    margin: auto;
+    margin: left;
+    padding: 2%;
     font-family: Arial, Helvetica, sans-serif;
 }
 
 #notifContainer table {
-    width: 100%;
+    width: 130%;
 }
+
 
 #notifContainer thead td {
     width: 100%;
     color: white;
-    background-color: #254E58;
+    background-color: #52799d;
 }
 
 /* #notifContainer tbody td { */
@@ -28,10 +30,6 @@
     text-align: left !important;
 }
 
-#notifContainer tbody td {
-    background-color: white;
-}
-
 #notifContainer input {
     border: none;
 }
@@ -43,9 +41,11 @@
 .subHeader {
     text-align: left !important;
     padding-left: 10px;
+    color: white;
+    background-color: #52799d;
 }
 
-.delete {
+.delete{
 
 }
 
@@ -67,4 +67,14 @@
     border: none;
     background-color: black;
 
+}
+
+
+.notifBox {
+    width: 75%;
+    
+}
+
+.column-box {
+    width: 120%;
 }

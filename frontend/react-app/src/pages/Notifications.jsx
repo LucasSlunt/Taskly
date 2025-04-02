@@ -1,3 +1,4 @@
+import TaskList from "../components/TaskList";
 import React, { useEffect, useMemo, useState } from 'react';
 import '../css/Notifications.css';
 import Notification from "../components/Notification";
@@ -85,6 +86,7 @@ const Notifications = () => {
     // reusable section component
     const NotificationSection = ({ title, items }) => (
         items.length > 0 && (
+            
             <>
                 <tr>
                     <td colSpan="4" className="subHeader">{title}</td>
@@ -97,6 +99,7 @@ const Notifications = () => {
                         deleteNotification={deleteNotification} 
                     />
                 ))}
+                    
             </>
         )
     );
@@ -108,87 +111,22 @@ const Notifications = () => {
             <Header/>
             <div className='pageBody'>
             <div id="notifContainer">
-            <table>
-                <thead>
-                    <tr>
-                        <td colSpan="4">Notifications</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <NotificationSection title="Unread" items={memoizedUnReadNotifications} />
-                    <NotificationSection title="Read" items={memoizedReadNotifications} />
-                </tbody>
-            </table>
-        </div>
+                <div className="column-box">
+                    <h2>My Notifications</h2>
+                        <div className="section-divider"></div>
+                        <div className ="notifBox">
+                        <table>
+                            <tbody>
+                                <NotificationSection title="Unread" items={memoizedUnReadNotifications} />
+                                <NotificationSection title="Read" items={memoizedReadNotifications} />
+                            </tbody>
+                        </table>
+                        </div>
+                </div>   
+            </div>
             </div>
         </div>
     );
 };
 
 export default Notifications;
-
-
-//before refactoring 
-
-
-// import React from 'react';
-// import {useEffect, useState} from 'react';
-// import '../css/Notifications.css';
-// import Notification from "../components/Notification";
-
-// const Notifications = () => {
-//     const [notifications, setNotifications] = useState([
-//         {id: 1, team: "Team 2", message: 'Bob edited your task "Create wireframe"', read: false},
-//         { id: 2, team: "Team 1", message: 'Mary completed your task "Code things"', read: false },
-//         { id: 3, team: "Team 1", message: 'Adam assigned you to "Code more"', read: true }
-//     ]);
-
-//     //mark as read or unread
-//     const toggleRead = (id) => {
-//         setNotifications(notifications.map(notif =>
-//             notif.id === id ? { ...notif, read: !notif.read } : notif
-//         ));
-//     };
-
-//     //delete any notification
-//     const deleteNotification = (id) => {
-//         setNotifications(notifications.filter(notif => notif.id !== id));
-//     };
-
-//     return (
-//         <div id="notifContainer">
-//            <table>
-//                 <thead>
-//                     <tr>
-//                         <td colSpan="4">Notifications</td>
-//                     </tr>
-//                 </thead>
-//                 <tbody>
-//                     {notifications.some(notif => !notif.read) && (
-//                         <>
-//                             <tr>
-//                                 <td colSpan="4" className="subHeader">Unread</td>
-//                             </tr>
-//                             {notifications.filter(notif => !notif.read).map(notif => (
-//                                 <Notification key={notif.id} notif={notif} toggleRead={toggleRead} deleteNotification={deleteNotification} />
-//                             ))}
-//                         </>
-//                     )}
-
-//                     {notifications.some(notif => notif.read) && (
-//                         <>
-//                             <tr>
-//                                 <td colSpan="4" className="subHeader">Read</td>
-//                             </tr>
-//                             {notifications.filter(notif => notif.read).map(notif => (
-//                                 <Notification key={notif.id} notif={notif} toggleRead={toggleRead} deleteNotification={deleteNotification} />
-//                             ))}
-//                         </>
-//                     )}
-//                 </tbody>
-//             </table>
-//         </div>
-//     )
-// }
-
-// export default Notifications;

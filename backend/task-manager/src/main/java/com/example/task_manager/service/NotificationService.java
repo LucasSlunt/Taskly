@@ -52,7 +52,7 @@ public class NotificationService {
                 teamMember,
                 updatedTask,
                 NotificationType.TASK_TITLE_EDITED,
-                "Task Update: The title of a task was changed from \"" + oldTitle + "\" to \"" + updatedTask.getTitle() + "\""
+                "Task Update: The title of a task was changed from \"" + oldTitle + "\" to \"" + updatedTask.getTitle() + "\" on " + LocalDate.now()
             );
         }
     }
@@ -67,7 +67,7 @@ public class NotificationService {
                 teamMember,
                 updatedTask,
                 NotificationType.TASK_DESCRIPTION_EDITED,
-                "Task Update: The description of a task was changed from \"" + oldDescription + "\" to \"" + updatedTask.getDescription() + "\""
+                "Task Update: The description of a task was changed from \"" + oldDescription + "\" to \"" + updatedTask.getDescription() + "\" on " + LocalDate.now()
             );
         }
     }
@@ -82,7 +82,7 @@ public class NotificationService {
                 teamMember,
                 updatedTask,
                 NotificationType.TASK_LOCK_STATUS_CHANGED,
-                "Task Update: The lock status of a task was changed from \"" + oldLockStatus + "\" to \"" + updatedTask.isLocked() + "\""
+                "Task Update: The lock status of a task was changed from \"" + oldLockStatus + "\" to \"" + updatedTask.isLocked() + "\" on " + LocalDate.now()
             );
         }
     }
@@ -98,7 +98,7 @@ public class NotificationService {
                     updatedTask,
                     NotificationType.TASK_DUE_DATE_EDITED,
                     "Task Update: The due date of a task was changed from \"" + oldDueDate + "\" to \"" + updatedTask.getDueDate()
-                            + "\"");
+                            + "\" on " + LocalDate.now());
         }
     }
     
@@ -112,7 +112,7 @@ public class NotificationService {
                 teamMember,
                 updatedTask,
                 NotificationType.TASK_STATUS_EDITED,
-                "Task Update: The status of a task was changed from \"" + oldStatus + "\" to \"" + updatedTask.getStatus() + "\""
+                "Task Update: The status of a task was changed from \"" + oldStatus + "\" to \"" + updatedTask.getStatus() + "\" on " + LocalDate.now()
             );
         }
     }
@@ -120,19 +120,19 @@ public class NotificationService {
     //notify member when task is assigned
     public void notifyTaskAssignment(TeamMember teamMember, Task task) {
         createNotification(teamMember, task, NotificationType.TASK_ASSIGNED,
-                "You have been assigned to a task: \"" + task.getTitle());
+                "You have been assigned to a task: \"" + task.getTitle() + "\" on " + LocalDate.now());
     }
     
     //notify member when task is unassigned
     public void notifyTaskUnassignment(TeamMember teamMember, Task task) {
         createNotification(teamMember, task, NotificationType.TASK_UNASSIGNED,
-                "You have been unassigned from a task: \"" + task.getTitle());
+                "You have been unassigned from a task: \"" + task.getTitle() + "\" on " + LocalDate.now());
     }
 
     //notify member when they are added to a team
     public void notifyTeamAssignment(TeamMember teamMember, Team team) {
         createNotification(teamMember, null, NotificationType.TEAM_ASSIGNED,
-                "You have been assigned to a team: \"" + team.getTeamName());
+                "You have been assigned to a team: \"" + team.getTeamName() + "\" on " + LocalDate.now());
     }
     
     //notify member when they are removed from a team
