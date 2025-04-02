@@ -47,19 +47,17 @@ describe('Team API', () => {
         const updatedTeam = {
             teamId: 1,
             teamLeadId: 1,
-            teamName: "New Team Name"
         };
 
         fetch.mockResponseOnce(JSON.stringify(updatedTeam), { status: 200 });
 
-        const result = await changeTeamLead(1, 1, "New Team Name");
+        const result = await changeTeamLead(1, 1);
 
         expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/1/change-lead`, {
             method: 'PUT',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 teamLeadId: 1,
-                teamName: "New Team Name"
             })
         });
 
