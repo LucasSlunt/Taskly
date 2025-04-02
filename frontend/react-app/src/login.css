@@ -19,11 +19,6 @@
     color:#25274D;
 }
 
-#siteName h1 {
-    font-size: 2em;
-    text-align: left;
-}
-
 #siteName img {
     width: 200px;
     height: 200px;
@@ -89,4 +84,23 @@
 #loginForm button:hover {
     background-color: #25274D;
     cursor: pointer;
+}
+
+
+#logoBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#logoBox h1 {
+    font-weight: bold;
+    font-size: 3em;
+    /* background-color: red; */
+    gap: 0px;
+}
+
+#logoBox img {
+    margin: 0;
+    /* background-color: red; */
 }
