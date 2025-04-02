@@ -54,7 +54,7 @@ export const markAsRead = async (notificationId) => {
             return null;
         }
 
-        return await response.json();
+        return await response;
     }
     catch (error) {
         console.error("Error marking notification as read:", error);
@@ -76,7 +76,7 @@ export const markAsUnread = async (notificationId) => {
             return null;
         }
 
-        return await response.json();
+        return await response;
     }
     catch (error) {
         console.error("Error marking notification as unread:", error);

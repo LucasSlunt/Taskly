@@ -13,7 +13,6 @@ const Notifications = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(()=>{
-        console.log('useEffect')
         async function myNotifications() {
             try {
                 const readNotificationsResponse = await getReadNotifications(cookies.userInfo.accountId);
@@ -35,14 +34,13 @@ const Notifications = () => {
 
     
     const toggleRead = async(id, isRead) => {
-        console.log(id, isRead)
         try {
             if(isRead){
+                const response = await markAsUnread(id);
                 setReadNotifications(
-                    readNotifications.filter(async(notif)=>{
+                    await readNotifications.filter((notif)=>{
                         if(notif.notificationId === id){
                             setUnreadNotifications((prev)=>([...prev, notif]))
-                            const response = await markAsUnread(id);
                             return false;
                         }else{
                             return true;
@@ -50,11 +48,11 @@ const Notifications = () => {
                     })
                 )
             }else{
+                const response = await markAsRead(id);
                 setUnreadNotifications(
-                    unreadNotifications.filter(async(notif)=>{
+                    unreadNotifications.filter((notif)=>{
                         if(notif.notificationId === id){
                             setReadNotifications((prev)=>([...prev, notif]))
-                            const response = await markAsRead(id);
                             return false;
                         }else{
                             return true;
