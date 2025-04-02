@@ -108,14 +108,20 @@ tbody {
 #taskSection input {
     /* background-color: #ddd3ef; */
     background-color: #d3d4f9;
-    color: black;
+    color: #2d2644;
 }
 
 #taskSection input::placeholder {
-    color: black;
+    color: #2d2644;
+    font-size: 1em;
 }
+
 
 #taskSection select {
     /* background-color: #ddd3ef; */
     background-color: #d3d4f9;
+    color: #2d2644;
+    font-size: 1em;
+    padding-left: 1%;
+    border-radius: 10px;
 }
