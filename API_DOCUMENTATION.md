@@ -264,6 +264,33 @@ All API requests should be made to the following base URL (Spring Boot's default
 - **Add a Member to a Team:** `POST /{teamMemberId}/team/{teamId}`
     - **Description:** Adds a team member to a team.
 
+- **Mass Assign to a Team:** `POST /team/{teamId}/mass-assign`
+    - **Request Body:**
+    ```json
+        [1, 2, 3, 4]
+    ```
+    - **Response Body:**
+    ```json
+    [
+        {
+            "isMemberOfId": 101,
+            "teamMemberId": 1,
+            "teamId": 42
+        },
+        {
+            "isMemberOfId": 102,
+            "teamMemberId": 2,
+            "teamId": 42
+        },
+        {
+            "isMemberOfId": 103,
+            "teamMemberId": 3,
+            "teamId": 42
+        }
+    ]
+    ```
+    - **Description:** Adds multiple members to a team at once. If any member is already in the team they will be skipped. If any member does not exist, the entire request will fail with a 400 error.
+
 - **Remove a Member from a Team:** `DELETE /{teamMemberId}/team/{teamId}`
     - **Description:** Removes a team member from a team.
 
@@ -589,7 +616,7 @@ All API requests should be made to the following base URL (Spring Boot's default
 - **Mass Assign Members to a Task:** `POST /{taskId}/mass-assign`
     - **Request Body:**
     ```json
-    [1, 2, 3, 4]
+        [1, 2, 3, 4]
     ```
     - **Response Body:**
     ```json
