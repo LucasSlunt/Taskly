@@ -9,8 +9,6 @@ import { getTeamMembers as getAllTeamMembers}from "../api/teamMemberAccountApi";
 import { useLocation } from 'react-router-dom';
 import { getTeamTasks, getTeamMembers } from "../api/teamApi";
 import LockUnlockTask from "../components/LockUnlockTask";
-import { isAdmin } from "../api/authInfoApi";
-
 import DeleteTeamButton from "../components/DeleteTeamButton";
 import { getAdmins } from "../api/adminApi";
 import AddToTeam from "../components/AddToTeam";
@@ -42,7 +40,6 @@ function setUpData(results) {
     });
 }
 
-
 function setUpDataCompleted(results) {
   return results
     .filter((taskItem) => taskItem.status === "Done")
@@ -54,12 +51,6 @@ function setUpDataCompleted(results) {
       };
     });
 }
-
-
-
-
-
-
 
 const commonColumns= [
   {
@@ -93,12 +84,10 @@ const headerAndAccessorsComplete = [
 ]
 function TeamTasks(){
   const [cookies] = useCookies(['userInfo']);
-  const userId = cookies.userInfo.accountId;
 
   const [teamMembers, setTeamMembers ] = useState([]);
   const [loadingNames, setLoadingNames] = useState(true);
   const [loadingTasks, setLoadingTasks] = useState(true);
-  const [isUserAdmin, setIsUserAdmin] = useState(true);
   const [allUsersLoading, setallUsersLoading] = useState(true)
 
   const location = useLocation();
@@ -138,8 +127,6 @@ function TeamTasks(){
     }
   }
 
-  
-  
   useEffect(()=>{
       fetchData();
       console.log("Tasks To Do:", tasksToDo);
@@ -147,46 +134,7 @@ function TeamTasks(){
       
   },[]);
 
-
-
-  // useEffect(() => {
-  //   async function checkIfUserAdmin() {
-  //     try {
-  //       const role = await isAdmin();
-  //       console.log("User Role from API:", role);
-  //       setIsUserAdmin(role);
-  //     } catch (error) {
-  //       console.log("Error checking admin status:", error);
-  //     }
-  //   }
-  //   checkIfUserAdmin();
-  //   fetchData();
-  // }, []);
-
-  useEffect(() => {
-    async function checkIfUserAdmin() {
-      try {
-        const response = await isAdmin();
-        console.log("Raw API Response from isAdmin:", response);
-        
-        // Explicitly log the type
-        console.log("Type of response:", typeof response);
-  
-        // If it's an object, check its properties
-        if (typeof response === "object") {
-          console.log("API Response Object:", JSON.stringify(response, null, 2));
-        }
-  
-        setIsUserAdmin(response); // Assuming it's a boolean
-      } catch (error) {
-        console.log("Error checking admin status:", error);
-      }
-    }
-    checkIfUserAdmin();
-    fetchData();
-  }, []);
-  
-
+  const isAdmin = cookies.userInfo.role ==='admin';
   const headerAndAccessors = [
     ...commonColumns,
     {
@@ -202,7 +150,7 @@ function TeamTasks(){
       accessor: "isLocked",
       Cell: (original) => {
         const isLocked = original.value;
-        return isUserAdmin ? (
+        return isAdmin ? (
           <LockUnlockTask initialIsLocked={isLocked} taskId={original.row.original.id} />
         ) : (
           isLocked ? '🔒' : '🔓'
@@ -231,8 +179,6 @@ if(loadingNames || loadingTasks){
 
  
 console.log(teamLead)
-  //mock
-  const isAdmin = cookies.userInfo.role ==='admin';
 
   //mock 
   const members = [
