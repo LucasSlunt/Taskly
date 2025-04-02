@@ -65,7 +65,7 @@ public class IsMemberOfControllerTest {
 
         String jsonRequest = "[101, 102, 103]";
 
-        mockMvc.perform(post("/api/memberships/team/" + teamId)
+        mockMvc.perform(post("/api/memberships/team/" + teamId + "/mass-assign")
                 .contentType("application/json")
                 .content(jsonRequest))
                 .andExpect(status().isOk())
@@ -85,7 +85,7 @@ public class IsMemberOfControllerTest {
         when(isMemberOfService.massAssignToTeam(eq(teamId), eq(teamMemberIds)))
             .thenThrow(new RuntimeException("Team not found"));
 
-        mockMvc.perform(post("/api/memberships/team/" + teamId)
+        mockMvc.perform(post("/api/memberships/team/" + teamId + "/mass-assign")
                 .contentType("application/json")
                 .content(jsonRequest))
             .andExpect(status().isBadRequest())
