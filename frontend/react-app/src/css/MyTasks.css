@@ -71,13 +71,12 @@ div.flexbox{
 .pageContainer {
     width: 100%;
 }
-
-.column-box {
+.column-box-mytasks {
     background-color: #e6e4f7;
     border-radius: 16px;
     padding: 24px;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-    width: 1200px;
+    width:100%;
 }
 
 .column-box h1, h2 {
