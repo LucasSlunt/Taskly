@@ -42,6 +42,7 @@ function ViewTask(){
     return(
         <div className='pageContainer'>
             <Header/>
+            <div className='pageBody'>
             <div className='viewpageBody'>
                 <div className="viewFlexbox">
                 <strong class ="nameOfTask">{taskToSee.title + "\n"}</strong>
@@ -91,6 +92,7 @@ function ViewTask(){
 
                     </div>)}
                 </div>
+            </div>
             </div>
         </div>
     )
