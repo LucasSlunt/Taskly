@@ -190,7 +190,7 @@ if(loading){
             <Header/>
             <div className='pageBody'>
                 <div class="content-wrapper flexbox">                    
-                    <div className="column-box">
+                    <div className="column-box-mytasks">
                         <div className="my-tasks-row">
                             <h1>My Tasks</h1>
                             <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
@@ -209,7 +209,7 @@ if(loading){
                         </div>
                     </div>
                         
-                    <div className="column-box">
+                    <div className="column-box-mytasks">
                         <h2>My Completed Tasks</h2>
                         <div className="section-divider"></div>
                         <div className ="taskBox">
