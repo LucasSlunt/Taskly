@@ -68,7 +68,7 @@ const Home = () => {
             accessor: "team"
         },
         {
-            Header: "DeadLine",
+            Header: "Deadline",
             accessor: 'dueDate'
         }
     ]
