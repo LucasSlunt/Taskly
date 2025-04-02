@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../css/Notifications.css';
 import Notification from "../components/Notification";
+import Header from "../components/Header";
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState([
@@ -43,18 +44,21 @@ const Notifications = () => {
     );
 
     return (
-        <div id="notifContainer">
-            <table>
-                <thead>
-                    <tr>
-                        <td colSpan="4">Notifications</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <NotificationSection title="Unread" items={unreadNotifications} />
-                    <NotificationSection title="Read" items={readNotifications} />
-                </tbody>
-            </table>
+        <div>
+            <Header/>
+                <div id="notifContainer">
+                    <table>
+                        <thead>
+                            <tr>
+                                <td colSpan="4">Notifications</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <NotificationSection title="Unread" items={unreadNotifications} />
+                            <NotificationSection title="Read" items={readNotifications} />
+                        </tbody>
+                    </table>
+            </div>
         </div>
     );
 };
