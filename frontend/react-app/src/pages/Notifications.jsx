@@ -109,7 +109,6 @@ const Notifications = () => {
         <div className='pageContainer'>
             <Header/>
             <div className='pageBody'>
-                <div></div>
             <div id="notifContainer">
                 <div className="column-box">
                     <h2>My Notifications</h2>

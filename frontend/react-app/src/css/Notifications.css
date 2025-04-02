@@ -1,12 +1,15 @@
 #notifContainer {
     background-color: white;
-    width: 40%;
+    width: 1300px;
     height: 500px;
     margin: auto;
     padding: 2%;
     font-family: Arial, Helvetica, sans-serif;
 }
 
+#notifContainer table {
+    width: 100%;
+}
 
 
 #notifContainer thead td {
@@ -42,11 +45,14 @@
     background-color: #52799d;
 }
 
+.delete{
+
+}
+
 .delete:hover {
     cursor: pointer;
     color: white;
     background-color: red;
-    border: none;
 }
 
 .smallTeamButton {
