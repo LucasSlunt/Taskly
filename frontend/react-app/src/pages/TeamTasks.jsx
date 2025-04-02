@@ -165,9 +165,27 @@ function TeamTasks(){
 
     },
     {
-        Header: "Status",
-        accessor: "status",
-    },
+      Header: "Status",
+      accessor: "status",
+      Cell: (original) => {
+          const statusValue = original.value;
+          let formattedStatus;
+          switch (statusValue) {
+              case "InProgress":
+                  formattedStatus = "In Progress";
+                  break;
+              case "notStarted":
+                  formattedStatus = "Not Started";
+                  break;
+              case "done":
+                  formattedStatus = "Done";
+                  break;
+              default:
+                  formattedStatus = statusValue;
+          }
+          return <span>{formattedStatus}</span>;
+      } 
+  },
     {
       Header: "Is Locked",
       accessor: "isLocked",
