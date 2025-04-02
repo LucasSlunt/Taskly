@@ -1,3 +1,4 @@
+import TaskList from "../components/TaskList";
 import React, { useEffect, useMemo, useState } from 'react';
 import '../css/Notifications.css';
 import Notification from "../components/Notification";
@@ -84,6 +85,7 @@ const Notifications = () => {
     // reusable section component
     const NotificationSection = ({ title, items }) => (
         items.length > 0 && (
+            
             <>
                 <tr>
                     <td colSpan="4" className="subHeader">{title}</td>
@@ -96,6 +98,7 @@ const Notifications = () => {
                         deleteNotification={deleteNotification} 
                     />
                 ))}
+                    
             </>
         )
     );
@@ -107,6 +110,15 @@ const Notifications = () => {
             <Header/>
             <div className='pageBody'>
             <div id="notifContainer">
+                <div className="column-box">
+                    <h2>My Completed Tasks</h2>
+                        <div className="section-divider"></div>
+                        <div className ="taskBox">
+                           
+                                <h2>No tasks completed</h2>
+                                
+                        </div>
+                    </div>
             <table>
                 <thead>
                     <tr>
