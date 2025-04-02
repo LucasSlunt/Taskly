@@ -11,7 +11,7 @@ function CreateTask(){
     return (
         <div className='pageContainer'>
             <Header/>
-            <div className='pageBody'>
+            <div className='createTaskPageBody'>
 
                     <CreateTaskForm
                     team={fakeTeamData}
