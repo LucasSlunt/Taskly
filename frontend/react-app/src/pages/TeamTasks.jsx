@@ -7,8 +7,12 @@ import fakeData from "../FakeData/fakeTaskData.json"
 import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
 import { getTeamMembers } from "../api/teamApi";
+import { getTeamMembers as getAllTeamMembers}from "../api/teamMemberAccountApi";
 import { useLocation } from 'react-router-dom';
 import { getTeamTasks } from "../api/teamApi";
+import DeleteTeamButton from "../components/DeleteTeamButton";
+import { getAdmins } from "../api/adminApi";
+import AddToTeam from "../components/AddToTeam";
 
 function getAssigneesNames(taskItem) {
   return taskItem.assignedMembers.map((member) => member.userName).join(", ");
@@ -99,16 +103,22 @@ function TeamTasks(){
   const [teamMembers, setTeamMembers ] = useState([]);
   const [loadingNames, setLoadingNames] = useState(true);
   const [loadingTasks, setLoadingTasks] = useState(true);
+  const [allUsersLoading, setallUsersLoading] = useState(true)
 
   const location = useLocation();
-  const { teamId } = location.state;
+  const { team } = location.state;
+  const teamId = team.teamId;
   console.log("teamId:", teamId);
 
   const [tasksToDo, setTasksToDo ] = useState([]);
-  
+  const [allUsers, setAllUsers] = useState();
+  const [teamLead, setTeamLead] = useState(team.teamLeadId)
   
   async function fetchData(){
       try{
+        if(cookies.userInfo.role === 'admin'){
+          getAllUsers();
+        }
           const results = await getTeamTasks(teamId);
           console.log("Team Tasks Results:", results);
           setTasksToDo(results);
@@ -118,6 +128,20 @@ function TeamTasks(){
           setLoadingTasks(false)
       }
   }
+
+  async function getAllUsers() {
+    try {
+      const adminResponse = await getAdmins();
+      const teamMemberResposne = await getAllTeamMembers()
+      setAllUsers(adminResponse.concat(teamMemberResposne))
+      console.log(teamMemberResposne)
+    } catch (error) {
+      await alert("FAILED TO LOAD CONTACT NETWORK ADMIN")
+    }finally{
+      setallUsersLoading(false)
+    }
+  }
+
   
   
   useEffect(()=>{
@@ -142,15 +166,15 @@ function TeamTasks(){
     }
     loadAPIInfo();
       
-},[])
+},[teamLead])
 if(loadingNames || loadingTasks){
   return (<div>Loading...</div>)
 }
 
  
-
+console.log(teamLead)
   //mock
-  const isAdmin = false;
+  const isAdmin = cookies.userInfo.role ==='admin';
 
   //mock 
   const members = [
@@ -170,7 +194,7 @@ if(loadingNames || loadingTasks){
       <div className='pageContainer'>
         <Header/>
         <div className='pageBody'>
-        <h2>Team 1 Tasks</h2>
+        <h2>{team.teamName}</h2>
           {tasksToDoData.length > 0 ? (
             <TaskList
               dataToUse={tasksToDoData}
@@ -197,9 +221,38 @@ if(loadingNames || loadingTasks){
             <h2>Team Members</h2>
             <div className="team-list">
               {teamMembers.map((member) => (
-                <TeamMember key={member.teamId} member={member} isAdminPage={isAdmin}/>
+                <TeamMember key={member.teamId} member={member} teamLeadId = {teamLead}
+                 setTeamMembers = {setTeamMembers}
+                teamId={teamId}
+                isAdminPage={isAdmin}
+                teamMembers={teamMembers}
+                setTeamLead = {setTeamLead}
+                />
               ))}
             </div>
+            {cookies.userInfo.role === 'admin'&&allUsersLoading&&(<div>..Loading</div>)}
+            {cookies.userInfo.role === 'admin'&& !allUsersLoading &&
+            (
+                <div style={{marginTop: '30px'}}>
+                  <h2>Add New Team Member</h2>
+                  <div>
+                    <AddToTeam
+                    teamId={teamId}
+                    allTeamMembers={allUsers}
+                    currentMembers = {
+                      (teamMembers.map((member)=>member.accountId))
+                    }
+                    setTeamMembers = {setTeamMembers}
+                    />
+                  </div>
+                <div>
+                <DeleteTeamButton
+              teamId={teamId}
+              />
+                </div>
+              </div>
+            )
+            }
 
             
 

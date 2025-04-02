@@ -63,7 +63,7 @@ function CreateTaskForm({userId}){
     const data = useMemo(()=>(teamMembers),[teamMembers])
     const onSubmit =  async (data)=> {
         try {
-            createTask(
+            await createTask(
                 data.title,
                 data.description,
                 false,
@@ -72,23 +72,23 @@ function CreateTaskForm({userId}){
                 userTeams[0].teamId,
                 data.priority
 
-            ).then((response)=>{
+            ).then( async(response)=>{
                 if(Array.isArray(data.assignees)){
                     const assignees = getTeamMemberIds(data.assignees);
-                    massAssignMemberToTask(response.taskId ,assignees).then((result)=>{
+                    await massAssignMemberToTask(response.taskId ,assignees).then(async(result)=>{
                         //debugging
                          console.log(result)
-                         alert("TASK CREATED")
+                         await alert("TASK CREATED")
                      })    
                 }else{
-                     assignMemberToTask(response.taskId ,data.assignees.value).then((result)=>{
+                    await assignMemberToTask(response.taskId ,data.assignees.value).then(async(result)=>{
                         //debugging
                          console.log(result)
-                         alert("TASK CREATED")
+                         await alert("TASK CREATED")
                      })
                     }  
             })
-            //window.location.href="/home";
+            window.location.href="/home";
         } catch (error) {
             console.log(error)
             alert("FAILED IN MAKING TASK");
@@ -153,7 +153,7 @@ function CreateTaskForm({userId}){
                         )}
                 </label>
                 <label className='majorLabel'>
-                    Add Discription
+                    Add Description
                 
                 <div>
                     <input type="text" name="input-description" id="description" className='input'{...register("description", { required: true })}/>

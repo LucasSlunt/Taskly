@@ -13,6 +13,9 @@ html {
  .headerText1{
   font-size: calc(1rem + 1vw);
  }
+ .subHeader1{
+  font-size: calc(0.7rem + 0.7vw);
+ }
  .pageContainer{
   position: absolute;
   margin: 0;
@@ -78,6 +81,20 @@ li.logo a{
   font-size: 1.2em;
   margin-top: 20px;
   margin-bottom: 20px;
+  border: none;
+  border-radius: 10px;
+  background-color: #3f5d8b;
+  cursor: pointer;
+}
+.smallImportButton{
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  font-size: 1em;
+  margin-top: 5px;
+  margin-left: 5px;
+  margin-bottom: 5px;
   border: none;
   border-radius: 10px;
   background-color: #3f5d8b;

@@ -2,7 +2,7 @@ import "../css/Profile.css"
 import logo from '../logo.svg';
 
 //user information used in the profile page
-function UserInfo(){
+function UserInfo({userInfo}){
 
     //mock data
     const user  = {
@@ -18,9 +18,9 @@ function UserInfo(){
                     <img src={user.profilePictureUrl} alt="Profile Picture" />
                 </div>
                 <div className="profile-info">
-                    <h1 className="profile-name">{user.name}</h1>
-                    <p className="profile-username">{user.username}</p>
-                    <h3 className="profile-email">{user.email}</h3>
+                    <h1 className="profile-name">{userInfo.accountId}</h1>
+                    <p className="profile-username">{userInfo.userName}</p>
+                    <h3 className="profile-email">{userInfo.userEmail}</h3>
             </div>
         </div>
     );

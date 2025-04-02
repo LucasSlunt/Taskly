@@ -84,21 +84,15 @@ export const unlockTask = async (taskId) => {
 
 //Get all admins
 export const getAdmins = async () => {
-    try {
         const response = await fetch(`${BASE_URL}`, {
             method: 'GET'
         });
 
         if (!response.ok) {
-            console.error(`Failed to retrieve admins: ${response.status} ${response.statusText}`);
+            throw Error(response);
         }
 
         return await response.json();
-    }
-    catch (error) {
-        console.error(`Failed to retrieve all admins: `, error);
-        throw error;
-    } 
 };
 
 //reset password

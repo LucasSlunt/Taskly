@@ -94,14 +94,13 @@ public class TeamControllerTest {
         TeamRequestDTO requestDTO = new TeamRequestDTO(uniqueId, newTeamName, newLeadId);
         TeamDTO mockResponse = new TeamDTO(uniqueId, newTeamName, newLeadId);
 
-        when(teamService.changeTeamLead(uniqueId, newTeamName, newLeadId)).thenReturn(mockResponse);
+        when(teamService.changeTeamLead(uniqueId, newLeadId)).thenReturn(mockResponse);
 
         mockMvc.perform(put("/api/teams/" + uniqueId + "/change-lead")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.teamId").value(uniqueId))
-                .andExpect(jsonPath("$.teamName").value(newTeamName))
                 .andExpect(jsonPath("$.teamLeadId").value(newLeadId));
     }
 

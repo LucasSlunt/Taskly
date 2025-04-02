@@ -1,5 +1,6 @@
 package com.example.task_manager.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -128,7 +129,7 @@ public class AdminService extends TeamMemberService {
                 .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
     
         // Find all teams led by this member
-        removeIfTeamLead(teamMemberId);
+        List<Team> teamsMemberLeads = removeAndSaveTeamIfTeamLead(teamMemberId);
     
         // Extract info
         String oldName = teamMember.getUserName();
@@ -166,12 +167,17 @@ public class AdminService extends TeamMemberService {
             isAssigned.setTeamMember(savedAdmin);
         }
 
+        for (Team team : teamsMemberLeads) {
+            team.setTeamLead(savedAdmin);
+        }
+
         for (IsMemberOf isMemberOf : newMemberships) {
             isMemberOf.setTeamMember(savedAdmin);
         }
 
         isAssignedRepository.saveAll(newAssignments);
         isMemberOfRepository.saveAll(newMemberships);
+        teamRepository.saveAll(teamsMemberLeads);
 
         return convertToDTO(savedAdmin);
     }
@@ -182,7 +188,7 @@ public class AdminService extends TeamMemberService {
                 .orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
 
         // Find all teams led by this member
-        removeIfTeamLead(adminId);
+        List<Team> teamsMemberLeads = removeAndSaveTeamIfTeamLead(adminId);
 
         // Extract info
         String oldName = admin.getUserName();
@@ -221,25 +227,34 @@ public class AdminService extends TeamMemberService {
             isAssigned.setTeamMember(savedTeamMember);
         }
 
+        for (Team team : teamsMemberLeads) {
+            team.setTeamLead(savedTeamMember);
+        }
+
         for (IsMemberOf isMemberOf : newMemberships) {
             isMemberOf.setTeamMember(savedTeamMember);
         }
 
         isAssignedRepository.saveAll(newAssignments);
         isMemberOfRepository.saveAll(newMemberships);
-
+        teamRepository.saveAll(teamsMemberLeads);
+        
         return convertToDTO(savedTeamMember);
     }
 
-    private void removeIfTeamLead(int memberId) {
+    private List<Team> removeAndSaveTeamIfTeamLead(int memberId) {
+        List<Team> teamsMemberLeads = new ArrayList<>();
         List<Team> teamsLed = teamRepository.findByTeamLead_AccountId(memberId);
 
         for (Team team : teamsLed) {
+            teamsMemberLeads.add(team);
             team.setTeamLead(null);
         }
 
         teamRepository.saveAll(teamsLed);
         teamRepository.flush();
+
+        return teamsMemberLeads;
     }
 
     private void clearMemberRelations(TeamMember member) {
