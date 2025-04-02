@@ -152,8 +152,8 @@ public class IsMemberOfService {
 	private IsMemberOfDTO convertToDTO(IsMemberOf isMemberOf) {
 		return new IsMemberOfDTO(
 			isMemberOf.getId(),
-			isMemberOf.getTeam().getTeamId(),
-			isMemberOf.getTeamMember().getAccountId()
+			isMemberOf.getTeamMember().getAccountId(),
+            isMemberOf.getTeam().getTeamId()
 		);
 	}
 }
