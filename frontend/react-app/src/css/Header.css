@@ -7,7 +7,10 @@ h1.inner-header {
     margin: 0;
     font-family: Calibri;
     width: 100%;
-    padding: 1% 5%;;
+    height: auto;
+    overflow: visible;
+    padding-top: 1%;
+    padding-bottom: 1%;
     background-color: #2d2644;
     display: flex; 
     align-items: center; 
@@ -17,13 +20,18 @@ h1.inner-header {
 .logo {
     color: #fefcfd;
     font-weight: bold;
+    margin-left: 30px;
+}
+
+.logo a {
+    color: #fefcfd;
 }
 
 ul.icon-nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-right: 30px;
+    padding-right: 10px;
 }
 
 ul.icon-nave li {
