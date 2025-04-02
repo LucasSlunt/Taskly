@@ -3,7 +3,7 @@ import { lockTask, unlockTask } from '../api/adminApi';
 import { Lock, LockOpen } from 'lucide-react';
 import "../css/MyTasks.css";
 
-function LockUnlockTask({ initialIsLocked, taskId }) {
+function LockUnlockTask({ initialIsLocked, taskId, updateLinkById }) {
   const [isLocked, setIsLocked] = useState(initialIsLocked);
 
   const handleLockUnlock = async () => {
@@ -12,13 +12,15 @@ function LockUnlockTask({ initialIsLocked, taskId }) {
         const unlock = await unlockTask(taskId);
         if (unlock) {
           setIsLocked(false);
-          window.location.reload();
+          updateLinkById(taskId, false)
+          //window.location.reload();
         }
       } else {
         const lock = await lockTask(taskId);
         if (lock) {
+          updateLinkById(taskId, true)
           setIsLocked(true);
-          window.location.reload();
+          //window.location.reload();
         }
       }
     } catch (error) {
