@@ -122,13 +122,20 @@ function TeamTasks(){
       setallUsersLoading(false)
     }
   }
-
+  const updateLinkById = (id, isLocked)=>{
+    setTasksToDo(tasksToDo.map((task)=>{
+        if(task.taskId === id){
+            task.isLocked = isLocked;
+        }
+        return task
+    }))
+}
   useEffect(()=>{
       fetchData();
       console.log("Tasks To Do:", tasksToDo);
       
       
-  },[]);
+  },[tasksToDo]);
 
   const isAdmin = cookies.userInfo.role ==='admin';
   const headerAndAccessors = [
@@ -147,7 +154,7 @@ function TeamTasks(){
       Cell: (original) => {
         const isLocked = original.value;
         return isAdmin ? (
-          <LockUnlockTask initialIsLocked={isLocked} taskId={original.row.original.id} />
+          <LockUnlockTask initialIsLocked={isLocked} taskId={original.row.original.id} updateLinkById={updateLinkById} />
         ) : (
           isLocked ? '🔒' : '🔓'
         );

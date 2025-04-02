@@ -57,6 +57,15 @@ function MyTasks(){
     const [tasksToDo, setTasksToDo ] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const updateLinkById = (id, isLocked)=>{
+        setTasksToDo(tasksToDo.map((task)=>{
+            if(task.taskId === id){
+                task.isLocked = isLocked;
+            }
+            return task
+        }))
+    }
+
     async function fetchData(){
     try{
         const results = await getAssignedTasks(userId);
@@ -75,7 +84,7 @@ useEffect(()=>{
     console.log("Tasks To Do:", tasksToDo);
     
     
-},[]);
+},[tasksToDo]);
 
 
 
@@ -122,7 +131,7 @@ const headerAndAccessors = [
         Cell: (original) => {
           const isLocked = original.value;
           return isAdmin ? (
-            <LockUnlockTask initialIsLocked={isLocked} taskId={original.row.original.id} />
+            <LockUnlockTask initialIsLocked={isLocked} taskId={original.row.original.id} updateLinkById={updateLinkById} />
           ) : (
             isLocked ? '🔒' : '🔓'
           );
