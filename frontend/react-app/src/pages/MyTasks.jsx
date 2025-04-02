@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { getAssignedTasks } from "../api/teamMemberApi";
 import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
+import LockUnlockTask from "../components/LockUnlockTask";
 
 
 
@@ -52,6 +53,7 @@ function mapTaskItem(taskItem) {
 function MyTasks(){
 const [cookies] = useCookies(['userInfo'])
 const userId = cookies.userInfo.accountId
+const isAdmin =cookies.userInfo.role ==='admin';
 
 const [tasksToDo, setTasksToDo ] = useState([]);
 const [loading, setLoading] = useState(true);
@@ -76,10 +78,7 @@ useEffect(()=>{
     
 },[]);
 
-useEffect(() => {
-    
-    console.log("Tasks To Do (after state update):", tasksToDo);
-}, [tasksToDo]);
+
 
 const commonColumns = [
     {
@@ -121,7 +120,15 @@ const headerAndAccessors = [
     {
         Header: "Is Locked",
         accessor: "isLocked",
-    }
+        Cell: (original) => {
+          const isLocked = original.value;
+          return isAdmin ? (
+            <LockUnlockTask initialIsLocked={isLocked} taskId={original.row.original.id} />
+          ) : (
+            isLocked ? '🔒' : '🔓'
+          );
+        },
+      }
 ]
 const headerAndAccessorsComplete = [
     ...commonColumns
