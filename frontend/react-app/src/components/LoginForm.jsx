@@ -34,7 +34,7 @@ function LoginForm(){
                             message: 'Please enter a Username Name'
                         }
                         })}/>
-                    <input type="text" name="password" placeholder="Password" {...register("password", { 
+                    <input type="password" name="password" placeholder="Password" {...register("password", { 
                         required:{
                             value: true,
                             message: 'Please set a Password'
