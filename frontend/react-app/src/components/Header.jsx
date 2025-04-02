@@ -1,5 +1,5 @@
 import { useCookies } from 'react-cookie'
-import { Home, UserCircle, ListChecks, ShieldUser, LogOut } from "lucide-react";
+import { Home, UserCircle, ListChecks, ShieldUser, LogOut, Bell } from "lucide-react";
 
 function Header(){
     const [cookies, removeCookie] = useCookies(['userInfo'])
@@ -18,7 +18,8 @@ function Header(){
 
                 <ul className ='icon-nav'>
                     <li><a href="/home" title="Home"><Home/></a></li>
-                    <li><a href="/my-tasks" title="My Tasks"><ListChecks/></a></li>
+                    <li><a href="/my-tasks" title="My Tasks"><ListChecks /></a></li>
+                    <li><a href="/notifications" title="Notifications"><Bell /></a></li>
                     <li><a href="/profile" title="Profile"><UserCircle/></a></li>
 
                     {cookies.userInfo.role === 'admin' && (
