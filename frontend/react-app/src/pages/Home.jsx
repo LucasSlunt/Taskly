@@ -17,10 +17,8 @@ function setUpDataTasksToDo(obj){
             id: taskItem.id,
             name: taskItem.name,
             team: taskItem.team,
-            dueDate: taskItem.dueDate
-            
+            dueDate: taskItem.dueDate  
         }]
-    
    }
  }
 )
@@ -131,22 +129,25 @@ const Home = () => {
 
         <main className='pageBody'>
             <div className='rowFlexbox'>
-                <div id="teamSection">
-                    <h2>My Teams</h2>
+                <div id="teamSection" className="column-box">
+                    <h2>Teams</h2>
+                    <hr className="section-divider" />
                 
                     <div id="teamButtons" className='teamButtonContainer'>
                         {teams.map((team)=>(
                             <Link className="teamButton headerText1" to='/team-tasks' state={{ team: team}} key={team.teamId} >
                             {team.teamName}
                             </Link>
-                            
                         ))}
                     </div>
                 </div>
 
 
-                <div id="taskSection">
-                    <h2>My Tasks (Preview)</h2>
+                <div id="taskSection" className="column-box">
+                        <h2>
+                            <Link to="/my-tasks" className="sectionLink" title="My Tasks">Tasks</Link>  
+                        </h2>
+                        <hr className="section-divider" />
                         {setUpData(tasksToDo).length > 0 ? (
                         <TaskList
                         dataToUse={setUpData(tasksToDo)}
