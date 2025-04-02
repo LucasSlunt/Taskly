@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { lockTask, unlockTask } from '../api/adminApi';
+import { Lock, LockOpen } from 'lucide-react';
+import "../css/MyTasks.css";
 
 function LockUnlockTask({ initialIsLocked, taskId }) {
   const [isLocked, setIsLocked] = useState(initialIsLocked);
@@ -23,8 +25,14 @@ function LockUnlockTask({ initialIsLocked, taskId }) {
   };
 
   return (
-    <button onClick={handleLockUnlock}>
-      {isLocked ? '🔒' : '🔓'}
+    <button onClick={handleLockUnlock} className={`lock-task-btn ${isLocked ? "locked" : "unlocked"}`}>
+        {isLocked ? 
+            (
+            <Lock size={20}/>
+            ) : (
+                <LockOpen size={20}/>
+            )
+        }
     </button>
   );
 }

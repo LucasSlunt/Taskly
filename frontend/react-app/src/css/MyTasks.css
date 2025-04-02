@@ -49,6 +49,25 @@ div.flexbox{
     border-radius: 10px;
 }
 
+.lock-task-btn {
+    background-color: #3b3355;
+    color: white;
+    border: none;
+    padding: 4% 8%;
+    text-align: center;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.locked {
+    background-color: red;
+  }
+  
+.unlocked {
+    background-color: green;
+}
+
 .pageContainer {
     width: 100%;
 }
