@@ -17,7 +17,7 @@ function mapTaskItem(taskItem) {
     return {
       name: taskItem,
       id: taskItem.taskId,
-      team: taskItem.teamId,
+      team: taskItem.teamName,
       assignees: getAssigneesNames(taskItem),
       dueDate: taskItem.dueDate || "No Due Date",
     };
@@ -88,7 +88,7 @@ const commonColumns = [
           )
     },
     {
-        Header: "Team ID",
+        Header: "Team Name",
         accessor:"team",
     },
     {
