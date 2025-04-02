@@ -194,26 +194,26 @@ console.log(teamLead)
       <div className='pageContainer'>
         <Header/>
         <div className='pageBody'>
-        <h2>{team.teamName}</h2>
+        <h2 style={{marginBottom: '0', marginTop: '40px'}}>{team.teamName}</h2>
           {tasksToDoData.length > 0 ? (
             <TaskList
               dataToUse={tasksToDoData}
               headersAndAccessors={headerAndAccessors}
             />
           ) : (
-            <p>No tasks to do</p>
+            <p style={{marginTop: '10px', marginBottom: '30px'}}>No tasks to do</p>
           )}
             
 
-            <a href="/create-task"><button className="create-task-btn">Create Task</button></a>
-            <h2>Completed Tasks</h2>
+            <a href="/create-task"><button className="create-task-btn" style={{marginBottom:'20px'}}>Create Task</button></a>
+            <h2 style={{marginBottom: '0'}}>Completed Tasks</h2>
             {tasksCompletedData.length > 0 ? (
             <TaskList
               dataToUse={tasksCompletedData}
               headersAndAccessors={headerAndAccessorsComplete}
             />
           ) : (
-            <h2>No tasks completed</h2>
+            <h2 style={{marginTop: '10px', marginBottom: '30px'}}>No tasks completed</h2>
           )}
           
             
