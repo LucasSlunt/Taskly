@@ -95,16 +95,13 @@ public class TeamServiceTest extends ServiceTestHelper{
         TeamMember newLead = createUniqueTeamMember("NewLead");
         Team team = createUniqueTeam(oldLead);
 
-        String newTeamName = "Updated Team Name";
 
-        TeamDTO updatedTeamDTO = teamService.changeTeamLead(team.getTeamId(), newTeamName, newLead.getAccountId());
+        TeamDTO updatedTeamDTO = teamService.changeTeamLead(team.getTeamId(), newLead.getAccountId());
 
         assertNotNull(updatedTeamDTO);
-        assertEquals(newTeamName, updatedTeamDTO.getTeamName());
         assertEquals(newLead.getAccountId(), updatedTeamDTO.getTeamLeadId());
 
         Team updatedTeam = teamRepository.findById(team.getTeamId()).orElseThrow();
-        assertEquals(newTeamName, updatedTeam.getTeamName());
         assertEquals(newLead.getAccountId(), updatedTeam.getTeamLead().getAccountId());
     }
 
@@ -113,10 +110,9 @@ public class TeamServiceTest extends ServiceTestHelper{
         TeamMember oldLead = createUniqueTeamMember("OldLead");
         Team team = createUniqueTeam(oldLead);
 
-        String newTeamName = "Updated Team Name";
 
         Exception exception = assertThrows(RuntimeException.class,
-                () -> teamService.changeTeamLead(team.getTeamId(), newTeamName, 9999));
+                () -> teamService.changeTeamLead(team.getTeamId(), 9999));
 
         assertTrue(exception.getMessage().contains("Team Lead not found"));
     }

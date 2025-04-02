@@ -51,7 +51,7 @@ public class TeamController {
     @PutMapping("/{teamId}/change-lead")
     public ResponseEntity<?> changeTeamLead(@PathVariable int teamId, @RequestBody TeamRequestDTO request) {
         try {
-            TeamDTO updatedTeam = teamService.changeTeamLead(teamId, request.getTeamName(), request.getTeamLeadId());
+            TeamDTO updatedTeam = teamService.changeTeamLead(teamId, request.getTeamLeadId());
             return ResponseEntity.ok(updatedTeam);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
