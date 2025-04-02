@@ -52,7 +52,7 @@ export default function AddToTeam({teamId, allTeamMembers, currentMembers, setTe
       };
 
       return(
-        <form onSubmit={handleSubmit(onSubmit)} className ='rowFlexbox 'style={{justifyContent: 'stretch', width: '50%'}}>
+        <form onSubmit={handleSubmit(onSubmit)} className ='rowFlexbox 'style={{justifyContent: 'stretch', marginLeft:'0', marginRight: '0', alignItems: 'center', gap: '0'}}>
             <Controller
                 control={control}
                 className='Select'
@@ -67,7 +67,7 @@ export default function AddToTeam({teamId, allTeamMembers, currentMembers, setTe
                         styles={customStyles}               
                     />)}
             />
-            <button type="submit" className='smallImportButton'>Add To Team</button>
+            <button type="submit" className='importButton' style={{marginLeft: '10px'}}>Add To Team</button>
         </form>
       )
 

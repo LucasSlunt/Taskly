@@ -84,12 +84,13 @@ li.logo a{
   margin-bottom: 20px;
   border: none;
   border-radius: 10px;
+  color: white;
   background-color: #3f5d8b;
   cursor: pointer;
 }
 .smallImportButton{
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
   padding-top: 3px;
   padding-bottom: 3px;
   font-size: 1em;
@@ -99,6 +100,7 @@ li.logo a{
   border: none;
   border-radius: 10px;
   background-color: #3f5d8b;
+  color: white;
   cursor: pointer;
 }
 
