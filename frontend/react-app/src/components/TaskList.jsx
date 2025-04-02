@@ -18,7 +18,7 @@ function TaskList({dataToUse, headersAndAccessors}){
             case "name":
                 return task.name.title.toLowerCase().includes(searchQuery.toLowerCase())
             case "team":
-                return task.team.toLowerCase().includes(searchQuery.toLowerCase())
+                return String(task.team).toLowerCase().includes(searchQuery.toLowerCase())
             case "assignees":
                 return task.assignees.toLowerCase().includes(searchQuery.toLowerCase())
             case "status":
@@ -32,7 +32,7 @@ function TaskList({dataToUse, headersAndAccessors}){
             case "isLocked":
                 return task.isLocked.toLowerCase().includes(searchQuery.toLowerCase())
             case "id":
-                return task.id.toLowerCase().includes(searchQuery.toLowerCase())
+                return String(task.id).toLowerCase().includes(searchQuery.toLowerCase())
         }}
     );}, [searchQuery],((searchForThis),[setSearch])) ;
     
