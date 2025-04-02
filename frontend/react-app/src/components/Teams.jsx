@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom'
 function Teams({team}){
     return(
         <div className="teams">
-            <Link className="teamButton headerText1" to='/team-tasks' state={{ teamId: team.teamId}} key={team.teamId} >
+            <Link className="teamButton headerText1" to='/team-tasks' state={{ team: team}} key={team.teamId} >
                             {team.teamName}
             </Link>
         

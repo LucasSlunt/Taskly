@@ -103,9 +103,11 @@ function TeamTasks(){
   const [teamMembers, setTeamMembers ] = useState([]);
   const [loadingNames, setLoadingNames] = useState(true);
   const [loadingTasks, setLoadingTasks] = useState(true);
+  const [allUsersLoading, setallUsersLoading] = useState(true)
 
   const location = useLocation();
-  const { teamId } = location.state;
+  const { team } = location.state;
+  const teamId = team.teamId;
   console.log("teamId:", teamId);
 
   const [tasksToDo, setTasksToDo ] = useState([]);
@@ -114,7 +116,7 @@ function TeamTasks(){
   async function fetchData(){
       try{
         if(cookies.userInfo.role === 'admin'){
-          await getAllUsers();
+          getAllUsers();
         }
           const results = await getTeamTasks(teamId);
           console.log("Team Tasks Results:", results);
@@ -134,6 +136,8 @@ function TeamTasks(){
       console.log(teamMemberResposne)
     } catch (error) {
       await alert("FAILED TO LOAD CONTACT NETWORK ADMIN")
+    }finally{
+      setallUsersLoading(false)
     }
   }
 
@@ -169,7 +173,7 @@ if(loadingNames || loadingTasks){
  
 
   //mock
-  const isAdmin = false;
+  const isAdmin = cookies.userInfo.role ==='admin';
 
   //mock 
   const members = [
@@ -189,7 +193,7 @@ if(loadingNames || loadingTasks){
       <div className='pageContainer'>
         <Header/>
         <div className='pageBody'>
-        <h2>Team 1 Tasks</h2>
+        <h2>{team.teamName}</h2>
           {tasksToDoData.length > 0 ? (
             <TaskList
               dataToUse={tasksToDoData}
@@ -216,21 +220,29 @@ if(loadingNames || loadingTasks){
             <h2>Team Members</h2>
             <div className="team-list">
               {teamMembers.map((member) => (
-                <TeamMember key={member.teamId} member={member} isAdminPage={isAdmin}/>
+                <TeamMember key={member.teamId} member={member} teamLeadId = {team.teamLeadId}
+                 setTeamMembers = {setTeamMembers}
+                teamId={teamId}
+                isAdminPage={isAdmin}
+                teamMembers={teamMembers}
+                />
               ))}
             </div>
-            {cookies.userInfo.role === 'admin'&&
+            {allUsersLoading&&(<div>..Loading</div>)}
+            {cookies.userInfo.role === 'admin'&& !allUsersLoading &&
             (
-              <div>
-                <div>
-                  <AddToTeam
-                  teamId={teamId}
-                  allTeamMembers={allUsers}
-                  currentMembers = {
-                    (teamMembers.map((member)=>member.accountId))
-                  }
-                  />
-                </div>
+                <div style={{marginTop: '30px'}}>
+                  <h2>Add New Team Member</h2>
+                  <div>
+                    <AddToTeam
+                    teamId={teamId}
+                    allTeamMembers={allUsers}
+                    currentMembers = {
+                      (teamMembers.map((member)=>member.accountId))
+                    }
+                    setTeamMembers = {setTeamMembers}
+                    />
+                  </div>
                 <div>
                 <DeleteTeamButton
               teamId={teamId}
