@@ -41,3 +41,7 @@ div.flexbox{
     cursor: pointer;
     border-radius: 10px;
   }
+
+  .pageContainer {
+    width: 100%;
+  }

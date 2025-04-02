@@ -7,15 +7,13 @@ h1.inner-header{
     margin: 0;
     font-family: Calibri;
     width: 100%;
-    margin-left: 5%;
-    margin-right: 5%;
+    padding: 1% 5%;;
     height: auto;
     min-height: 10%;
     background-color: #3b3355;
     display: flex; 
     align-items: center; 
     justify-content: space-between;
-
 }
 
 li{
@@ -33,3 +31,4 @@ li.logo a{
     font-size: calc(30%+2vw);
     color: #fefcfd;
 }
+

@@ -2,8 +2,9 @@ import {useCookies} from 'react-cookie'
 function Header(){
     const [cookies] = useCookies(['userInfo'])
     return(
-            
-                <h1 className ="inHeader">
+           
+          <div>
+                <h1 className ="inner-header">
                         <ul className ='list'>
                             <li className ="logo list"><span><a href="/home">Whatever we Call this</a></span></li>
                             <li><span><a href="/home">Home</a></span></li>
@@ -12,6 +13,8 @@ function Header(){
                             {cookies.userInfo.role === 'admin' && (<li><span><a href="/admin-panel">Admin Controls</a></span></li>)}
                         </ul>
                 </h1>
+            </div>
+            
     );
 }
 export default Header
