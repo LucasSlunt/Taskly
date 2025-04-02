@@ -1,6 +1,6 @@
 #notifContainer {
-    background-color: white;
-    width: 600px;
+    background-color: white;;
+    width: 75%;
     height: 500px;
     margin: left;
     padding: 2%;
@@ -8,7 +8,7 @@
 }
 
 #notifContainer table {
-    width: 100%;
+    width: 130%;
 }
 
 
@@ -53,6 +53,7 @@
     cursor: pointer;
     color: white;
     background-color: red;
+    border: none;
 }
 
 .smallTeamButton {
@@ -68,3 +69,12 @@
 
 }
 
+
+.notifBox {
+    width: 75%;
+    
+}
+
+.column-box {
+    width: 120%;
+}
