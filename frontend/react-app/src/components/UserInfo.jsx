@@ -1,5 +1,6 @@
 import "../css/Profile.css"
 import logo from '../logo.svg';
+import {  User, UserCircle } from "lucide-react";
 
 //user information used in the profile page
 function UserInfo({userInfo}){
@@ -15,7 +16,7 @@ function UserInfo({userInfo}){
     return (
         <div className="user-info">
             <div className="profile-picture">
-                    <img src={user.profilePictureUrl} alt="Profile Picture" />
+                    <UserCircle size={100}/>
                 </div>
                 <div className="profile-info">
                     <h1 className="profile-name">{userInfo.accountId}</h1>

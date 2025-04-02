@@ -37,10 +37,10 @@ function Profile(){
     return (
     <div className='pageContainer'>
         <Header/>
-        <div className='pageBody'>
+        <div className='profile-page'>
             <UserInfo 
             userInfo = {userData}/>
-            <h1>My teams</h1>
+            <h1>My Teams</h1>
             <div className="teams-grid">
                 {teams.map((team) => (
                     <Teams team={team} key={team.teamId}/> 
