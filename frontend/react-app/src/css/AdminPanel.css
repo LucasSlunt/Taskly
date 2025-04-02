@@ -3,5 +3,54 @@
     margin: 4% 0;
 }
 .buttonRow{
-    margin: 2% 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background-color: #e6e4f7;
+    width: 60%;
+    border-radius: 25px;
+    margin-top: 2%;
+}
+
+#adminHeader {
+    font-weight: 1000;
+    margin-top: 2%;
+    font-size: 2em;
+}
+
+.buttonRow a button {
+    background-color: #53789d;
+    color: white;
+    font-size: 1.25em;
+    width: 175px;
+    height: 66px;
+}
+
+.buttonRow a button:hover {
+    background-color: #3d6285;
+}
+
+.goToTeamTaskForm {
+    width: 75%;
+    margin-left: 21%;
+    margin-right: 20%;
+}
+
+.goToTeamTaskForm input {
+    background-color: #4f407d;
+    border-radius: 15px;
+    font-size: 1em;
+    border-radius: 10px;
+}
+
+.goToTeamTaskForm input:hover {
+    cursor: pointer;
+    background-color: #2d2644;
+}
+
+.goToTeamTaskForm select {
+    width: 50%;
+    background-color: #d3d4f9;
+    margin-right: 20px;
+    border-radius: 15px;
 }
