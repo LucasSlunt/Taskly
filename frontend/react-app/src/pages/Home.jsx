@@ -7,6 +7,7 @@ import {Link} from 'react-router-dom'
 import fakeData from "../FakeData/fakeTaskData.json"
 import TaskList from '../components/TaskList';
 import { getAssignedTasks } from "../api/teamMemberApi";
+import Loading from './Loading';
 
 function setUpDataTasksToDo(obj){
     let ansArr = []
@@ -115,7 +116,7 @@ const Home = () => {
     
     },[])
     if(loading || loadingTasks){
-        return (<div>Loading...</div>)
+        return (<Loading/>)
     }
     return (
 

@@ -12,6 +12,7 @@ import LockUnlockTask from "../components/LockUnlockTask";
 import DeleteTeamButton from "../components/DeleteTeamButton";
 import { getAdmins } from "../api/adminApi";
 import AddToTeam from "../components/AddToTeam";
+import Loading from "./Loading";
 
 function getAssigneesNames(taskItem) {
   return taskItem.assignedMembers.map((member) => member.userName).join(", ");
@@ -170,7 +171,7 @@ useEffect(()=>{
       
 },[teamLead])
 if(loadingNames || loadingTasks){
-  return (<div>Loading...</div>)
+  return (<Loading/>)
 }
 
  

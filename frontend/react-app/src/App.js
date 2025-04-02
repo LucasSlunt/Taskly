@@ -18,6 +18,7 @@ import CreateTask from './pages/CreateTask';
 import ChangePassword from './pages/ChangePassword';
 import EditUserDetails from './pages/EditUserDetails';
 import CreatTeamPage from './pages/CreateTeamPage';
+import Loading from './pages/Loading';
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
           <Route path="/change-password" element={<ProtectedRoute allowedRoles={['admin','teamMember']} protectedContent={<ChangePassword/>} urlReirect={"/login"}></ProtectedRoute>}/>
           <Route path="/edit-user-details" element={<ProtectedRoute allowedRoles={['admin']} protectedContent={<EditUserDetails/>} urlReirect={"/home"}></ProtectedRoute>}/>
           <Route path="/create-team" element={<ProtectedRoute allowedRoles={['admin']} protectedContent={<CreatTeamPage/>} urlReirect={"/home"}></ProtectedRoute>}/>
+          <Route path="/loading" element={<Loading/>}/>
           {/*Default path should be login, unless specified */}
           <Route path="/" exact element={<Login/>} />
 

@@ -5,6 +5,7 @@ import { modifyAdminEmail, modifyAdminName } from "../api/adminAccountApi"
 import {getTeamMemberById, modifyTeamMemberEmail, modifyTeamMemberName } from "../api/teamMemberAccountApi"
 import {useForm} from 'react-hook-form'
 import { resetPassword } from "../api/adminApi"
+import Loading from "./Loading"
 
 export default function EditUserDetails(){
     const {register, handleSubmit} = useForm();
@@ -89,7 +90,7 @@ export default function EditUserDetails(){
     },[accountToEdit])
     if(loading){
         return (
-            <div>Loading...</div>
+            <Loading/>
         )
     }
 

@@ -7,6 +7,7 @@ import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
 import {getTeamMemberById} from '../api/teamMemberAccountApi'
 import { getTeamsForMember } from "../api/teamMemberApi";
+import Loading from "./Loading";
 
 function Profile(){
     const [cookies] = useCookies(['userInfo']);
@@ -31,7 +32,7 @@ function Profile(){
         getUserInfo();
     },[])
     if(loading){
-        return (<div>...Loading</div>)
+        return (<Loading/>)
     }
     console.log(userData)
     return (

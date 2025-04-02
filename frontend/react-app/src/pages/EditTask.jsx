@@ -4,6 +4,7 @@ import EditTaskForm from '../components/EditTaskForm'
 import Header from '../components/Header'
 import '../css/EditTask.css'
 import { getTeamMembers } from '../api/teamApi'
+import Loading from './Loading'
 
 function EditTask(){
         const location = useLocation()
@@ -28,7 +29,7 @@ function EditTask(){
         },[]);
         console.log("taskToEdit: ", taskToEdit)
         if(loading){
-            return(<div>..Loading</div>)
+            return(<Loading/>)
         }
         return(
             <div className='pageContainer'>
