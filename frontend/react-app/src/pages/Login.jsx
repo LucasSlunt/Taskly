@@ -12,7 +12,7 @@ function Login(){
                         <img src={logo} alt="logo"/>
                         <h1>Taskly</h1>
                     </div>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum condimentum nulla pharetra, ultrices mauris ut, pharetra massa. Morbi sodales in metus in porta. Morbi vel semper ligula, at dignissim eros. Aenean sollicitudin, diam et cursus elementum, elit dui viverra leo, et commodo tortor urna et dolor</p>
+                    <p>Streamline teamwork with smart task management. Assign, prioritize, and track tasks across multiple teams. Collaborate seamlessly, stay organized with automated notifications, and keep projects moving forward effortlessly.</p>
                 </div>
                 <div id="loginFormWrapper"> 
                     <LoginForm />
