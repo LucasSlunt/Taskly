@@ -61,6 +61,7 @@ td {
     width: 100%;
     max-width: 1600px;
     margin: 0 auto;
+    margin-bottom: 40px;
 }
 
 .column-box {

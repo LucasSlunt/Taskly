@@ -7,16 +7,18 @@ import { unassignTeamMemberFromTask } from '../api/isAssignedApi';
 const customStyles = {
     control: (provided) => ({
       ...provided,
-      width: '100%',
+      width: '560px;',
     minWidth: '100px',
     maxWidth: '100%',
     minHeight: '30px',
     maxHeight: '100%',
-      border: '2px solid grey',
+      border: '1.5px solid #2d2644',
       borderRadius: '10px',
       paddingLeft: '8px',
-      backgroundColor: '#BFCDE0',
-      margin: '10px 0px',
+      backgroundColor: 'white',
+      margin: 'auto',
+      marginTop: '0.5%',
+      marginBottom: '1%',
       cursor: 'pointer'
     }),
     option: (provided, state) =>({
@@ -92,7 +94,7 @@ function EditTaskForm({task, team}){
                         <label className='majorLabel'>
                                 Task Name
                                 <div>
-                                <input type="text" name="name" id="name" className='input' defaultValue={task.title}{...register("name", { 
+                                <input type="text" placeholder="Add task name" name="name" id="name" className='input' defaultValue={task.title}{...register("name", { 
                                     required:{
                                         value: true,
                                         message: 'Please set a Task Name'
@@ -147,7 +149,8 @@ function EditTaskForm({task, team}){
                             Description
                             
                             <div>
-                                <input type="text" name="input-description" id="description" className='input' defaultValue={task.description}  {...register("description", { required: false })}/>
+                                {/* <input type="text" name="input-description" id="description" className='input' defaultValue={task.description}  {...register("description", { required: false })}/> */}
+                                <textarea name="input-description" id="description" placeholder="Add description" className='input' defaultValue={task.description}  {...register("description", { required: false })}/>
                             </div>
                             </label>
                             <label className='majorLabel'>
@@ -156,7 +159,7 @@ function EditTaskForm({task, team}){
                                     <input type='date' name="input-dueDate" id="dueDate" className='input' defaultValue={task.dueDate}  {...register("dueDate", { required: false })}/>
                                 </div>
                             </label>
-                            <input type="submit" value="Edit Task" id="button"/>
+                            <input type="submit" value="Edit Task" id="editTaskButton"/>
                         
                     </form>
     )

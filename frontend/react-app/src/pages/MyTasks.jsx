@@ -9,8 +9,7 @@ import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
 import LockUnlockTask from "../components/LockUnlockTask";
 import Loading from "./Loading";
-
-
+import { Lock, LockOpen } from 'lucide-react';
 
 function getAssigneesNames(taskItem) {
     return taskItem.assignedMembers.map((member) => member.userName).join(", ");
@@ -34,7 +33,7 @@ function mapTaskItem(taskItem) {
           ...baseItem,
           status: taskItem.status,
           priority: taskItem.priority,
-          isLocked: taskItem.isLocked.toString()
+          isLocked: !!taskItem.isLocked
         };
         
       });
@@ -59,6 +58,15 @@ function MyTasks(){
     const [tasksToDo, setTasksToDo ] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const updateLinkById = (id, isLocked)=>{
+        setTasksToDo(tasksToDo.map((task)=>{
+            if(task.taskId === id){
+                task.isLocked = isLocked;
+            }
+            return task
+        }))
+    }
+
     async function fetchData(){
     try{
         const results = await getAssignedTasks(userId);
@@ -77,7 +85,7 @@ useEffect(()=>{
     console.log("Tasks To Do:", tasksToDo);
     
     
-},[]);
+},[tasksToDo]);
 
 
 
@@ -124,7 +132,7 @@ const headerAndAccessors = [
         Cell: (original) => {
           const isLocked = original.value;
           return isAdmin ? (
-            <LockUnlockTask initialIsLocked={isLocked} taskId={original.row.original.id} />
+            <LockUnlockTask initialIsLocked={isLocked} taskId={original.row.original.id} updateLinkById={updateLinkById} />
           ) : (
             isLocked ? '🔒' : '🔓'
           );

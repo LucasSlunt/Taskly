@@ -4,10 +4,31 @@
     width: 100%;
     box-sizing: border-box;
   }
-  
+
+  .profile-info-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.sign-out-btn button {
+    background-color: #3B3355;
+    color: white;
+    font-size: 15px;
+    height: 35px;
+    padding: 10px;
+}
+    
   .user-info {
     display: flex; 
-    align-items: left;
+    align-items: flex-start;
     gap: 2rem;
     margin-bottom: 2rem; 
   }
@@ -36,13 +57,14 @@
     margin: 0;
     font-size: 20px;
     font-weight: 600;
-  }
+  } 
 
   .teams-grid {
     display: flex;
     flex-direction: column;
     gap: 0px;
     align-items: center;
+    width: 110%;
   }
   
   .logout-btn{
