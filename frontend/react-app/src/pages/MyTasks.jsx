@@ -32,7 +32,7 @@ function mapTaskItem(taskItem) {
           ...baseItem,
           status: taskItem.status,
           priority: taskItem.priority,
-          isLocked: taskItem.isLocked.toString()
+          isLocked: !!taskItem.isLocked
         };
         
       });
@@ -124,11 +124,7 @@ const headerAndAccessors = [
           return isAdmin ? (
             <LockUnlockTask initialIsLocked={isLocked} taskId={original.row.original.id} />
           ) : (
-            isLocked ? (
-                <Lock />
-            ) : (
-                <LockOpen/>
-            )
+            isLocked ? '🔒' : '🔓'
           );
         },
       }
