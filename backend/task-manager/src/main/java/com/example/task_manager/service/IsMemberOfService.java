@@ -1,5 +1,8 @@
 package com.example.task_manager.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.task_manager.DTO.IsMemberOfDTO;
@@ -40,42 +43,69 @@ public class IsMemberOfService {
 	 * @param teamId The ID of the team to which the member should be added.
 	 * @return 
 	 */
-	public IsMemberOfDTO addMemberToTeam(int teamMemberId, int teamId) {
-		System.out.println("BELLO it is running yay");
+    public IsMemberOfDTO addMemberToTeam(int teamMemberId, int teamId) {
+        System.out.println("BELLO it is running yay");
 
-		Team team = teamRepository.findById(teamId)
-			.orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
-	
-		TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
-			.orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
 
-		System.out.println("MINIONS");
-	
-		// Check if the member is already in the team
-		boolean alreadyMember = isMemberOfRepository.existsByTeamMemberAccountIdAndTeamTeamId(teamMemberId, teamId);
-		if (alreadyMember) {
-			throw new RuntimeException("Team Member is already in this team. No action needed.");
-		}
+        TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+                .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
 
-		System.out.println("TONIGHT!!! WE! ARE GOING! TO STEAL! THE MOON!!");
-		
+        System.out.println("MINIONS");
 
-		// Create membership
-		IsMemberOf isMemberOf = new IsMemberOf(teamMember, team);
-		isMemberOf = isMemberOfRepository.save(isMemberOf);
-		isMemberOfRepository.flush();
+        // Check if the member is already in the team
+        boolean alreadyMember = isMemberOfRepository.existsByTeamMemberAccountIdAndTeamTeamId(teamMemberId, teamId);
+        if (alreadyMember) {
+            throw new RuntimeException("Team Member is already in this team. No action needed.");
+        }
 
-		System.out.println("DOCTOR NEFARIO");
+        System.out.println("TONIGHT!!! WE! ARE GOING! TO STEAL! THE MOON!!");
 
-		team = teamRepository.findById(teamId).orElseThrow(() -> new RuntimeException("RAHHHH can't find it"));
-		System.out.println("bruh");
+        // Create membership
+        IsMemberOf isMemberOf = new IsMemberOf(teamMember, team);
+        isMemberOf = isMemberOfRepository.save(isMemberOf);
+        isMemberOfRepository.flush();
 
-		//call assigned to team notification method
-		notifService.notifyTeamAssignment(teamMember, team);
+        System.out.println("DOCTOR NEFARIO");
 
-		// Return DTO
-		return convertToDTO(isMemberOf);
-	}
+        team = teamRepository.findById(teamId).orElseThrow(() -> new RuntimeException("RAHHHH can't find it"));
+        System.out.println("bruh");
+
+        //call assigned to team notification method
+        notifService.notifyTeamAssignment(teamMember, team);
+
+        // Return DTO
+        return convertToDTO(isMemberOf);
+    }
+    
+    //add multiple members to a team at once
+    public List<IsMemberOfDTO> massAddMemberToTeam(int teamId, List<Integer> teamMemberIds) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
+
+        List<IsMemberOfDTO> newMembers = new ArrayList<>();
+
+        for (Integer teamMemberId : teamMemberIds) {
+            TeamMember teamMember = teamMemberRepository.findById(teamMemberId)
+                    .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + teamMemberId));
+
+            boolean alreadyMember = isMemberOfRepository.existsByTeamMemberAccountIdAndTeamTeamId(teamMemberId, teamId);
+
+            if (!alreadyMember) {
+                IsMemberOf isMemberOf = new IsMemberOf(teamMember, team);
+                isMemberOf = isMemberOfRepository.save(isMemberOf);
+
+                notifService.notifyTeamAssignment(teamMember, team);
+
+                newMembers.add(convertToDTO(isMemberOf));
+            }
+        }
+
+        isMemberOfRepository.flush();
+        
+        return newMembers;
+    }
 
 	/**
 	 * Removes a TeamMember from a Team.
