@@ -7,8 +7,9 @@ import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getTeamTasks, getTeamMembers } from "../api/teamApi";
-import {lockTask, unlockTask} from "../api/adminApi";
 import LockUnlockTask from "../components/LockUnlockTask";
+import { isAdmin } from "../api/authInfoApi";
+
 
 function getAssigneesNames(taskItem) {
   return taskItem.assignedMembers.map((member) => member.userName).join(", ");
@@ -36,6 +37,8 @@ function setUpData(results) {
       
     });
 }
+
+
 function setUpDataCompleted(results) {
   return results
     .filter((taskItem) => taskItem.status === "Done")
@@ -91,12 +94,14 @@ function TeamTasks(){
   const [teamMembers, setTeamMembers ] = useState([]);
   const [loadingNames, setLoadingNames] = useState(true);
   const [loadingTasks, setLoadingTasks] = useState(true);
+  const [isUserAdmin, setIsUserAdmin] = useState(true);
 
   const location = useLocation();
   const { teamId } = location.state;
   console.log("teamId:", teamId);
 
   const [tasksToDo, setTasksToDo ] = useState([]);
+
   
   
   async function fetchData(){
@@ -110,47 +115,44 @@ function TeamTasks(){
           setLoadingTasks(false)
       }
   }
+
+  // useEffect(() => {
+  //   async function checkIfUserAdmin() {
+  //     try {
+  //       const role = await isAdmin();
+  //       console.log("User Role from API:", role);
+  //       setIsUserAdmin(role);
+  //     } catch (error) {
+  //       console.log("Error checking admin status:", error);
+  //     }
+  //   }
+  //   checkIfUserAdmin();
+  //   fetchData();
+  // }, []);
+
+  useEffect(() => {
+    async function checkIfUserAdmin() {
+      try {
+        const response = await isAdmin();
+        console.log("Raw API Response from isAdmin:", response);
+        
+        // Explicitly log the type
+        console.log("Type of response:", typeof response);
   
-
-
-  useEffect(()=>{
-      fetchData();
-      console.log("Tasks To Do:", tasksToDo);
-      
-      
-  },[]);
-
+        // If it's an object, check its properties
+        if (typeof response === "object") {
+          console.log("API Response Object:", JSON.stringify(response, null, 2));
+        }
   
-  const [lockedTasks, setLockedTasks] = useState({});
-  const handleLockUnlock = async (id, isLocked) => {
-    console.log("id " + id);
-    console.log("is locked" + isLocked);
-    try {
-      if (isLocked) {
-        console.log("task is locked");
-        const unlock = await unlockTask(id);
-        if (unlock) {
-          console.log(`Task unlocked successfully.`);
-          setLockedTasks((prevLockedTasks) => ({
-            ...prevLockedTasks,
-            [id]: false,
-          }));
-        }
-      } else {
-        console.log("task is unlocked");
-        const lock = await lockTask(id);
-        if (lock) {
-          console.log(`Task locked successfully.`);
-          setLockedTasks((prevLockedTasks) => ({
-            ...prevLockedTasks,
-            [id]: true,
-          }));
-        }
+        setIsUserAdmin(response); // Assuming it's a boolean
+      } catch (error) {
+        console.log("Error checking admin status:", error);
       }
-    } catch (error) {
-      console.log(`error`);
     }
-  };
+    checkIfUserAdmin();
+    fetchData();
+  }, []);
+  
 
   const headerAndAccessors = [
     ...commonColumns,
@@ -163,23 +165,20 @@ function TeamTasks(){
         accessor: "status",
     },
     {
-
       Header: "Is Locked",
       accessor: "isLocked",
       Cell: (original) => {
-        const taskId = original.row.original.id;
         const isLocked = original.value;
-        return <LockUnlockTask initialIsLocked={isLocked} taskId={taskId} />;
-      }
-        
+        return isUserAdmin ? (
+          <LockUnlockTask initialIsLocked={isLocked} taskId={original.row.original.id} />
+        ) : (
+          isLocked ? '🔒' : '🔓'
+        );
+      },
     }
 ];
 
-
-
-
-
-  useEffect(()=>{
+useEffect(()=>{
     async function loadAPIInfo() {
         try {
             const data = await getTeamMembers(teamId)
@@ -191,17 +190,10 @@ function TeamTasks(){
         }
     }
     loadAPIInfo();
-      
 },[])
 if(loadingNames || loadingTasks){
   return (<div>Loading...</div>)
 }
-
- 
-
-  //mock
-  const isAdmin = false;
-
   //mock 
   const members = [
     { id: 1, name: "Adam Apple", role: "Admin" },
@@ -247,7 +239,7 @@ if(loadingNames || loadingTasks){
             <h2>Team Members</h2>
             <div className="team-list">
               {teamMembers.map((member) => (
-                <TeamMember key={member.teamId} member={member} isAdminPage={isAdmin}/>
+                <TeamMember key={member.teamId} member={member} isAdminPage={false}/>
               ))}
             </div>
 
