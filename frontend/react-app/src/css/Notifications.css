@@ -1,8 +1,8 @@
 #notifContainer {
     background-color: white;
-    width: 1300px;
+    width: 600px;
     height: 500px;
-    margin: auto;
+    margin: left;
     padding: 2%;
     font-family: Arial, Helvetica, sans-serif;
 }
