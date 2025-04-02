@@ -12,11 +12,13 @@ function LockUnlockTask({ initialIsLocked, taskId }) {
         const unlock = await unlockTask(taskId);
         if (unlock) {
           setIsLocked(false);
+          window.location.reload();
         }
       } else {
         const lock = await lockTask(taskId);
         if (lock) {
           setIsLocked(true);
+          window.location.reload();
         }
       }
     } catch (error) {
