@@ -1,6 +1,7 @@
 import {useTable, useSortBy} from 'react-table'
 import React, { useEffect } from 'react';
-import "../css/TaskList.css"
+import "../css/TaskList.css";
+import "../css/UserTable.css";
 import SearchFilterSort from './SearchFilterSort';
 import { useState} from 'react';
 import { getTeamMembers } from '../api/teamApi';
@@ -163,7 +164,7 @@ function UserTable({teams}){
             Header: "",
             accessor: "del",
             Cell: (original) => (
-                <button id= {"delete " + original.value} value={original.value} onClick={(e)=>deleteUser(e, original.cell.row.values.role)}>
+                <button class="userDeleteBtn" id= {"delete " + original.value} value={original.value} onClick={(e)=>deleteUser(e, original.cell.row.values.role)}>
                     Delete
                 </button>
               )
@@ -173,7 +174,7 @@ function UserTable({teams}){
             accessor: "edit",
             Cell: (original) => (
                 <Link to='/edit-user-details' state={{accountToEdit: original.cell.row.values.del}}>
-                <button key= {"edit" + original.cell.row.values.del} id ={"edit" + original.cell.row.values.del}>
+                <button class="userEditBtn" key= {"edit" + original.cell.row.values.del} id ={"edit" + original.cell.row.values.del}>
                     Edit
                 </button>
                 </Link>

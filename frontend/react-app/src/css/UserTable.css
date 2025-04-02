@@ -1,0 +1,33 @@
+.search-form input {
+    background-color: #d3d4f9;
+    color: black;
+    border: 1px solid black;
+}
+
+.userEditBtn {
+    width: 65px;
+    height: 30px;
+    background-color: darkgreen;
+    border: none;
+    border-radius: 5px;
+    color: white;
+}
+
+.userEditBtn:hover {
+    cursor: pointer;
+    background-color: #004f07;
+}
+
+.userDeleteBtn {
+    width: 65px;
+    height: 30px;
+    background-color: #bf003e;
+    border: none;
+    border-radius: 5px;
+    color: white;
+}
+
+.userDeleteBtn:hover {
+    cursor: pointer;
+    background-color: #8c002d;
+}
