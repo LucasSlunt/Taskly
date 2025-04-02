@@ -48,6 +48,10 @@ thead th{
   .selector {
    height: 43px;
   }
+
+  #searchThis{
+    min-width: 100px;
+  }
   
   .search-input {
     flex: 1;
