@@ -101,6 +101,21 @@ tbody {
 
 .pageContainer {
     /* background-color: #f6edff; */
-    background-color: #cfe1fb;
+    background-color: white;
     width: 100%;
+}
+
+#taskSection input {
+    /* background-color: #ddd3ef; */
+    background-color: #d3d4f9;
+    color: black;
+}
+
+#taskSection input::placeholder {
+    color: black;
+}
+
+#taskSection select {
+    /* background-color: #ddd3ef; */
+    background-color: #d3d4f9;
 }

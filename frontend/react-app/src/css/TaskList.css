@@ -13,7 +13,8 @@ th,td{
     background-color: white;
 }
 thead th{
-    background-color: #437676;
+    /* background-color: #437676; */
+    background-color: #52799d;
 }
 .tableHeader :hover{
     background-color: darkslategray;
