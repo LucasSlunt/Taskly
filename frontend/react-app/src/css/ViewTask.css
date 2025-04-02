@@ -24,8 +24,9 @@ div.header{
     height: auto;
 }
 strong.nameOfTask{
-    color: #fefcfd;
+    color: black;
     font-size: 30px;
+    font-weight: 900;
 }
 div.priority{
     background-color: #3b3355;
@@ -93,3 +94,72 @@ input.submit-comment{
     cursor: pointer;
 }
 
+.rowFlexbox {
+    /* background-color: red; */
+}
+
+.viewFlexbox {
+
+}
+
+.viewpageBody {
+    width: 40%;
+    margin: auto;
+    margin-top: 5%;
+    margin-bottom: 100px;
+    background-color: #e6e4f7;
+    padding: 5%;
+    border-radius: 15px;
+}
+
+#viewDelete {
+    background-color: red;
+    margin: 1% 0% 3% 0%;
+    color: white;
+    border: none;
+}
+
+#viewDelete:hover {
+    background-color: #8c002d;
+}
+
+#viewEdit {
+    background-color: darkgreen;
+    margin: 3% 0% 1% 0%;
+    color: white;
+    border: none;
+}
+
+#viewEdit:hover {
+    background-color: #004f07;
+}
+
+#viewPriority {
+    color: white;
+    width: 100px;
+    height: 35px;
+    text-align: center;
+    margin: 2% 0%;
+    border: none;
+}
+
+.viewFlexBox {
+    display: flex;
+  flex-direction: column;
+  background-color: red;
+  align-content: center;
+  justify-content: center;
+  width: 50%;
+  padding-top: 10%;
+  padding-bottom: 10%;
+}
+
+#newStatus {
+    background-color: white;
+    width: 50%;
+    border: none;
+}
+
+.description {
+    margin-left: 1%;
+}

@@ -43,14 +43,15 @@ function ViewTask(){
         <div className='pageContainer'>
             <Header/>
             <div className='pageBody'>
-                <div className="flexbox">
+            <div className='viewpageBody'>
+                <div className="viewFlexbox">
                 <strong class ="nameOfTask">{taskToSee.title + "\n"}</strong>
-                    <div className="rowFlexbox" style={{justifyContent:'space-between', marginBottom: '15px'}}>
-                        <div className="header"style={{ whiteSpace: 'pre-line' }}>
-                         Assigned to:{teamMembers}
+                    <div>
+                        <div className="header">
+                         Assigned to: {teamMembers}
                         </div>
                         {/* Place holder for when we get our database we will get the prority DB*/}
-                        <div className="priority">
+                        <div className="priority" id="viewPriority">
                             Priority: {taskToSee.priority}
                         </div>
                     </div>
@@ -75,21 +76,23 @@ function ViewTask(){
                         </form>
                     </div>*/}
                     {!taskToSee.isLocked &&(
-                    <div className="update-class rowFlexbox" style={{justifyContent:'space-between'}}>
+                    <div className="update-class">
                         <div>
                             <select name="update status" id="newStatus" className = "updateSelector" defaultValue={taskToSee.status} onChange={changeStatus}>
                                 <option value="notStarted">Not Started</option>
                                 <option value="InProgress">In Progress</option>
                                 <option value="Done">Done</option>
                             </select>
+                            <br/>
                             <Link to = {'/edit-task'} state={{taskToEdit: taskToSee}}>
-                                <button class="fotterbutton">EDIT TASK</button>
+                                <button class="fotterbutton" id="viewEdit">EDIT TASK</button>
                                 </Link>
                         </div>
-                        <input type="button" value="DELETE TASK" className="fotterbutton" onClick={deleteThisTask}/>
+                        <input type="button" id="viewDelete" value="DELETE TASK" className="fotterbutton" onClick={deleteThisTask}/>
 
                     </div>)}
                 </div>
+            </div>
             </div>
         </div>
     )
