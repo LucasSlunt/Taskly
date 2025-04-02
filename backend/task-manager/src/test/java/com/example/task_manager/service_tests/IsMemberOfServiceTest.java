@@ -83,7 +83,7 @@ public class IsMemberOfServiceTest extends ServiceTestHelper{
             member3.getAccountId()
         );
 
-        List<IsMemberOfDTO> results = isMemberOfService.massAddMemberToTeam(team.getTeamId(), memberIds);
+        List<IsMemberOfDTO> results = isMemberOfService.massAssignToTeam(team.getTeamId(), memberIds);
 
         assertEquals(3, results.size());
 
@@ -108,7 +108,7 @@ public class IsMemberOfServiceTest extends ServiceTestHelper{
         );
 
         Exception exception = assertThrows(RuntimeException.class, () ->
-            isMemberOfService.massAddMemberToTeam(team.getTeamId(), memberIds)
+            isMemberOfService.massAssignToTeam(team.getTeamId(), memberIds)
         );
 
         assertTrue(exception.getMessage().contains("Team Member not found"));
@@ -119,7 +119,7 @@ public class IsMemberOfServiceTest extends ServiceTestHelper{
         TeamMemberDTO member = createUniqueTeamMemberDTO();
 
         Exception exception = assertThrows(RuntimeException.class, () ->
-            isMemberOfService.massAddMemberToTeam(999999, List.of(member.getAccountId()))
+            isMemberOfService.massAssignToTeam(999999, List.of(member.getAccountId()))
         );
 
         assertTrue(exception.getMessage().contains("Team not found"));
@@ -140,7 +140,7 @@ public class IsMemberOfServiceTest extends ServiceTestHelper{
             member2.getAccountId()
         );
 
-        List<IsMemberOfDTO> results = isMemberOfService.massAddMemberToTeam(team.getTeamId(), memberIds);
+        List<IsMemberOfDTO> results = isMemberOfService.massAssignToTeam(team.getTeamId(), memberIds);
 
         assertEquals(1, results.size());
         assertTrue(isMemberOfService.isMemberOfTeam(member2.getAccountId(), team.getTeamId()));

@@ -5,10 +5,13 @@ import com.example.task_manager.DTO.PasswordChangeRequestDTO;
 import com.example.task_manager.DTO.TaskDTO;
 import com.example.task_manager.DTO.TeamDTO;
 import com.example.task_manager.service.TeamMemberService;
+
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.task_manager.service.IsMemberOfService;
 
 @RestController
 @RequestMapping("/api/members/actions")
@@ -37,8 +40,7 @@ public class TeamMemberController {
         try {
             List<IsAssignedDTO> isAssignedDTOs = teamMemberService.massAssignToTask(taskId, teamMemberIds);
             return ResponseEntity.ok(isAssignedDTOs);
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

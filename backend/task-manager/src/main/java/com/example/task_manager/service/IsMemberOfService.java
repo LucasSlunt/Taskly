@@ -80,7 +80,7 @@ public class IsMemberOfService {
     }
     
     //add multiple members to a team at once
-    public List<IsMemberOfDTO> massAddMemberToTeam(int teamId, List<Integer> teamMemberIds) {
+    public List<IsMemberOfDTO> massAssignToTeam(int teamId, List<Integer> teamMemberIds) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found with ID: " + teamId));
 
