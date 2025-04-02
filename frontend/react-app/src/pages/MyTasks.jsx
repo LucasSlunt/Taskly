@@ -8,8 +8,7 @@ import { getAssignedTasks } from "../api/teamMemberApi";
 import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
 import LockUnlockTask from "../components/LockUnlockTask";
-
-
+import { Lock, LockOpen } from 'lucide-react';
 
 function getAssigneesNames(taskItem) {
     return taskItem.assignedMembers.map((member) => member.userName).join(", ");
@@ -125,7 +124,11 @@ const headerAndAccessors = [
           return isAdmin ? (
             <LockUnlockTask initialIsLocked={isLocked} taskId={original.row.original.id} />
           ) : (
-            isLocked ? '🔒' : '🔓'
+            isLocked ? (
+                <Lock />
+            ) : (
+                <LockOpen/>
+            )
           );
         },
       }
