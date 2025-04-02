@@ -52,6 +52,7 @@ thead th{
     padding: 3px;
     display: flex;
     margin-top: 5px;
+    align-items: center;
 }
 .search-form {
     display: flex;
