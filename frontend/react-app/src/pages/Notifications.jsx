@@ -109,15 +109,13 @@ const Notifications = () => {
         <div className='pageContainer'>
             <Header/>
             <div className='pageBody'>
+                <div></div>
             <div id="notifContainer">
                 <div className="column-box">
                     <h2>My Notifications</h2>
                         <div className="section-divider"></div>
                         <div className ="notifBox">
                         <table>
-                            <thead>
-
-                            </thead>
                             <tbody>
                                 <NotificationSection title="Unread" items={memoizedUnReadNotifications} />
                                 <NotificationSection title="Read" items={memoizedReadNotifications} />

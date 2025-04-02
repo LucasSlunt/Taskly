@@ -1,14 +1,13 @@
 #notifContainer {
     background-color: white;
-    width: 600px;
+    width: 1300px;
     height: 500px;
     margin: auto;
+    padding: 2%;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-#notifContainer table {
-    width: 100%;
-}
+
 
 #notifContainer thead td {
     width: 100%;
