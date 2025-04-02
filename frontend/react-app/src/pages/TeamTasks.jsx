@@ -143,6 +143,26 @@ function TeamTasks(){
     {
       Header: "Priority",
       accessor: "priority",
+      Cell: (original) => {
+        const prioirtyValue = original.value;
+        let color;
+        switch (prioirtyValue) {
+          case "HIGH":
+            color = "red";
+            break;
+          case "MEDIUM":
+            color = "orange";
+            break;
+          case "LOW":
+            color = "green";
+            break;
+          default:
+            color = "black";
+        }
+   
+        return <span style={{ color }}>{prioirtyValue}</span>;
+      }
+
     },
     {
         Header: "Status",
