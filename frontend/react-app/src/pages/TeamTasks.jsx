@@ -90,11 +90,7 @@ const headerAndAccessors = [
 ]
 
 const headerAndAccessorsComplete = [
-  ...commonColumns,
-  {
-      Header: "Date Completed",
-      accessor: "dateCompteted",
-  }
+  ...commonColumns
 ]
 function TeamTasks(){
   const [cookies] = useCookies(['userInfo']);
