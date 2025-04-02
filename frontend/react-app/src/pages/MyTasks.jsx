@@ -1,7 +1,8 @@
 import TaskList from "../components/TaskList";
 import Header from "../components/Header";
-import "../css/MyTasks.css"
-import fakeData from "../FakeData/fakeTaskData.json"
+import "../css/MyTasks.css";
+import "../css/Header.css";
+import fakeData from "../FakeData/fakeTaskData.json";
 import { Link } from 'react-router-dom';
 import { getAssignedTasks } from "../api/teamMemberApi";
 import { useCookies } from 'react-cookie';

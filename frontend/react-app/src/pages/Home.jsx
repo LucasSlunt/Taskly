@@ -19,8 +19,6 @@ function setUpDataTasksToDo(obj){
             team: taskItem.team,
             dueDate: taskItem.dueDate
             
-
-
         }]
     
    }
@@ -138,7 +136,7 @@ const Home = () => {
                 
                     <div id="teamButtons" className='teamButtonContainer'>
                         {teams.map((team)=>(
-                            <Link className="teamButton headerText1" to='/team-tasks' state={{ teamId: team.teamId}} key={team.teamId} >
+                            <Link className="teamButton headerText1" to='/team-tasks' state={{ team: team}} key={team.teamId} >
                             {team.teamName}
                             </Link>
                             

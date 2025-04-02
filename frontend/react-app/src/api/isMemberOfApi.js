@@ -2,22 +2,38 @@ const BASE_URL = "http://localhost:8080/api/memberships";
 
 //Add a member to a team
 export const addMemberToTeam = async (teamMemberId, teamId) => {
-    try {
         const response = await fetch(`${BASE_URL}/${teamMemberId}/team/${teamId}`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" }
         });
 
         if (!response.ok) {
-            console.error(`Failed to add member to team: ${response.status} ${response.statusText}`);
-            return false;
+            throw Error(`Failed to add member to team: ${response.status} ${response.statusText}`);
         }
 
         return true;
-    } 
+};
+
+//Adding multiple members to a team at once
+export const massAssignToTeam = async (teamId, teamMemberIds) => {
+    try {
+        console.log(JSON.stringify(teamMemberIds));
+        const response = await fetch(`${BASE_URL}/team/${teamId}/mass-assign`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(teamMemberIds)
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to assign members to team: ${response.status} ${response.statusText}`);
+            return null;
+        }
+
+        return await response.json();
+    }
     catch (error) {
-        console.error("Error adding member to team: ", error);
-        return false;
+        console.error("Error assigning members to team: ", error);
+        throw error;
     }
 };
 

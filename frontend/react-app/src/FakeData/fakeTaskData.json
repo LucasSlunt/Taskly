@@ -22,7 +22,7 @@
         "dueDate": "2/28/2025",
         "dateCompteted": "3/10/2025",
         "isLocked" : "false",
-        "discription": "This is a task that does stuff"
+        "description": "This is a task that does stuff"
          
     },
     {
@@ -48,7 +48,7 @@
         "dueDate": "2/28/2025",
         "dateCompteted": "",
         "isLocked" : "false",
-        "discription": "This is a task that does stuff"
+        "description": "This is a task that does stuff"
          
     },
     {
@@ -67,7 +67,7 @@
         "priority": "High",
         "dueDate": "3/4/2002",
         "isLocked" : "false",
-        "discription": "This is a task that does stuff"
+        "description": "This is a task that does stuff"
          
     },
     {
@@ -87,7 +87,7 @@
         "dueDate": "3/9/2025",
         "dateCompteted": "",
         "isLocked" : "false",
-        "discription": "This is a task that does stuff"
+        "description": "This is a task that does stuff"
     },
     {
         "id": "4",
@@ -106,7 +106,7 @@
         "dueDate": "3/9/2025",
         "dateCompteted": "3/9/2025",
         "isLocked" : "false",
-        "discription": "This is a task that does stuff"
+        "description": "This is a task that does stuff"
          
     }
 ]
