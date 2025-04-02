@@ -22,22 +22,22 @@ export default function CreateTeamForm({users}){
     const customStyles = {
         control: (provided) => ({
           ...provided,
-          width: '65vw',
+          width: '420px',
         minWidth: '100px',
         maxWidth: '100%',
         minHeight: '30px',
         maxHeight: '100%',
-          border: '2px solid grey',
+          border: '1.5px solid #2d2644',
           borderRadius: '10px',
           paddingLeft: '8px',
-          backgroundColor: '#BFCDE0',
+          backgroundColor: 'white',
           margin: '10px 0px',
         }),
       };
     return(
         <form id="createAccountForm" onSubmit={handleSubmit(onSumbit)}>
             <label>Team Name</label>
-            <input type="text" {...register("teamName", {required:true})}/>
+            <input type="text" placeholder="Enter team name" {...register("teamName", {required:true})}/>
             <label>Team Members (One Required, First Selected Will Be Team Lead)</label>
             <Controller
                     control={control}
@@ -55,7 +55,7 @@ export default function CreateTeamForm({users}){
                         
                         />)}
                     />
-            <button type="submit">Create Team</button>
+            <button type="submit" id="createTeamButton">Create Team</button>
         </form>
     )
 }
