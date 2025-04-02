@@ -146,14 +146,23 @@ public class TeamMemberService {
 		String oldStatus = task.getStatus();
 		LocalDate oldDueDate = task.getDueDate();
 
-		if (taskDTO.getTitle() != null && !taskDTO.getTitle().isEmpty()) {
+		// if (taskDTO.getTitle() == oldTitle &&
+		//     taskDTO.getDescription() == oldDescription &&
+		// 	taskDTO.getIsLocked() == oldLockStatus && 
+		// 	taskDTO.getDueDate() == oldDueDate &&
+		// 	taskDTO.getStatus() == oldStatus){
+		// 		//nothing has been changed
+		// }
+		if ((taskDTO.getTitle() != null && !taskDTO.getTitle().isEmpty()) &&
+			(!taskDTO.getTitle().equals(oldTitle))) {
 			task.setTitle(taskDTO.getTitle());
 
 			//call notif method
 			notifService.notifyTaskTitleChange(task, oldTitle);
 		}
 
-		if (taskDTO.getDescription() != null && !taskDTO.getDescription().isEmpty()) {
+		if (taskDTO.getDescription() != null && !taskDTO.getDescription().isEmpty()&&
+			(!taskDTO.getDescription().equals(oldDescription))) {
 			task.setDescription(taskDTO.getDescription());
 
 			//call notif method
@@ -174,7 +183,7 @@ public class TeamMemberService {
 			notifService.notifyTaskStatusChange(task, oldStatus);
 		}
 
-		if (taskDTO.getDueDate() != null) {
+		if (taskDTO.getDueDate() != null && !taskDTO.getDueDate().equals(oldDueDate)) {
 			task.setDueDate(taskDTO.getDueDate());
 
 			//call notif method
