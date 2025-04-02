@@ -37,7 +37,7 @@ function setUpData(results) {
         id: taskItem.taskId,
         name: taskItem,
         status: taskItem.status,
-        team: taskItem.teamId,
+        team: taskItem.teamName,
         dueDate: taskItem.dueDate || "No Due Date", 
       }));
 }

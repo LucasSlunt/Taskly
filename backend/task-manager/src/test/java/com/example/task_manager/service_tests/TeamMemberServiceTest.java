@@ -116,7 +116,8 @@ public class TeamMemberServiceTest extends ServiceTestHelper{
             null,
             team.getTeamId(),
             null,
-            TaskPriority.LOW
+            TaskPriority.LOW,
+            team.getTeamName()
         );
 
         TaskDTO updatedTask = teamMemberService.editTask(task.getTaskId(), taskDTO);

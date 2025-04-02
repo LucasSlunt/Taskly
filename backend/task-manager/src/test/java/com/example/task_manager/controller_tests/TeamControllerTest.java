@@ -135,9 +135,9 @@ public class TeamControllerTest {
 
         List<TaskDTO> mockTasks = Arrays.asList(
                 new TaskDTO(1, "Task 1", "Thing 1", false, "Open", LocalDate.now(), null, teamId, null,
-                        TaskPriority.HIGH),
+                        TaskPriority.HIGH, null),
                 new TaskDTO(2, "Task 2", "Thing 2", false, "Open", LocalDate.now(), null, teamId, null,
-                        TaskPriority.HIGH));
+                        TaskPriority.HIGH, null));
 
         when(teamService.getTeamTasks(teamId)).thenReturn(mockTasks);
 

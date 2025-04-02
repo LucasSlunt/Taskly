@@ -14,7 +14,7 @@ public class TaskDTOTest {
     @Test
     void testDTOConstructorAndGetters() {
         LocalDate dueDate = LocalDate.of(2024, 5, 10);
-        TaskDTO dto = new TaskDTO(1, "Task Title", "Task Description", false, "Open", LocalDate.now(), dueDate, 201, null, TaskPriority.LOW);
+        TaskDTO dto = new TaskDTO(1, "Task Title", "Task Description", false, "Open", LocalDate.now(), dueDate, 201, null, TaskPriority.LOW, null);
         assertEquals(1, dto.getTaskId());
         assertEquals("Task Title", dto.getTitle());
         assertEquals("Task Description", dto.getDescription());
