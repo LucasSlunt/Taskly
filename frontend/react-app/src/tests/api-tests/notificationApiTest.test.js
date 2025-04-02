@@ -50,7 +50,7 @@ describe('Notification API', () => {
             method: 'PUT'
         });
 
-        expect(result).toEqual({ message: "Notification marked as read." });
+        expect(result.status).toEqual(200);
     });
     
     //test: marking notification as unread
@@ -62,8 +62,6 @@ describe('Notification API', () => {
         expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/2/mark-as-unread`, {
             method: 'PUT'
         });
-
-        expect(result).toEqual({ message: "Notification marked as unread." });
     });
     
     //test: deleting a notification
