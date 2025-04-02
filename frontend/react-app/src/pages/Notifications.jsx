@@ -116,9 +116,7 @@ const Notifications = () => {
                         <div className ="notifBox">
                         <table>
                             <thead>
-                                <tr>
-                                    <td colSpan="4">Notifications</td>
-                                </tr>
+
                             </thead>
                             <tbody>
                                 <NotificationSection title="Unread" items={memoizedUnReadNotifications} />

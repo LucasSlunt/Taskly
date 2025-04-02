@@ -28,10 +28,6 @@
     text-align: left !important;
 }
 
-#notifContainer tbody td {
-    background-color: white;
-}
-
 #notifContainer input {
     border: none;
 }
@@ -43,10 +39,8 @@
 .subHeader {
     text-align: left !important;
     padding-left: 10px;
-}
-
-.delete {
-
+    color: white;
+    background-color: #52799d;
 }
 
 .delete:hover {
@@ -68,3 +62,4 @@
     background-color: black;
 
 }
+
