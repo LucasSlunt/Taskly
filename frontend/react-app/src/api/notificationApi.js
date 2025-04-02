@@ -44,6 +44,7 @@ export const getUnreadNotifications = async (teamMemberId) => {
 //mark notification as read
 export const markAsRead = async (notificationId) => {
     try {
+        console.log(`${BASE_URL}/${notificationId}/mark-as-read`);
         const response = await fetch(`${BASE_URL}/${notificationId}/mark-as-read`, {
             method: 'PUT'
 
@@ -66,6 +67,7 @@ export const markAsRead = async (notificationId) => {
 //mark notification as unread
 export const markAsUnread = async (notificationId) => {
     try {
+        console.log(`${BASE_URL}/${notificationId}/mark-as-unread`);
         const response = await fetch(`${BASE_URL}/${notificationId}/mark-as-unread`, {
             method: 'PUT'
 
