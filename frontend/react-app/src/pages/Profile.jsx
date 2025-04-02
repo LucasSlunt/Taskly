@@ -38,18 +38,26 @@ function Profile(){
     <div className='pageContainer'>
         <Header/>
         <div className='profile-page'>
-            <UserInfo 
-            userInfo = {userData}/>
-            <h1>My Teams</h1>
-            <div className="teams-grid">
-                {teams.map((team) => (
-                    <Teams team={team} key={team.teamId}/> 
-                ))}
-            </div> 
-            <div>
-            <a href="/change-password"><button className="importButton">Change Password</button></a>    
-            </div> 
-            <SignOut/>
+            <div className="profile-info-container">
+                <UserInfo 
+                    userInfo = {userData}/>
+                <div className='button-group'>
+                    <a href="/change-password"><button className="importButton" style={{margin: '0px', backgroundColor: '#3B3355', color: 'white', fontSize:'15px', padding: '10px', height: '35px'}}>Change Password</button></a>    
+                    <div className='sign-out-btn'>
+                        <SignOut style={{backgroundColor:'#3B3355'}}/>
+                    </div>
+                </div> 
+            </div>    
+            <div className="column-box" style={{width: '95%'}} >
+                <h1>My Teams</h1>
+                <div className="section-divider">
+                    <div className="teams-grid">
+                        {teams.map((team) => (
+                            <Teams team={team} key={team.teamId}/> 
+                        ))}
+                    </div> 
+                </div>
+                </div>
         </div>
     </div>
     
