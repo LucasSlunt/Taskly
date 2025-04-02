@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Notifications from "../pages/Notifications";
+jest.mock("../components/Header", () => () => <div data-testid="mock-header" />);
 
 jest.mock("../components/Notification", () => ({ notif, toggleRead }) => (
     <tr>
