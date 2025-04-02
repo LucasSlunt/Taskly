@@ -146,13 +146,6 @@ public class TeamMemberService {
 		String oldStatus = task.getStatus();
 		LocalDate oldDueDate = task.getDueDate();
 
-		// if (taskDTO.getTitle() == oldTitle &&
-		//     taskDTO.getDescription() == oldDescription &&
-		// 	taskDTO.getIsLocked() == oldLockStatus && 
-		// 	taskDTO.getDueDate() == oldDueDate &&
-		// 	taskDTO.getStatus() == oldStatus){
-		// 		//nothing has been changed
-		// }
 		if ((taskDTO.getTitle() != null && !taskDTO.getTitle().isEmpty()) &&
 			(!taskDTO.getTitle().equals(oldTitle))) {
 			task.setTitle(taskDTO.getTitle());
