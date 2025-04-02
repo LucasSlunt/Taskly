@@ -30,31 +30,29 @@ describe('AuthInfo API', () => {
 
     //test: check if user is an admin
     test('isAdmin should return true when user is an admin', async () => {
-        fetch.mockResponseOnce(JSON.stringify({ isAdmin: true }), { status: 200 });
+        fetch.mockResponseOnce(JSON.stringify("ADMIN"), { status: 200 });
 
         const response = await isAdmin(1);
 
         expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/1/is-admin`, {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ teamMemberId: 1 })
+            method: 'GET',
+            headers: { "Content-Type": "application/json" }
         });
 
-        expect(response).toBe(true);
+        expect(response).toBe("ADMIN");
     });
 
     //test: check if user is not an admin
     test('isAdmin should return false when user is not an admin', async () => {
-        fetch.mockResponseOnce(JSON.stringify({ isAdmin: false }), { status: 200 });
+        fetch.mockResponseOnce(JSON.stringify("TEAM_MEMBER"), { status: 200 });
 
         const response = await isAdmin(1);
 
         expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/1/is-admin`, {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ teamMemberId: 1 })
+            method: 'GET',
+            headers: { "Content-Type": "application/json" }
         });
 
-        expect(response).toBe(false);
+        expect(response).toBe("TEAM_MEMBER");
     });
 });
