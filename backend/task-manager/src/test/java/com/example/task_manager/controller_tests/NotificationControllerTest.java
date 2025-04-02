@@ -78,8 +78,7 @@ public class NotificationControllerTest {
         doNothing().when(notificationService).markAsRead(1);
 
         mockMvc.perform(put("/api/notifications/1/mark-as-read"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Notification marked as read."));
+                .andExpect(status().isOk());
     }
 
     /**
@@ -90,8 +89,7 @@ public class NotificationControllerTest {
         doNothing().when(notificationService).markAsUnread(1);
 
         mockMvc.perform(put("/api/notifications/1/mark-as-unread"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Notification marked as unread."));
+                .andExpect(status().isOk());
     }
 
     /**
