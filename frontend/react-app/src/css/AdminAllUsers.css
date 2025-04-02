@@ -6,3 +6,11 @@
 .container{
     height: 50%;
 }
+
+#searchThis {
+    background-color: #d3d4f9;
+    color: black;
+    border-radius: 10px;
+    margin: 3% 0%;
+    border: 1px solid black;
+}

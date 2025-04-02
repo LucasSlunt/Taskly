@@ -44,7 +44,7 @@ export default function AdminPanel(){
         <div className='pageContainer'>
             <Header/>
             <div className='pageBody'>
-            <div className="headerText1 center">Admin Controls</div>
+            <div className="headerText1 center" id="adminHeader">Admin Controls</div>
             <div className="rowFlexbox buttonRow">
             <a href="create-account" ><button className='importButton'>Create New Account</button></a>
             <a href="/all-users"><button className="importButton">See/Edit All Users</button></a>
